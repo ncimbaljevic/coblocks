@@ -9,11 +9,6 @@ before( function() {
 	} );
 } );
 
-// Maintain WordPress logged in state
-Cypress.Cookies.defaults( {
-	preserve: /wordpress_.*/,
-} );
-
 // Custom uploadFile command
 Cypress.Commands.add( 'uploadFile', ( fileName, fileType, selector ) => {
 	cy.get( selector ).then( ( subject ) => {
