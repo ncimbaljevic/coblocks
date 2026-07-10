@@ -28,7 +28,10 @@ module.exports = {
 		require.resolve( '@wordpress/jest-preset-default/scripts/setup-globals.js' ),
 		'<rootDir>/.dev/tests/jest/setup-globals.js',
 	],
-	testMatch: [ '**/test/*.spec.js' ],
+	// `*.spec.js` files live in `test/` dirs; a few hooks use `*.test.js` under
+	// src. Scope the latter to src so the puppeteer perf tests in .dev are not
+	// picked up by the unit runner.
+	testMatch: [ '**/test/*.spec.js', '<rootDir>/src/**/*.test.js' ],
 	// Several WordPress 7.0 packages depend on ESM-only modules (e.g. `marked`,
 	// the `@ariakit/*` family used by @wordpress/components). Jest ignores
 	// node_modules by default, so allow-list these to be transpiled by Babel.

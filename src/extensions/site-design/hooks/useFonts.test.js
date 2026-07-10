@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 /**
  * WordPress dependencies
@@ -22,7 +22,9 @@ const elementMock = [
 	},
 ];
 
-jest.mock( '@wordpress/data/build/components/use-select', () => jest.fn() );
+jest.mock( '@wordpress/data', () => ( {
+	useSelect: jest.fn(),
+} ) );
 
 describe( 'site-design, hooks, useFonts', () => {
 	it( 'should return the right values when store is empty', () => {
