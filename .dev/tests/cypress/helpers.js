@@ -1,8 +1,23 @@
 /**
- * Returns true if styles tab exists false otherwise.
+ * Select the block inspector's "Styles" tab. Ensures the settings sidebar is
+ * open first, because some flows (e.g. closing the media modal) leave it closed,
+ * which would hide the block's Styles tab.
  */
 export function selectStylesTabIfExists() {
-	cy.get( sidebarClass() ).find( 'button[aria-label="Styles"]' ).click();
+	cy.get( 'button[aria-label="Settings"]' ).then( ( $settings ) => {
+		if ( ! $settings.hasClass( 'is-pressed' ) && ! $settings.hasClass( 'is-toggled' ) ) {
+			cy.wrap( $settings ).click();
+		}
+	} );
+	// Click the Styles inspector tab only when the block exposes one. Some blocks
+	// (e.g. logos) render their style variations within the Settings tab instead
+	// of a dedicated Styles tab, so there is nothing to switch to.
+	cy.get( sidebarClass() ).then( ( $sidebar ) => {
+		const $tab = $sidebar.find( 'button[aria-label="Styles"]' );
+		if ( $tab.length ) {
+			cy.wrap( $tab ).click();
+		}
+	} );
 }
 
 /**
@@ -273,7 +288,10 @@ export function getBlockSlug() {
  * @param {string} style Name of the style to apply
  */
 export function setBlockStyle( style ) {
-	openSettingsPanel( RegExp( 'styles', 'i' ) );
+	// WordPress 6.3+ moved block styles from a collapsible panel into a
+	// dedicated "Styles" inspector tab, so select that tab rather than opening
+	// a "Styles" panel body (which no longer exists).
+	selectStylesTabIfExists();
 
 	cy.get( sidebarClass() + ' [class*="editor-block-styles"]' )
 		.contains( RegExp( style, 'i' ) )
