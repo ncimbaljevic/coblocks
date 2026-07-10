@@ -45,8 +45,8 @@ jobs:
 
       - name: Build plugin
         run: |
-          # We are not testing directly against the build, but some tests assert the existence dist/.
-          npx grunt build
+          # We are not testing directly against the build, but some tests assert the existence of dist/.
+          npm run build
 
       - name: Run tests
         run: |
