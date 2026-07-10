@@ -17,6 +17,7 @@
 	&.has-2-columns > .block-editor-inner-blocks > .block-editor-block-list__layout > [class^="wp-block-coblocks-"],
 	&.has-3-columns > .block-editor-inner-blocks > .block-editor-block-list__layout > [class^="wp-block-coblocks-"],
 	&.has-4-columns > .block-editor-inner-blocks > .block-editor-block-list__layout > [class^="wp-block-coblocks-"] {
+
 		@include break-small() {
 			flex-basis: 50%;
 		}
@@ -24,15 +25,18 @@
 
 	&.has-3-columns > .block-editor-inner-blocks > .block-editor-block-list__layout > [class^="wp-block-coblocks-"],
 	&.has-4-columns > .block-editor-inner-blocks > .block-editor-block-list__layout > [class^="wp-block-coblocks-"] {
+
 		@include break-medium() {
 			flex-basis: 33.33%;
 		}
 	}
 
 	&.has-4-columns > .block-editor-inner-blocks > .block-editor-block-list__layout > [class^="wp-block-coblocks-"] {
+
 		@include break-large-max() {
 			flex-basis: 50%;
 		}
+
 		@include break-wide() {
 			flex-basis: 25%;
 		}

@@ -14,6 +14,7 @@
 
 // Following styles specific to the Site Content sidebar:
 .content-management {
+
 	.content-management__panel {
 		position: relative;
 
@@ -31,6 +32,7 @@
 
 		// Hide actions button when a row is in renaming mode
 		&.is-renaming {
+
 			.content-management__panel__row:not(.is-renaming),
 			.content-management__add-new-button {
 				opacity: 0.5;
@@ -251,7 +253,9 @@
 }
 
 .content-management-actions {
+
 	&__item {
+
 		&.is-destructive {
 			box-shadow: none !important;
 			color: var(--reliable-red-400) !important;
@@ -284,6 +288,7 @@
 		}
 
 		&:hover {
+
 			> svg > path {
 				fill: var(--wp-admin-theme-color);
 			}

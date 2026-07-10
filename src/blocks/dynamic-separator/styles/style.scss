@@ -25,7 +25,7 @@
 
 	&.is-style-line::before,
 	&.is-style-fullwidth::before {
-		background: currentColor;
+		background: currentcolor;
 		content: "";
 		display: block;
 		height: 1px;

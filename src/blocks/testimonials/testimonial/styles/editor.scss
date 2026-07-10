@@ -1,4 +1,5 @@
 [data-type="coblocks/testimonial"] {
+
 	.wp-block-coblocks-testimonial__image-container {
 		position: relative;
 	}
@@ -12,6 +13,7 @@
 
 // Fix for superfluous margin-bottom.
 [data-type="coblocks/testimonials"] [data-type="coblocks/testimonial"] {
+
 	&.wp-block-coblocks-testimonial {
 		margin-bottom: 0;
 	}
