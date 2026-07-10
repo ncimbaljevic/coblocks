@@ -11,10 +11,12 @@ import { disableGutenbergFeatures, goTo, loginToSite } from '../helpers';
 Cypress.Commands.overwriteQuery( 'get', function( originalFn, selector, options ) {
 	const getFn = originalFn.call( this, selector, options );
 	return function( subject ) {
-		// When scoped by `.within()`, the previous subject is passed in. Defer to
-		// the original query so that scoping (and its iframe context) is honoured
-		// rather than searching the whole document/canvas.
-		if ( subject ) {
+		// When scoped by `.within()`, defer to the original query so that scoping
+		// (and its iframe context) is honoured rather than searching the whole
+		// document/canvas. The scope arrives either as an explicit subject or via
+		// Cypress's within-subject state.
+		const withinChain = cy && cy.state ? cy.state( 'withinSubjectChain' ) : null;
+		if ( subject || ( withinChain && withinChain.length ) ) {
 			return getFn.call( this, subject );
 		}
 		if ( typeof selector === 'string' && ! ( options && options.withinSubject ) ) {
