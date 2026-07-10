@@ -293,7 +293,14 @@ export function setBlockStyle( style ) {
 	// a "Styles" panel body (which no longer exists).
 	selectStylesTabIfExists();
 
-	cy.get( sidebarClass() + ' [class*="editor-block-styles"]' )
+	// Style variations render either within the settings sidebar (older layout)
+	// or under the Styles tab's variants list, depending on the block, so match
+	// across both containers.
+	cy.get( [
+		sidebarClass() + ' [class*="editor-block-styles"]',
+		'.block-editor-block-styles__variants',
+		'.block-editor-block-styles__item',
+	].join( ', ' ) )
 		.contains( RegExp( style, 'i' ) )
 		.click();
 }
@@ -510,6 +517,16 @@ export function setColorPanelSetting( settingName, hexColor ) {
  * @param {RegExp} panelText The panel label text to open. eg: Color Settings
  */
 export function openSettingsPanel( panelText ) {
+	// Block styles moved from a settings panel into a dedicated "Styles"
+	// inspector tab in WP 6.3+, so route requests for the Styles panel there.
+	const wantsStyles = panelText instanceof RegExp
+		? panelText.test( 'Styles' )
+		: /^\s*styles\s*$/i.test( String( panelText ) );
+	if ( wantsStyles ) {
+		selectStylesTabIfExists();
+		return;
+	}
+
 	if ( isWP65AtLeast() ) {
 		cy.get( '[data-tab-id="edit-post/block"]' ).click();
 	} else {
