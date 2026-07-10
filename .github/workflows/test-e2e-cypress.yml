@@ -138,32 +138,6 @@ jobs:
           wp-env run cli wp option update permalink_structure '/%postname%'
           wp-env run tests-cli wp theme activate twentytwentyfive
 
-      # Only create a new post if running the migrated specs
-      - name: Create post and get ID
-        if: matrix.spec == 'alert.cypress.js' || matrix.spec == 'author.cypress.js'
-        run: |
-          # Generate application-password to use with WP REST API.
-          app_password=$(wp-env run tests-cli wp user application-password create admin gha-password --porcelain)
-
-          # Retrieve post content from fixture.
-          post_content=$(cat .dev/tests/cypress/fixtures/${{matrix.spec}}.html)
-          echo $post_content
-
-          # Create a post using the REST API and parse the postId from the response.
-          postId=$(curl -s -X POST 'http://localhost:8889/?rest_route=/wp/v2/posts' --data-urlencode "title=${{matrix.spec}}" --data-raw "content=$post_content" --data-urlencode "status=publish" --user "admin:$app_password"| jq '.id')
-
-          # Save the postId to the output.
-          echo "postId=$postId" >> $GITHUB_OUTPUT
-        id: create-post
-
-      # Only retrieve the post ID if running the first spec
-      - name: Save post ID to file
-        if: matrix.spec == 'alert.cypress.js' || matrix.spec == 'author.cypress.js'
-        run: |
-          path="$GITHUB_WORKSPACE/.dev/tests/cypress/fixtures/${{matrix.spec}}.json"
-          touch "$path"
-          echo "{\"${{matrix.spec}}\": \"$(echo "${{ steps.create-post.outputs.postId }}")\"}" > "$path"
-
       - name: Run tests
         run: |
           CYPRESS_SPEC=$(find ./src/* -name ${{ matrix.spec }} -type f)
@@ -279,32 +253,6 @@ jobs:
           wp-env run cli wp post generate --count=5
           wp-env run cli wp option update permalink_structure '/%postname%'
           wp-env run tests-cli wp theme activate twentytwentyfive
-
-      # Only create a new post if running the migrated specs
-      - name: Create post and get ID
-        if: matrix.spec == 'alert.cypress.js' || matrix.spec == 'author.cypress.js'
-        run: |
-          # Generate application-password to use with WP REST API.
-          app_password=$(wp-env run tests-cli wp user application-password create admin gha-password --porcelain)
-
-          # Retrieve post content from fixture.
-          post_content=$(cat .dev/tests/cypress/fixtures/${{matrix.spec}}.html)
-          echo $post_content
-
-          # Create a post using the REST API and parse the postId from the response.
-          postId=$(curl -s -X POST 'http://localhost:8889/?rest_route=/wp/v2/posts' --data-urlencode "title=${{matrix.spec}}" --data-raw "content=$post_content" --data-urlencode "status=publish" --user "admin:$app_password"| jq '.id')
-
-          # Save the postId to the output.
-          echo "postId=$postId" >> $GITHUB_OUTPUT
-        id: create-post
-
-      # Only retrieve the post ID if running the first spec
-      - name: Save post ID to file
-        if: matrix.spec == 'alert.cypress.js' || matrix.spec == 'author.cypress.js'
-        run: |
-          path="$GITHUB_WORKSPACE/.dev/tests/cypress/fixtures/${{matrix.spec}}.json"
-          touch "$path"
-          echo "{\"${{matrix.spec}}\": \"$(echo "${{ steps.create-post.outputs.postId }}")\"}" > "$path"
 
       - name: Run tests
         run: |
