@@ -603,6 +603,8 @@ describe( 'Test CoBlocks Form Block', function() {
 
 			cy.get( '[data-type="coblocks/form"] .coblocks-form__submit' ).click( { force: true } );
 
+			helpers.selectStylesTabIfExists();
+
 			// Switch styles.
 			// Note: We use i+2 to avoid 'Fill'.
 			cy.get( `.block-editor-block-styles__variants button:nth-child(${ i + 2 })` ).click( { force: true } );

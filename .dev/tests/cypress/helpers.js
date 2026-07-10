@@ -26,23 +26,26 @@ export function selectStylesTabIfExists() {
  * @param {string} name the name of the child block to add.
  */
 export function addFormChild( name ) {
-	cy.get( '[data-type="coblocks/form"] [data-type^="coblocks/field"]' ).first().click( { force: true } );
-	cy.get( '.block-editor-block-settings-menu' ).click();
-	cy.get( '.components-popover__content button' ).contains( /insert after|add after/i ).click( { force: true } );
-	cy.get( '[data-type="coblocks/form"] [data-type="core/paragraph"]' ).click( { force: true } );
+	// Insert the field into the form via the data store rather than driving the
+	// block-settings menu + inserter, which races under the WP 7.0 editor.
+	getWPBlocksObject().then( ( blocks ) => {
+		getWPDataObject().then( ( data ) => {
+			const form = data.select( 'core/block-editor' ).getBlocks().find( ( block ) => block.name === 'coblocks/form' );
+			if ( ! form ) {
+				return;
+			}
+			// Keep the submit button last where present.
+			const submitIndex = form.innerBlocks.findIndex( ( block ) => block.name === 'coblocks/field-submit-button' );
+			data.dispatch( 'core/block-editor' ).insertBlock(
+				blocks.createBlock( `coblocks/field-${ name }` ),
+				submitIndex >= 0 ? submitIndex : form.innerBlocks.length,
+				form.clientId,
+				true
+			);
+		} );
+	} );
 
-	if ( isWP65AtLeast() ) {
-		cy.get( '.edit-post-header-toolbar' ).find( '.editor-document-tools__inserter-toggle' ).click( { force: true } );
-
-		cy.get( '.components-input-control__input' ).click().type( name );
-	} else {
-		cy.get( '.edit-post-header-toolbar' ).find( '.edit-post-header-toolbar__inserter-toggle' ).click( { force: true } );
-
-		cy.get( '.block-editor-inserter__search .components-search-control__input' ).click().type( name );
-	}
-
-	cy.get( '.editor-block-list-item-coblocks-field-' + name ).first().click( { force: true } );
-	cy.get( `[data-type="coblocks/field-${ name }"]` ).should( 'exist' ).click( { force: true } );
+	cy.get( `[data-type="coblocks/field-${ name }"]` ).should( 'exist' );
 }
 
 /**
