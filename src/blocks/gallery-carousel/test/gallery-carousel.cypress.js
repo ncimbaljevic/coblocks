@@ -114,7 +114,9 @@ describe( 'Test CoBlocks Gallery Carousel Block', function() {
 		cy.get( 'button' ).contains( /create a new gallery/i ).click();
 		cy.get( 'button' ).contains( /insert gallery/i ).click();
 
-		cy.get( '[data-type="coblocks/gallery-carousel"]' ).click();
+		helpers.toggleSettingCheckbox( /captions/i );
+
+		cy.get( '[data-type="coblocks/gallery-carousel"]' ).find( 'img' ).first().click( { force: true } );
 
 		cy.get( '[data-type="coblocks/gallery-carousel"]' ).find( 'figcaption' ).first().focus().type( caption );
 
@@ -148,7 +150,9 @@ describe( 'Test CoBlocks Gallery Carousel Block', function() {
 
 		cy.get( '.block-editor-format-toolbar, .block-editor-rich-text__inline-format-toolbar-group' ).should( 'not.exist' );
 
-		cy.get( '.coblocks-swiper-container' ).click();
+		helpers.toggleSettingCheckbox( /captions/i );
+
+		cy.get( '[data-type="coblocks/gallery-carousel"]' ).find( 'img' ).first().click( { force: true } );
 
 		cy.get( '[data-type="coblocks/gallery-carousel"]' ).find( 'figcaption' ).first().focus();
 

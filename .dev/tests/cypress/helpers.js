@@ -599,6 +599,17 @@ export function openHeadingToolbarAndSelect( headingLevel ) {
  * @param {string} checkboxLabelText The checkbox label text. eg: Drop Cap
  */
 export function toggleSettingCheckbox( checkboxLabelText ) {
+	// Ensure the block settings sidebar is open and on the block tab — flows such
+	// as closing the media modal can leave it closed, which hides the toggle.
+	cy.get( 'button[aria-label="Settings"]' ).then( ( $settings ) => {
+		if ( ! $settings.hasClass( 'is-pressed' ) && ! $settings.hasClass( 'is-toggled' ) ) {
+			cy.wrap( $settings ).click();
+		}
+	} );
+	if ( isWP65AtLeast() ) {
+		cy.get( '[data-tab-id="edit-post/block"]' ).click();
+	}
+
 	// Match the ToggleControl by its label text and click the underlying
 	// checkbox input. The `__label` element class changed in newer
 	// @wordpress/components, so locate the control by its stable root class.

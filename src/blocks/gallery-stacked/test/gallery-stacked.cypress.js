@@ -98,8 +98,8 @@ describe( 'Test CoBlocks Gallery Stacked Block', function() {
 
 		helpers.toggleSettingCheckbox( /captions/i );
 
-		cy.get( '.coblocks-gallery--item' ).first().click()
-			.find( 'figcaption' ).focus().type( caption );
+		cy.get( '.coblocks-gallery--item' ).first().find( 'img' ).click( { force: true } );
+		cy.get( '.coblocks-gallery--item' ).first().find( 'figcaption' ).focus().type( caption );
 
 		helpers.savePage();
 
@@ -130,8 +130,8 @@ describe( 'Test CoBlocks Gallery Stacked Block', function() {
 
 		cy.get( '.block-editor-format-toolbar' ).should( 'not.exist' );
 
-		cy.get( '.coblocks-gallery--item' ).first().click()
-			.find( 'figcaption' ).focus();
+		cy.get( '.coblocks-gallery--item' ).first().find( 'img' ).click( { force: true } );
+		cy.get( '.coblocks-gallery--item' ).first().find( 'figcaption' ).focus();
 
 		cy.get( '.block-editor-format-toolbar, .block-editor-rich-text__inline-format-toolbar-group' );
 
@@ -176,8 +176,8 @@ describe( 'Test CoBlocks Gallery Stacked Block', function() {
 
 		helpers.toggleSettingCheckbox( /captions/i );
 
-		cy.get( '.coblocks-gallery--item' ).first().click()
-			.find( 'figcaption' ).focus().type( caption );
+		cy.get( '.coblocks-gallery--item' ).first().find( 'img' ).click( { force: true } );
+		cy.get( '.coblocks-gallery--item' ).first().find( 'figcaption' ).focus().type( caption );
 
 		// Styles tab introduced in 6.2.
 		helpers.selectStylesTabIfExists();
