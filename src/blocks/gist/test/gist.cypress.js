@@ -15,7 +15,7 @@ describe( 'Test CoBlocks Gist Block', function() {
 	it( 'Test gist block saves with url.', function() {
 		helpers.addBlockToPost( 'core/embed', true );
 
-		cy.get( '.wp-block-embed .components-placeholder__input' ).type( 'https://gist.github.com/jrtashjian/98c1fcfd0e9f9ed59d710ccf7ef4291c#file-block-variation-js' );
+		cy.get( '.wp-block-embed input[type="url"]' ).type( 'https://gist.github.com/jrtashjian/98c1fcfd0e9f9ed59d710ccf7ef4291c#file-block-variation-js' );
 		cy.get( '.wp-block-embed .components-button.is-primary' ).click();
 
 		cy.get( '.components-sandbox' ).should( 'exist' );
@@ -30,7 +30,7 @@ describe( 'Test CoBlocks Gist Block', function() {
 	it( 'Test embedded gist properly enqueues its scripts.', function() {
 		helpers.addBlockToPost( 'core/embed', true );
 
-		cy.get( '.wp-block-embed .components-placeholder__input' ).type( 'https://gist.github.com/jrtashjian/98c1fcfd0e9f9ed59d710ccf7ef4291c#file-block-variation-js' );
+		cy.get( '.wp-block-embed input[type="url"]' ).type( 'https://gist.github.com/jrtashjian/98c1fcfd0e9f9ed59d710ccf7ef4291c#file-block-variation-js' );
 		cy.get( '.wp-block-embed .components-button.is-primary' ).click();
 
 		cy.get( '.components-sandbox' ).should( 'exist' );
