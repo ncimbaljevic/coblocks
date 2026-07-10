@@ -114,7 +114,12 @@ describe( 'Test CoBlocks Gallery Carousel Block', function() {
 		cy.get( 'button' ).contains( /create a new gallery/i ).click();
 		cy.get( 'button' ).contains( /insert gallery/i ).click();
 
-		helpers.toggleSettingCheckbox( /captions/i );
+		// The carousel exposes no "Captions" toggle in its inspector (only
+		// Lightbox/Thumbnails), so enable captions via the data store.
+		helpers.getWPDataObject().then( ( data ) => {
+			const block = data.select( 'core/block-editor' ).getBlocks().find( ( b ) => b.name === 'coblocks/gallery-carousel' );
+			data.dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { captions: true } );
+		} );
 
 		cy.get( '[data-type="coblocks/gallery-carousel"]' ).find( 'img' ).first().click( { force: true } );
 
@@ -150,7 +155,12 @@ describe( 'Test CoBlocks Gallery Carousel Block', function() {
 
 		cy.get( '.block-editor-format-toolbar, .block-editor-rich-text__inline-format-toolbar-group' ).should( 'not.exist' );
 
-		helpers.toggleSettingCheckbox( /captions/i );
+		// The carousel exposes no "Captions" toggle in its inspector (only
+		// Lightbox/Thumbnails), so enable captions via the data store.
+		helpers.getWPDataObject().then( ( data ) => {
+			const block = data.select( 'core/block-editor' ).getBlocks().find( ( b ) => b.name === 'coblocks/gallery-carousel' );
+			data.dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { captions: true } );
+		} );
 
 		cy.get( '[data-type="coblocks/gallery-carousel"]' ).find( 'img' ).first().click( { force: true } );
 
