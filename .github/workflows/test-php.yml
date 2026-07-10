@@ -7,12 +7,12 @@ on:
 
 jobs:
   # PHP Unit testing
-  # Unit testing should be run across WP current, previous, and major before previous.
+  # Unit testing runs across the previous and current WP releases; nightly is covered by test-wp-next.yml.
   php_unit_versions_matrix:
     strategy:
       matrix:
         php: ['7.4','8.4']
-        wp: ['7.0']
+        wp: ['6.9','7.0']
     name: PHP Unit ${{ matrix.php }} | WP Version ${{ matrix.wp }}
     uses: ./.github/workflows/test-php-unit.yml
     with:
