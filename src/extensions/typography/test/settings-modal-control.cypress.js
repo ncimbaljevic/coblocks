@@ -20,7 +20,7 @@ describe( 'Settings Modal: Typography feature', () => {
 		cy.get( '.edit-post-visual-editor .wp-block[data-type="core/heading"]' ).first().click();
 
 		// Open settings modal.
-		cy.get( '.interface-interface-skeleton__header button[aria-label="Options"]' ).first().click();
+		cy.get( '.interface-interface-skeleton__header button[aria-label="Options"]' ).last().click();
 		cy.get( '.components-menu-item__button,.components-button' ).contains( 'Editor settings' ).click();
 	} );
 
