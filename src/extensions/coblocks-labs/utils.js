@@ -21,7 +21,7 @@ import { __ } from '@wordpress/i18n';
  *
  * @return {string} - Including the href to the Go theme details page or install page when needed.
  */
-export const conditionalHelpMessage = ( ) => {
+export const conditionalHelpMessage = () => {
 	const {
 		isGoThemeActive,
 		isGoThemeInstalled,
@@ -35,7 +35,7 @@ export const conditionalHelpMessage = ( ) => {
 
 	if ( isGoThemeInstalled ) {
 		return (
-			<> { __( 'This feature requires the Go Theme - ', 'coblocks' ) }
+			<> { __( 'This feature requires the Go Theme -', 'coblocks' ) }
 				<a href={ goThemeDetailsUri } rel="noopener noreferrer" target="_blank">
 					{ __( 'Activate', 'coblocks' ) }
 				</a>
@@ -43,7 +43,7 @@ export const conditionalHelpMessage = ( ) => {
 	}
 
 	return (
-		<> { __( 'This feature requires the Go Theme - ', 'coblocks' ) }
+		<> { __( 'This feature requires the Go Theme -', 'coblocks' ) }
 			<a href={ goThemeInstallUri } rel="noopener noreferrer" target="_blank">
 				{ __( 'Install now', 'coblocks' ) }
 			</a>
@@ -54,7 +54,7 @@ export const conditionalHelpMessage = ( ) => {
  *
  * @return {boolean} Whether or not the Site Design and Layout Selector controls are enabled.
  */
-export const controlDisable = ( ) => {
+export const controlDisable = () => {
 	const {
 		isGoThemeActive,
 		isGoThemeInstalled,

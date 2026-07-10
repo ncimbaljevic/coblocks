@@ -70,6 +70,6 @@ describe( 'coblocks/gist transforms', () => {
 
 		expect( transformed[ 0 ].isValid ).toBe( true );
 		expect( transformed[ 0 ].attributes.url ).toBe( url );
-		expect( transformed[ 0 ].attributes.caption ).toBe( 'This is a caption' );
+		expect( transformed[ 0 ].attributes.caption.toString() ).toBe( 'This is a caption' );
 	} );
 } );

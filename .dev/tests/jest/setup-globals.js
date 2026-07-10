@@ -1,3 +1,13 @@
+// jsdom does not expose TextEncoder/TextDecoder, but some WordPress 7.0
+// packages (e.g. @wordpress/sync via @wordpress/editor) require them at import.
+const { TextEncoder, TextDecoder } = require( 'util' );
+if ( typeof global.TextEncoder === 'undefined' ) {
+	global.TextEncoder = TextEncoder;
+}
+if ( typeof global.TextDecoder === 'undefined' ) {
+	global.TextDecoder = TextDecoder;
+}
+
 // TODO: Utilize the REST API without the global.
 // Backbone REST API client
 global.wp = {};

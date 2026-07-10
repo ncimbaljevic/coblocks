@@ -483,7 +483,7 @@ describe( 'Test CoBlocks Form Block', function() {
 			.contains( /Success Message/i )
 			.next( 'textarea' )
 			.then( ( $inputElem ) => {
-				cy.get( $inputElem ).invoke( 'val' ).then( ( ) => {
+				cy.get( $inputElem ).invoke( 'val' ).then( () => {
 					cy.get( $inputElem )
 						.clear()
 						.type( 'Thank you for submitting this form!', { force: true } );

@@ -21,7 +21,7 @@ const blocksWithLightboxSupport = [ 'core/gallery', 'core/image' ];
  *
  * @function useLightbox
  * @param {Object} props Object with block props.
- * @return {JSX} Wrapped component.
+ * @return {Element} Wrapped component.
  */
 const useLightbox = ( props ) => {
 	const { name, attributes, setAttributes, isSelected, clientId } = props;

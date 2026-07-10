@@ -328,7 +328,6 @@ export function selectBlock( name ) {
  * Helper function to set the block alignment.
  *
  * @param {string} alignment The alignment to set.
- *
  */
 export function setBlockAlignment( alignment ) {
 	// Open alignment toolbar for selected block.

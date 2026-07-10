@@ -37,7 +37,7 @@ const applyAttributes = ( settings ) => {
  *
  * @function useTypography
  * @param {Object} props Block props.
- * @return {JSX} Conditionally include typography controls.
+ * @return {Element} Conditionally include typography controls.
  */
 const useTypography = ( props ) => props.isSelected && allowedBlocks.includes( props.name )
 	? ( <Controls { ...{ ...props } } /> )

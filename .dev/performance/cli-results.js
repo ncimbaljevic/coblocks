@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-const program = require( 'commander' );
+const { program } = require( 'commander' );
 
 const catchException = ( command ) => {
 	return async ( ...args ) => {
