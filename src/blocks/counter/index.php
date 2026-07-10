@@ -30,7 +30,7 @@ function coblocks_counter_register_block_patterns() {
 	if ( $should_include_viewport ) {
 		foreach ( array( $icon_array, $multi_digits_array ) as &$pattern_array ) {
 			array_push( $pattern_array, array( 'viewport' => '150' ) );
-		};
+		}
 		unset( $pattern_array );
 	}
 
@@ -47,4 +47,3 @@ function coblocks_counter_register_block_patterns() {
 }
 
 add_action( 'init', 'coblocks_counter_register_block_patterns' );
-

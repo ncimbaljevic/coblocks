@@ -289,19 +289,19 @@ class CoBlocks_Block_Assets {
 		$success_text = $form->default_success_text();
 
 		$localize_data = array(
-			'form'                           => array(
+			'form'                      => array(
 				'adminEmail'   => $email_to,
 				'emailSubject' => $form_subject,
 				'successText'  => $success_text,
 			),
-			'labsSiteDesignNonce'            => wp_create_nonce( 'labsSiteDesignNonce' ),
-			'bundledIconsEnabled'            => $bundled_icons_enabled,
-			'customIcons'                    => $this->get_custom_icons(),
-			'customIconConfigExists'         => file_exists( get_stylesheet_directory() . '/coblocks/icons/config.json' ),
-			'typographyControlsEnabled'      => $typography_controls_enabled,
-			'animationControlsEnabled'       => $animation_controls_enabled,
-			'localeCode'                     => get_locale(),
-			'baseApiNamespace'               => COBLOCKS_API_NAMESPACE,
+			'labsSiteDesignNonce'       => wp_create_nonce( 'labsSiteDesignNonce' ),
+			'bundledIconsEnabled'       => $bundled_icons_enabled,
+			'customIcons'               => $this->get_custom_icons(),
+			'customIconConfigExists'    => file_exists( get_stylesheet_directory() . '/coblocks/icons/config.json' ),
+			'typographyControlsEnabled' => $typography_controls_enabled,
+			'animationControlsEnabled'  => $animation_controls_enabled,
+			'localeCode'                => get_locale(),
+			'baseApiNamespace'          => COBLOCKS_API_NAMESPACE,
 		);
 
 		if ( current_user_can( 'upload_files' ) ) {
@@ -384,7 +384,6 @@ class CoBlocks_Block_Assets {
 			}
 		}
 		return $custom_icons;
-
 	}
 
 	/**
@@ -530,7 +529,6 @@ class CoBlocks_Block_Assets {
 		);
 
 		$this->localize_lightbox_controls();
-
 	}
 
 	/**
@@ -623,7 +621,6 @@ class CoBlocks_Block_Assets {
 	public function clear_template_transients() {
 
 		delete_transient( 'coblocks_template_parts_query' );
-
 	}
 
 	/**
@@ -656,7 +653,6 @@ class CoBlocks_Block_Assets {
 				)
 			)
 		);
-
 	}
 
 	/**

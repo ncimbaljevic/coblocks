@@ -22,7 +22,6 @@ function coblocks_add_label_color_styles( $styles, $attributes ) {
 	}
 
 	return $styles;
-
 }
 add_filter( 'coblocks_render_label_color_wrapper_styles', 'coblocks_add_label_color_styles', PHP_INT_MAX, 2 );
 
@@ -50,6 +49,5 @@ function coblocks_add_label_color_class( $classes, $attributes ) {
 	}
 
 	return $classes;
-
 }
 add_filter( 'coblocks_render_label_color_wrapper_class', 'coblocks_add_label_color_class', PHP_INT_MAX, 2 );

@@ -55,7 +55,7 @@ function coblocks_block_gist_handler( $matches ) {
 	// Map files object into filenames array.
 	$file_list = array_filter(
 		array_map(
-			function( $file ) {
+			function ( $file ) {
 				return ! empty( $file['filename'] ) ? $file['filename'] : null;
 			},
 			$result['files']

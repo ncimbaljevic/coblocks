@@ -123,7 +123,7 @@ abstract class CoBlocks_Block_Migration {
 
 		$filter_classname = array_filter(
 			explode( ' ', $class_attribute->value ),
-			function( $class ) use ( $classname_prefix ) {
+			function ( $class ) use ( $classname_prefix ) {
 				return false !== strpos( $class, $classname_prefix );
 			}
 		);
@@ -183,7 +183,7 @@ abstract class CoBlocks_Block_Migration {
 	protected function get_element_attributes( $element, array $attribute_mapping ) {
 		return array_filter(
 			array_map(
-				function( $attribute ) use ( $element ) {
+				function ( $attribute ) use ( $element ) {
 					return $this->get_element_attribute( $element, $attribute );
 				},
 				$attribute_mapping

@@ -46,7 +46,6 @@ class CoBlocks_Crop_Settings {
 		}
 
 		return self::$instance;
-
 	}
 
 	/**
@@ -59,7 +58,6 @@ class CoBlocks_Crop_Settings {
 		add_filter( 'ajax_query_attachments_args', array( $this, 'hide_cropped_from_library' ) );
 		add_action( 'wp_ajax_coblocks_crop_settings', array( $this, 'api_crop' ) );
 		add_action( 'wp_ajax_coblocks_crop_settings_original_image', array( $this, 'get_original_image' ) );
-
 	}
 
 	/**
@@ -79,7 +77,6 @@ class CoBlocks_Crop_Settings {
 		}
 
 		return $query;
-
 	}
 
 	/**
@@ -116,7 +113,6 @@ class CoBlocks_Crop_Settings {
 				'crop' => $crop,
 			)
 		);
-
 	}
 
 	/**
@@ -176,7 +172,6 @@ class CoBlocks_Crop_Settings {
 				'url'     => wp_get_attachment_image_url( $new_id, 'original' ),
 			)
 		);
-
 	}
 
 	/**
@@ -234,11 +229,19 @@ class CoBlocks_Crop_Settings {
 		$new_name = 'crop-' . $nx . '-' . $ny . '-' . $nw . '-' . $nh . '-' . $nr . '-' . basename( $file_path );
 		$filename = rtrim( dirname( $file_path ), '/' ) . '/' . $new_name;
 
-		$existing_attachment = get_page_by_title( $new_name, ARRAY_A, 'attachment' );
+		$existing_attachment = get_posts(
+			array(
+				'fields'      => 'ids',
+				'numberposts' => 1,
+				'post_status' => 'inherit',
+				'post_type'   => 'attachment',
+				'title'       => $new_name,
+			)
+		);
 
 		if ( ! empty( $existing_attachment ) ) {
 
-			return $existing_attachment['ID'];
+			return $existing_attachment[0];
 
 		}
 
@@ -295,7 +298,6 @@ class CoBlocks_Crop_Settings {
 		wp_set_post_tags( $attachment_id, 'coblocks-cropped', true );
 
 		return $attachment_id;
-
 	}
 }
 

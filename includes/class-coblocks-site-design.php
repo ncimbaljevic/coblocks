@@ -85,11 +85,10 @@ class CoBlocks_Site_Design {
 
 		add_action(
 			'admin_head',
-			function() {
+			function () {
 				printf( '<style id="site-design-styles">%s</style>', esc_html( $this->get_editor_styles() ) );
 			}
 		);
-
 	}
 
 	/**
@@ -158,7 +157,6 @@ class CoBlocks_Site_Design {
 		);
 
 		return $data;
-
 	}
 
 
@@ -225,7 +223,7 @@ class CoBlocks_Site_Design {
 
 		$fonts = array_values(
 			array_map(
-				function( $design_style ) {
+				function ( $design_style ) {
 					return isset( $design_style['fonts'] ) ? $design_style['fonts'] : array();
 				},
 				$design_styles
@@ -430,7 +428,6 @@ class CoBlocks_Site_Design {
 			'stylesheet' => $this->get_editor_styles( $design_style ),
 			'fontStyles' => $font_styles,
 		);
-
 	}
 
 	/**
@@ -445,6 +442,5 @@ class CoBlocks_Site_Design {
 			self::get_coblocks_site_design_data()
 		);
 	}
-
 }
 new CoBlocks_Site_Design();
