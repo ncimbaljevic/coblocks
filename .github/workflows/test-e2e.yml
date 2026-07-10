@@ -6,6 +6,12 @@ on:
   push:
     branches: [ master ]
 
+# Cancel superseded runs: a new push to the same ref cancels the previous
+# still-running run instead of stacking a fresh ~120-job fan-out on top of it.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   chrome_e2e_gamut_tests:
     name: >

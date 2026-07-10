@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # PHP Unit testing
   # Testing pattern (nightly is covered by test-wp-next.yml against PHP 8.4):

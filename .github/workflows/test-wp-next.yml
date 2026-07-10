@@ -6,6 +6,12 @@ on:
   push:
     branches: [ master ]
 
+# Cancel superseded runs so each new push doesn't stack another full nightly
+# E2E fan-out on top of the one already in flight.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Check if WP Next is released
   check_if_released:
