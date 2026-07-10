@@ -558,11 +558,12 @@ export function openHeadingToolbarAndSelect( headingLevel ) {
  * @param {string} checkboxLabelText The checkbox label text. eg: Drop Cap
  */
 export function toggleSettingCheckbox( checkboxLabelText ) {
-	cy.get( '.components-toggle-control__label' )
-		.contains( checkboxLabelText )
-		.closest( '.components-base-control__field' )
-		.find( '.components-form-toggle__input' )
-		.click();
+	// Match the ToggleControl by its label text and click the underlying
+	// checkbox input. The `__label` element class changed in newer
+	// @wordpress/components, so locate the control by its stable root class.
+	cy.contains( '.components-toggle-control', checkboxLabelText )
+		.find( 'input[type="checkbox"]' )
+		.click( { force: true } );
 }
 
 /**

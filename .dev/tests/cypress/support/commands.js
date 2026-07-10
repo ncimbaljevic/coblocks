@@ -23,6 +23,21 @@ Cypress.Commands.overwriteQuery( 'get', function( originalFn, selector, options 
 				if ( canvasEls.length ) {
 					return canvasEls;
 				}
+				// Handle selectors that span the iframe boundary, e.g.
+				// '[class*="-visual-editor"] [data-type="core/image"]': the editor
+				// wrapper lives in the top document but the block content is inside
+				// the canvas. Strip a leading editor-wrapper segment and retry
+				// within the canvas body.
+				const stripped = selector.replace(
+					/^\s*(?:\.edit-post-visual-editor|\.editor-visual-editor|\[class\*?="-visual-editor"\])\s+/,
+					''
+				);
+				if ( stripped !== selector ) {
+					const strippedEls = Cypress.$( canvasDoc.body ).find( stripped );
+					if ( strippedEls.length ) {
+						return strippedEls;
+					}
+				}
 			}
 		}
 		return getFn.call( this, subject );
