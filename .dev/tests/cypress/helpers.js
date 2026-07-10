@@ -134,8 +134,10 @@ export function addBlockToPost( blockName, clearEditor = false ) {
 		} );
 	} );
 
-	// Make sure the block was added to our page
-	cy.get( `[class*="-visual-editor"] [data-type="${ blockName }"]` ).should( 'exist' );
+	// Make sure the block was added to our page. The block renders inside the
+	// editor-canvas iframe under WP 7.0, so query the block wrapper directly
+	// (the cy.get override scopes it into the canvas).
+	cy.get( `[data-type="${ blockName }"]` ).should( 'exist' );
 
 	// Give a short delay for blocks to render.
 	cy.wait( 250 );
@@ -180,8 +182,14 @@ export function savePage() {
 
 	cy.get( '.components-editor-notices__snackbar', { timeout: 120000 } ).should( 'not.be.empty' );
 
-	// Reload the page to ensure that we're not hitting any block errors
-	cy.reload();
+	// Reload the saved post to ensure we're not hitting any block errors. We
+	// navigate to the post's edit screen by ID rather than cy.reload(): saving a
+	// new post no longer updates the post-new.php URL in a way cy.reload() can
+	// follow, so a reload would re-open an empty new post.
+	getWPDataObject().then( ( data ) => {
+		const postId = data.select( 'core/editor' ).getCurrentPostId();
+		goTo( `/wp-admin/post.php?post=${ postId }&action=edit` );
+	} );
 }
 
 /**
@@ -615,12 +623,34 @@ export function isNotWPLocalEnv() {
 	return Cypress.env( 'testURL' ) !== 'http://localhost:8889';
 }
 
+/**
+ * Whether the running WordPress is at least the given branch. Parses the
+ * `branch-<major>-<minor>` body class instead of matching hard-coded branches,
+ * so it keeps working for WordPress 7.0+ (previously these only checked for
+ * specific 6.x branch classes and wrongly returned false on newer versions).
+ *
+ * @param {number} major Minimum major version.
+ * @param {number} minor Minimum minor version.
+ * @return {boolean} True when the current branch is >= major.minor.
+ */
+function wpBranchAtLeast( major, minor ) {
+	// WordPress adds a `branch-<major>-<minor>` body class, but drops the minor
+	// for x.0 releases (WP 7.0 is `branch-7`), so the minor group is optional.
+	const match = ( Cypress.$( "[class*='branch-']" ).attr( 'class' ) || '' ).match( /branch-(\d+)(?:-(\d+))?/ );
+	if ( ! match ) {
+		return false;
+	}
+	const branchMajor = Number( match[ 1 ] );
+	const branchMinor = match[ 2 ] !== undefined ? Number( match[ 2 ] ) : 0;
+	return branchMajor > major || ( branchMajor === major && branchMinor >= minor );
+}
+
 export function isWP65AtLeast() {
-	return Cypress.$( "[class*='branch-6-5']" ).length > 0 || Cypress.$( "[class*='branch-6-6']" ).length > 0;
+	return wpBranchAtLeast( 6, 5 );
 }
 
 export function isWP66AtLeast() {
-	return Cypress.$( "[class*='branch-6-6']" ).length > 0 || Cypress.$( "[class*='branch-6-7']" ).length > 0;
+	return wpBranchAtLeast( 6, 6 );
 }
 
 function getIframeDocument( containerClass ) {
