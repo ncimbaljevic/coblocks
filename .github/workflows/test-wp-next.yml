@@ -38,14 +38,11 @@ jobs:
       installPath: "tests-wordpress-nightly"
       theme: ""
 
-  # PHP Unit testing
+  # PHP Unit testing — nightly is tested against the latest supported PHP only.
   php_unit_wp_next:
     needs: set_constant
-    name: PHP ${{ matrix.php }} WP Next Version
-    strategy:
-      matrix:
-        php: ['7.4','8.4']
+    name: PHP 8.4 WP Next Version
     uses: ./.github/workflows/test-php-unit.yml
     with:
-      phpVersion: ${{ matrix.php }}
+      phpVersion: '8.4'
       wpVersion: ${{ needs.set_constant.outputs.wp_next }}

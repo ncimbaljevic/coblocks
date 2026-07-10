@@ -19,13 +19,17 @@ jobs:
     uses: ./.github/workflows/test-e2e-cypress.yml
     strategy:
       fail-fast: false
+      # Testing pattern (nightly is covered by test-wp-next.yml against PHP 8.4):
+      # - current WP (7.0): every supported PHP (7.4 and 8.4)
+      # - previous WP (6.9): lowest supported PHP only (7.4)
       matrix:
-        wp: # Test against the previous and current releases; nightly is covered by test-wp-next.yml.
-          - "6.9"
-          - "7.0"
-        php: # Test against minimum and latest PHP versions.
-          - "7.4"
-          - "8.4"
+        include:
+          - wp: "7.0"
+            php: "7.4"
+          - wp: "7.0"
+            php: "8.4"
+          - wp: "6.9"
+            php: "7.4"
     with:
       wpVersion: "WordPress/WordPress#${{matrix.wp}}"
       theme: ""
