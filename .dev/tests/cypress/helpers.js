@@ -74,6 +74,30 @@ export function goTo( path = '/wp-admin', login = false ) {
 }
 
 /**
+ * Create a published post from a spec's HTML fixture and return its ID. Used by
+ * the migration specs (alert/author) so they run locally as well as in CI,
+ * without depending on a separate workflow step to pre-create the post. Relies
+ * on the logged-in session cookie plus the REST nonce for authentication.
+ *
+ * @param {string} specName The spec file name, e.g. Cypress.spec.name.
+ * @return {Cypress.Chainable<number>} The created post ID.
+ */
+export function createFixturePost( specName ) {
+	return cy.readFile( `.dev/tests/cypress/fixtures/${ specName }.html` ).then( ( content ) => {
+		return cy.window().its( 'wpApiSettings.nonce' ).then( ( nonce ) => {
+			return cy.request( {
+				body: { content, status: 'publish', title: specName },
+				headers: { 'X-WP-Nonce': nonce },
+				method: 'POST',
+				// Use the rest_route form so it works without pretty permalinks
+				// (the local wp-env does not enable them the way CI does).
+				url: `${ Cypress.env( 'testURL' ) }/?rest_route=/wp/v2/posts`,
+			} ).then( ( response ) => response.body.id );
+		} );
+	} );
+}
+
+/**
  * Safely obtain the window data object or error
  * when the window object is not available.
  */
