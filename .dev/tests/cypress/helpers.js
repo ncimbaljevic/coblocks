@@ -312,10 +312,21 @@ export function getBlockSlug() {
  * @param {string} style Name of the style to apply
  */
 export function setBlockStyle( style ) {
-	// WordPress 6.3+ moved block styles from a collapsible panel into a
-	// dedicated "Styles" inspector tab, so select that tab rather than opening
-	// a "Styles" panel body (which no longer exists).
+	// Core block styles moved into a dedicated "Styles" inspector tab (WP 6.3+);
+	// select it when present.
 	selectStylesTabIfExists();
+
+	// Some blocks (e.g. posts, food-and-drinks) instead render a custom "Styles"
+	// PanelBody in the Settings tab that is collapsed by default — expand it so
+	// its style items are visible.
+	cy.get( 'body' ).then( ( $body ) => {
+		const $toggle = $body
+			.find( 'button.components-panel__body-toggle' )
+			.filter( ( i, el ) => /^\s*styles\s*$/i.test( el.textContent || '' ) );
+		if ( $toggle.length && $toggle.first().attr( 'aria-expanded' ) === 'false' ) {
+			cy.wrap( $toggle.first() ).click();
+		}
+	} );
 
 	// Style variations render either within the settings sidebar (older layout)
 	// or under the Styles tab's variants list, depending on the block, so match
