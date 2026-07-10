@@ -150,6 +150,12 @@ class CoBlocks_Block_Assets {
 			$asset_file['version']
 		);
 
+		// Enqueue the combined frontend styles whenever CoBlocks assets are needed on
+		// the page (a CoBlocks block, an animated core block, or the block editor).
+		// The handle stays registered above so per-block `style` handles declared in
+		// block.json continue to resolve to it.
+		wp_enqueue_style( 'coblocks-frontend' );
+
 		$name       = 'style-coblocks-extensions';
 		$filepath   = 'dist/' . $name;
 		$asset_file = $this->get_asset_file( $filepath );
