@@ -20,8 +20,7 @@ describe( 'Settings Modal: Animation feature', () => {
 		cy.get( '.edit-post-visual-editor .wp-block[data-type="core/cover"]' ).first().click();
 
 		// Open settings modal.
-		cy.get( '.interface-interface-skeleton__header .edit-post-more-menu .components-button' +
-			', .interface-interface-skeleton__header .interface-more-menu-dropdown .components-button' ).click();
+		cy.get( '.interface-interface-skeleton__header button[aria-label="Options"]' ).first().click();
 		cy.get( '.components-menu-item__button,.components-button' ).contains( 'Editor settings' ).click();
 
 		cy.get( '.components-coblocks-animation-toggle' ).should( 'exist' );
