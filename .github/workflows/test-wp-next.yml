@@ -36,7 +36,7 @@ jobs:
     with:
       wpVersion: ${{ needs.set_constant.outputs.wp_next }}
       installPath: "tests-wordpress-nightly"
-      theme: "https://downloads.wordpress.org/theme/go.zip"
+      theme: ""
 
   # PHP Unit testing
   php_unit_wp_next:

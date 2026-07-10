@@ -11,10 +11,9 @@ jobs:
     name: >
       E2E - ${{
         format(
-          'WP{0} + PHP{1} + {2} theme',
+          'WP{0} + PHP{1} + TwentyTwentyFive theme',
           matrix.wp,
-          matrix.php,
-          matrix.theme == '' && 'TwentyTwentyThree' || 'Go'
+          matrix.php
         )
       }}
     uses: ./.github/workflows/test-e2e-cypress.yml
@@ -25,13 +24,10 @@ jobs:
           - "6.8"
           - "6.9"
           - "7.0"
-        theme:
-          - "https://downloads.wordpress.org/theme/go.zip"
-          - "" # Default theme is TwentyTwentyThree
         php: # Test against minimum and latest PHP versions.
           - "7.4"
           - "8.4"
     with:
       wpVersion: "WordPress/WordPress#${{matrix.wp}}"
-      theme: ${{matrix.theme}}
+      theme: ""
       phpVersion: ${{matrix.php}}

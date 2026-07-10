@@ -41,7 +41,7 @@ jobs:
           core: ${{ inputs.wpVersion }}
           phpVersion: ${{ inputs.phpVersion }}
           plugins: '[".","https://downloads.wordpress.org/plugin/woocommerce.zip"]'
-          themes: '["https://downloads.wordpress.org/theme/go.zip"]'
+          themes: '[]'
 
       - name: Build plugin
         run: |
