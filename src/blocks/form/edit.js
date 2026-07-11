@@ -24,7 +24,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { Button, PanelBody, TextControl, ExternalLink, TextareaControl } from '@wordpress/components';
 // Disable reason: We choose to use unsafe APIs in our codebase.
 // eslint-disable-next-line @wordpress/no-unsafe-wp-apis
-import { InspectorControls, InnerBlocks, __experimentalBlockVariationPicker } from '@wordpress/block-editor';
+import { InspectorControls, InnerBlocks, useBlockProps, __experimentalBlockVariationPicker } from '@wordpress/block-editor';
 import { applyFilters } from '@wordpress/hooks';
 import { compose, usePrevious } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
@@ -76,6 +76,8 @@ const FormEdit = ( props ) => {
 		className,
 		'coblocks-form',
 	);
+
+	const blockProps = useBlockProps( { className: classes } );
 
 	useEffect( () => {
 		apiFetch( { path: '/wp/v2/settings' } ).then( ( res ) => {
@@ -280,7 +282,7 @@ const FormEdit = ( props ) => {
 					onChange={ onChangeSubject }
 					help={
 						<>
-							{ __( 'You may use the following tags in the subject field: ', 'coblocks' ) }
+							{ __( 'You may use the following tags in the subject field:', 'coblocks' ) }
 							<Button
 								isLink
 								onClick={ appendTagsToSubject }
@@ -416,7 +418,7 @@ const FormEdit = ( props ) => {
 					</PanelBody>
 					<LabelColorControl { ...props } />
 				</InspectorControls>
-				<div className={ classes }>
+				<div { ...blockProps }>
 					{ supportsBlockVariationPicker() ? blockVariationPicker() : innerBlocksPicker() }
 				</div>
 			</>
@@ -444,7 +446,7 @@ const FormEdit = ( props ) => {
 	};
 
 	return (
-		<>
+		<div { ...blockProps }>
 			<__experimentalBlockVariationPicker
 				icon={ get( blockType, [ 'icon', 'src' ] ) }
 				label={ get( blockType, [ 'title' ] ) }
@@ -453,7 +455,7 @@ const FormEdit = ( props ) => {
 				allowSkip
 				onSelect={ ( nextVariation ) => blockVariationPickerOnSelect( nextVariation ) }
 			/>
-		</>
+		</div>
 	);
 };
 

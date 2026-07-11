@@ -3,6 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { BaseControl, Button } from '@wordpress/components';
+import { useBlockProps } from '@wordpress/block-editor';
 import { useState } from '@wordpress/element';
 import { withInstanceId } from '@wordpress/compose';
 import classnames from 'classnames';
@@ -32,6 +33,8 @@ const CoBlocksFieldMultiple = ( props ) => {
 	if ( ! options.length ) {
 		options = [ '' ];
 	}
+
+	const blockProps = useBlockProps();
 
 	const [ inFocus, setInFocus ] = useState( 0 );
 
@@ -67,7 +70,7 @@ const CoBlocksFieldMultiple = ( props ) => {
 	};
 
 	return (
-		<>
+		<div { ...blockProps }>
 			<BaseControl
 				id={ `coblocks-field-multiple-${ instanceId }` }
 				className="coblocks-field coblocks-field-multiple"
@@ -124,7 +127,7 @@ const CoBlocksFieldMultiple = ( props ) => {
 					</Button>
 				) }
 			</BaseControl>
-		</>
+		</div>
 	);
 };
 

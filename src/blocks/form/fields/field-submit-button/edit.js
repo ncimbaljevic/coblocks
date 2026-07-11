@@ -15,6 +15,7 @@ import { ContrastChecker,
 	InspectorControls,
 	PanelColorSettings,
 	RichText,
+	useBlockProps,
 	withColors,
 } from '@wordpress/block-editor';
 
@@ -75,6 +76,10 @@ const CoBlocksSubmitButton = ( props ) => {
 
 	const buttonStyle = { backgroundColor, border: 'none', color };
 
+	const blockProps = useBlockProps( {
+		className: 'coblocks-form__submit wp-block-button',
+	} );
+
 	useEffect( () => {
 		if (
 			! isEqual( customTextButtonColor, prevCustomTextButtonColor ) ||
@@ -97,7 +102,7 @@ const CoBlocksSubmitButton = ( props ) => {
 
 	return (
 		<>
-			<div className="coblocks-form__submit wp-block-button">
+			<div { ...blockProps }>
 				<RichText
 					allowedFormats={ [ 'bold', 'italic', 'strikethrough' ] }
 					className={ getButtonClasses() }
