@@ -155,12 +155,15 @@ export function addBlockToPost( blockName, clearEditor = false ) {
 		return;
 	}
 
+	// Ensure the editor is ready BEFORE touching blocks. After a navigation
+	// (e.g. viewPage()/editPage() in a previous test) the editor re-hydrates its
+	// saved content asynchronously, so clearing before it is ready would race the
+	// hydration and leave stale blocks behind alongside the one we insert.
+	cy.get( '.is-root-container.wp-block-post-content' );
+
 	if ( clearEditor ) {
 		clearBlocks();
 	}
-
-	// Ensure editor is ready for blocks.
-	cy.get( '.is-root-container.wp-block-post-content' );
 
 	/**
 	 * Insert the block using dispatch to avoid the block inserter
@@ -170,9 +173,21 @@ export function addBlockToPost( blockName, clearEditor = false ) {
 	 */
 	getWPDataObject().then( ( data ) => {
 		getWPBlocksObject().then( ( blocks ) => {
-			data.dispatch( 'core/block-editor' ).insertBlock(
-				blocks.createBlock( blockName )
-			);
+			// Wait until the block type is registered on the client before inserting.
+			// On a slow editor (e.g. the plugin bundle served from a Docker mount) the
+			// CoBlocks script can take a moment to register its blocks; inserting before
+			// then produces an invalid block that never renders. (In CI registration is
+			// immediate, so this passes on the first check.)
+			cy.wrap( null ).should( () => {
+				expect(
+					blocks.getBlockType( blockName ),
+					`${ blockName } is registered`
+				).to.not.equal( undefined );
+			} ).then( () => {
+				data.dispatch( 'core/block-editor' ).insertBlock(
+					blocks.createBlock( blockName )
+				);
+			} );
 		} );
 	} );
 
@@ -293,9 +308,19 @@ export function editPage() {
  */
 export function clearBlocks() {
 	getWPDataObject().then( ( data ) => {
-		data.dispatch( 'core/block-editor' ).removeBlocks(
-			data.select( 'core/block-editor' ).getBlocks().map( ( block ) => block.clientId )
-		);
+		// Remove every block, retrying until the editor is genuinely empty. After a
+		// navigation the editor re-hydrates its saved content asynchronously, so a
+		// single removeBlocks() pass can miss blocks that arrive a tick later and
+		// leave the editor with stale content.
+		cy.wrap( null ).should( () => {
+			const blocks = data.select( 'core/block-editor' ).getBlocks();
+			if ( blocks.length ) {
+				data.dispatch( 'core/block-editor' ).removeBlocks(
+					blocks.map( ( block ) => block.clientId )
+				);
+			}
+			expect( data.select( 'core/block-editor' ).getBlocks() ).to.have.length( 0 );
+		} );
 	} );
 }
 
@@ -705,7 +730,7 @@ export function hexToRGB( hex ) {
 }
 
 export function isNotWPLocalEnv() {
-	return Cypress.env( 'testURL' ) !== 'http://localhost:8889';
+	return Cypress.env( 'testURL' ) !== 'http://localhost:9281';
 }
 
 /**
