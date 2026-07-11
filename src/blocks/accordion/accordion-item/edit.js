@@ -17,7 +17,7 @@ import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { Icon } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { InnerBlocks, RichText } from '@wordpress/block-editor';
+import { InnerBlocks, RichText, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Constants
@@ -71,6 +71,16 @@ const AccordionItemEdit = ( props ) => {
 		};
 	} );
 
+	const blockProps = useBlockProps( {
+		className: classnames(
+			className,
+			{
+				[ `${ className }--open` ]: isEditing === true || attributes.open,
+				'is-selected': isSelected,
+			}
+		),
+	} );
+
 	return (
 		<>
 			{ isSelected && (
@@ -83,15 +93,7 @@ const AccordionItemEdit = ( props ) => {
 					{ ...props }
 				/>
 			) }
-			<div
-				className={ classnames(
-					className,
-					{
-						[ `${ className }--open` ]: isEditing === true || attributes.open,
-						'is-selected': isSelected,
-					}
-				) }
-			>
+			<div { ...blockProps }>
 				<RichText
 					className={ classnames(
 						'wp-block-coblocks-accordion-item__title', {
