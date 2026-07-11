@@ -23,7 +23,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { ResizableBox, Spinner } from '@wordpress/components';
 import { isBlobURL } from '@wordpress/blob';
 
@@ -146,6 +146,12 @@ const Edit = ( props ) => {
 				: undefined,
 	};
 
+	// `useBlockProps()` must be called unconditionally, before any early return,
+	// so the hook order stays stable across renders (rules of hooks). It also
+	// supplies the block wrapper's class/ref now that apiVersion 3 no longer
+	// auto-applies them.
+	const blockProps = useBlockProps();
+
 	if ( parseInt( width ) === 100 ) {
 		return (
 			<>
@@ -153,7 +159,8 @@ const Edit = ( props ) => {
 				{ isSelected && <Controls { ...props } /> }
 				{ isSelected && <Inspector { ...props } /> }
 				<div
-					className={ classes }
+					{ ...blockProps }
+					className={ classnames( blockProps.className, classes ) }
 					style={ {
 						backgroundColor: backgroundColor.color,
 						backgroundImage: backgroundImg
@@ -189,7 +196,8 @@ const Edit = ( props ) => {
 				%
 			</span>
 			<ResizableBox
-				className={ classnames( className, {
+				{ ...blockProps }
+				className={ classnames( blockProps.className, className, {
 					'is-selected-column': isSelected,
 					'is-resizing': resizing,
 				} ) }
@@ -205,20 +213,25 @@ const Edit = ( props ) => {
 					bottomLeft: false,
 					topLeft: false,
 				} }
-				onResizeStop={ () => {
-					const currentBlock = document.getElementById(
+				onResizeStop={ ( _event, _direction, elt ) => {
+					// Under Block API v3 the editor canvas is an iframe, so reach
+					// the block's own document via the resized node's
+					// `ownerDocument` instead of the top-level `document`.
+					const ownerDocument = elt?.ownerDocument || document;
+					const currentBlock = ownerDocument.getElementById(
 						'block-' + clientId
 					);
 
 					//Remove resizing class
 					currentBlock.classList.remove( 'is-resizing' );
-					document
+					ownerDocument
 						.getElementById( 'block-' + parentId )
 						.classList.remove( 'is-resizing' );
 					setResizing( false );
 				} }
-				onResize={ ( _event, _direction, _elt, delta ) => {
-					const parentBlockClientRect = document
+				onResize={ ( _event, _direction, elt, delta ) => {
+					const ownerDocument = elt?.ownerDocument || document;
+					const parentBlockClientRect = ownerDocument
 						.getElementById( 'block-' + parentId )
 						.getElementsByClassName( 'wp-block-coblocks-row__inner' )[ 0 ]
 						.getBoundingClientRect();
@@ -229,10 +242,10 @@ const Edit = ( props ) => {
 					const nextBlockWidth =
 						parseFloat( nextBlockClient.attributes.width ) + diff;
 
-					document
+					ownerDocument
 						.getElementById( 'block-' + parentId )
 						.classList.add( 'is-resizing' );
-					document
+					ownerDocument
 						.getElementById( 'block-' + clientId )
 						.getElementsByClassName(
 							'wp-block-coblocks-column'
@@ -247,15 +260,16 @@ const Edit = ( props ) => {
 						} );
 					}
 				} }
-				onResizeStart={ () => {
-					const currentBlock = document.getElementById(
+				onResizeStart={ ( _event, _direction, elt ) => {
+					const ownerDocument = elt?.ownerDocument || document;
+					const currentBlock = ownerDocument.getElementById(
 						'block-' + clientId
 					);
 					const currentBlockClientRect = currentBlock.getBoundingClientRect();
 
 					//Add resizing class
 					currentBlock.classList.add( 'is-resizing' );
-					document
+					ownerDocument
 						.getElementById( 'block-' + parentId )
 						.classList.add( 'is-resizing' );
 

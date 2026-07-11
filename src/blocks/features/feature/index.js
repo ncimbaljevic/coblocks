@@ -8,6 +8,7 @@ import { FeatureIcon as icon } from '@godaddy-wordpress/coblocks-icons';
  */
 import { BackgroundAttributes } from '../../../components/background';
 import DimensionsAttributes from '../../../components/dimensions-control/attributes';
+import deprecated from './deprecated';
 import edit from './edit';
 import metadata from './block.json';
 import save from './save';
@@ -40,6 +41,7 @@ const settings = {
 		inserter: false,
 	},
 	attributes,
+	deprecated,
 	edit,
 	save,
 };

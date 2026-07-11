@@ -150,7 +150,7 @@ function coblocks_render_coblocks_events_block( $attributes, $content ) {
 					$location
 				);
 
-			} elseif ( $event_duration > $one_day || $event_duration === $one_day && $is_timed_event ) {
+			} elseif ( $event_duration > $one_day || ( $event_duration === $one_day && $is_timed_event ) ) {
 
 				$event_time_string = sprintf(
 					'<span data-start-time=%1$s data-end-time=%2$s class="wp-block-coblocks-events__time wp-block-coblocks-events__time-formatted"></span>',

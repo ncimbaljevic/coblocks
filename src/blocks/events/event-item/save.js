@@ -12,7 +12,7 @@ import { hasEmptyAttributes } from '../../../utils/block-helpers';
 /**
  * WordPress dependencies.
  */
-import { getColorClassName, RichText } from '@wordpress/block-editor';
+import { getColorClassName, RichText, useBlockProps } from '@wordpress/block-editor';
 
 const isEmpty = ( attributes ) => {
 	const attributesToCheck = [ 'title', 'description', 'eventDay', 'eventMonth', 'eventYear', 'eventTime', 'eventLocation' ];
@@ -23,7 +23,7 @@ const isEmpty = ( attributes ) => {
 	return hasEmptyAttributes( fromEntries( newAttributes ) );
 };
 
-export default function save( { className, attributes } ) {
+export default function save( { attributes } ) {
 	const {
 		customTextColor,
 		description,
@@ -39,14 +39,16 @@ export default function save( { className, attributes } ) {
 
 	const colorClass = getColorClassName( 'color', textColor );
 
-	const classes = classnames( className, 'swiper-slide', {
-		[ colorClass ]: colorClass,
-		'has-text-color': textColor || customTextColor,
+	const blockProps = useBlockProps.save( {
+		className: classnames( 'swiper-slide', {
+			[ colorClass ]: colorClass,
+			'has-text-color': textColor || customTextColor,
+		} ),
 	} );
 
 	return isEmpty( attributes ) ? null : (
 		<div
-			className={ classes }
+			{ ...blockProps }
 			data-page={ String( pageNum ) }
 			style={ { color: colorClass ? undefined : customTextColor } }
 		>
