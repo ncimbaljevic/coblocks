@@ -20,7 +20,7 @@ import { useEffect } from '@wordpress/element';
 import { compose, usePrevious } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import TokenList from '@wordpress/token-list';
 
 const ALLOWED_BLOCKS = [ 'coblocks/food-item' ];
@@ -122,6 +122,10 @@ const FoodAndDrinksEdit = ( props ) => {
 		[ `has-${ gutter }-gutter` ]: gutter,
 	} );
 
+	const blockProps = useBlockProps( {
+		className: classes,
+	} );
+
 	useEffect( () => {
 		const lastActiveStyle = getActiveStyle( layoutOptions, prevClassName );
 
@@ -221,7 +225,7 @@ const FoodAndDrinksEdit = ( props ) => {
 				onTogglePrices={ togglePrices }
 				onUpdateStyle={ updateStyle }
 			/>
-			<div className={ classes }>
+			<div { ...blockProps }>
 				<InnerBlocks
 					__experimentalCaptureToolbars={ true }
 					allowedBlocks={ ALLOWED_BLOCKS }
