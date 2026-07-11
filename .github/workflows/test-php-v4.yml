@@ -1,0 +1,38 @@
+name: Test / PHP [v4]
+
+on:
+  pull_request:
+    branches:
+      - release/4.0.0
+    paths:
+      - '**.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpcs.xml*'
+      - 'phpunit.xml.dist'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # PHP Unit testing
+  # Testing pattern (nightly is covered by test-wp-next.yml against PHP 8.4):
+  # - current WP (7.0): every supported PHP (7.4 and 8.4)
+  # - previous WP (6.9): lowest supported PHP only (7.4)
+  php_unit_versions_matrix:
+    strategy:
+      matrix:
+        include:
+          - wp: '7.0'
+            php: '7.4'
+          - wp: '7.0'
+            php: '8.4'
+          - wp: '6.9'
+            php: '7.4'
+    name: PHP Unit ${{ matrix.php }} | WP Version ${{ matrix.wp }}
+    uses: ./.github/workflows/test-php-unit-v4.yml
+    with:
+      phpVersion: ${{ matrix.php }}
+      wpVersion: 'WordPress/WordPress#${{ matrix.wp }}'
+

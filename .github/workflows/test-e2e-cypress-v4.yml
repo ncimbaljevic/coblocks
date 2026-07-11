@@ -1,0 +1,273 @@
+name: Test / E2E Cypress Job [v4]
+
+on:
+  workflow_call:
+    inputs:
+      browser:
+        required: false
+        type: string
+        default: chrome
+      theme:
+        required: false
+        type: string
+      wpVersion:
+        required: false
+        type: string
+        default: ""
+      phpVersion:
+        required: false
+        type: string
+        default: "8.4"
+      installPath:
+          required: false
+          type: string
+          default: "tests-WordPress"
+    secrets:
+      record-key:
+        description: 'Record key for Cypress Dashboard'
+        required: false
+
+jobs:
+  setup-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.setup-spec-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Spec Matrix
+        id: setup-spec-matrix
+        run: |
+          # Diff against the PR base branch (release/4.0.0 or a stacked branch),
+          # not master, so each PR only runs the specs its own changes touch.
+          BASE="${{ github.base_ref }}"
+          BASE="${BASE:-release/4.0.0}"
+          git fetch --no-tags origin "$BASE" >/dev/null 2>&1 || true
+          changed_files=$(git diff --name-only --diff-filter=ADMR "origin/$BASE"...HEAD)
+          spec_list=()
+          declare -A spec_seen
+
+          for line in $changed_files; do
+            if [[ "$line" =~ src/(blocks|extensions|components|block-styles).* ]]; then # If changed file is within our tested paths.
+
+              changed_path=$(echo $line | cut -d'/' -f3) # Get the main path of the changed file, e.g. author, food-and-drinks, lightbox.
+
+              found_specs=$(find . -type f -name "*.cypress.js") # Find real spec files.
+              pattern="/src/(blocks|extensions|components|block-styles)/${changed_path}/" # Changed files pattern to match against.
+
+              for spec in $found_specs; do
+                if [[ $spec  =~ $pattern ]]; then
+
+                  # Remove the path from the spec.
+                  spec=$(echo $spec | sed 's:.*/::')
+
+                  # Build spec list for cypress run.
+                  if [[ -z "${spec_seen[$spec]}" ]]; then
+                    spec_list+="'${spec}',"
+                    spec_seen[$spec]=1
+                  fi
+
+                fi
+              done
+
+            fi
+          done
+
+          # All changes processed. Format string for cypress run.
+          # Remove trailing comma from spec_list.
+          updated_string=$(echo $spec_list | sed 's/,$//' )
+
+          # Wrap list in brackets for GH workflow matrix.
+          wrapped_string="[$updated_string]"
+
+          # Save the matrix array to the output.
+          echo "Testing against the following specs:"
+          echo $wrapped_string
+          echo "matrix=$wrapped_string" >> "$GITHUB_OUTPUT"
+
+  test_cypress_e2e_changed_files:
+    needs: setup-matrix
+    if: github.event_name == 'pull_request' && needs.setup-matrix.outputs.matrix != '[]'
+    name: E2E Test - Changed Files
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        spec: ${{ fromJson(needs.setup-matrix.outputs.matrix) }}
+
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup wp-env
+        uses: godaddy-wordpress/setup-wp-env@v1
+        with:
+          core: ${{ inputs.wpVersion }}
+          phpVersion: ${{ inputs.phpVersion }}
+          plugins: '["."]'
+          themes: '[]'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: |
+          composer install --prefer-dist --optimize-autoloader &
+          yarn install --immutable
+
+      - name: Build plugin
+        run: |
+          # Build the plugin assets (dist/) with the modern wp-scripts build. The
+          # plugin is mounted into wp-env via `plugins: ["."]`, so the freshly
+          # built dist/ is picked up live — no legacy grunt build + copy needed
+          # (wp-env 11 also removed the `install-path` command that move relied on).
+          npm run build
+
+      - name: Prepare tests
+        run: |
+          WP_CORE_VERSION=$(wp-env run cli wp core version)
+          echo "WP_CORE_VERSION=${WP_CORE_VERSION}" >> $GITHUB_ENV
+          wp-env run tests-cli wp post generate --count=5
+          wp-env run cli wp post generate --count=5
+          wp-env run cli wp option update permalink_structure '/%postname%'
+          wp-env run tests-cli wp theme activate twentytwentyfive
+          # Ensure the plugin (mounted via plugins: ["."]) is active in the tests env.
+          wp-env run tests-cli wp plugin activate coblocks
+
+      - name: Run tests
+        run: |
+          CYPRESS_SPEC=$(find ./src/* -name ${{ matrix.spec }} -type f)
+          echo '{"wpUsername":"admin","wpPassword":"password","testURL":"http://localhost:9281"}' | jq . > cypress.env.json
+          ./node_modules/.bin/cypress verify
+          ./node_modules/.bin/cypress run --browser ${{ inputs.browser }} --spec $CYPRESS_SPEC
+
+      - name: Upload failure video
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.spec }}-wp${{ env.WP_CORE_VERSION }}-php${{ inputs.phpVersion }}-fail.mp4
+          path: ./.dev/tests/cypress/videos/${{ matrix.spec }}.mp4
+          retention-days: 1
+
+  test_cypress_e2e_full:
+    if: github.event_name == 'push'
+    needs: setup-matrix
+    name: E2E Test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        spec:
+          - accordion.cypress.js
+          - alert.cypress.js
+          - author.cypress.js
+          - click-to-tweet.cypress.js
+          - counter.cypress.js
+          - dynamic-separator.cypress.js
+          - event-item.cypress.js
+          - events.cypress.js
+          - faq.cypress.js
+          - feature.cypress.js
+          - features.cypress.js
+          - food-item.cypress.js
+          - food-and-drinks.cypress.js
+          - form.cypress.js
+          - gallery-carousel.cypress.js
+          - gallery-collage.cypress.js
+          - gallery-masonry.cypress.js
+          - gallery-offset.cypress.js
+          - gallery-stacked.cypress.js
+          - gif.cypress.js
+          - gist.cypress.js
+          - hero.cypress.js
+          - highlight.cypress.js
+          - icon.cypress.js
+          - logos.cypress.js
+          - map.cypress.js
+          - media-card.cypress.js
+          - opentable.cypress.js
+          - post-carousel.cypress.js
+          - posts.cypress.js
+          - pricing-table-item.cypress.js
+          - pricing-table.cypress.js
+          - column.cypress.js
+          - row.cypress.js
+          - service.cypress.js
+          - services.cypress.js
+          - shape-divider.cypress.js
+          - social-profiles.cypress.js
+          - modal.cypress.js
+          - media-filter-control.cypress.js
+          - coblocks-labs.cypress.js
+          - layout-selector.cypress.js
+          - lightbox-controls-gallery.cypress.js
+          - lightbox-controls-image.cypress.js
+          - media-text-styles.cypress.js
+          - padding-controls.cypress.js
+          - settings-modal-control.cypress.js
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup wp-env
+        uses: godaddy-wordpress/setup-wp-env@v1
+        with:
+          core: ${{ inputs.wpVersion }}
+          phpVersion: ${{ inputs.phpVersion }}
+          plugins: '["."]'
+          themes: '[]'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: |
+          composer install --prefer-dist --optimize-autoloader &
+          yarn install --immutable
+
+      - name: Build plugin
+        run: |
+          # Build the plugin assets (dist/) with the modern wp-scripts build. The
+          # plugin is mounted into wp-env via `plugins: ["."]`, so the freshly
+          # built dist/ is picked up live — no legacy grunt build + copy needed
+          # (wp-env 11 also removed the `install-path` command that move relied on).
+          npm run build
+
+      - name: Prepare tests
+        run: |
+          WP_CORE_VERSION=$(wp-env run cli wp core version)
+          echo "WP_CORE_VERSION=${WP_CORE_VERSION}" >> $GITHUB_ENV
+          wp-env run tests-cli wp post generate --count=5
+          wp-env run cli wp post generate --count=5
+          wp-env run cli wp option update permalink_structure '/%postname%'
+          wp-env run tests-cli wp theme activate twentytwentyfive
+          # Ensure the plugin (mounted via plugins: ["."]) is active in the tests env.
+          wp-env run tests-cli wp plugin activate coblocks
+
+      - name: Run tests
+        run: |
+          CYPRESS_SPEC=$(find ./src/* -name ${{ matrix.spec }} -type f)
+          echo '{"wpUsername":"admin","wpPassword":"password","testURL":"http://localhost:9281"}' | jq . > cypress.env.json
+          ./node_modules/.bin/cypress verify
+          ./node_modules/.bin/cypress run --browser ${{ inputs.browser }} --spec $CYPRESS_SPEC
+
+      - name: Upload failure video
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.spec }}-wp${{ env.WP_CORE_VERSION }}-php${{ inputs.phpVersion }}-fail.mp4
+          path: ./.dev/tests/cypress/videos/${{ matrix.spec }}.mp4
+          retention-days: 1
+          
+
