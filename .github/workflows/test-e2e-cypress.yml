@@ -41,7 +41,14 @@ jobs:
       - name: Setup Spec Matrix
         id: setup-spec-matrix
         run: |
-          changed_files=$(git diff --name-only --diff-filter=ADMR origin/master...HEAD)
+          # Diff against the PR's base branch, not always master, so a stacked PR
+          # only runs the specs its OWN changes touch instead of re-running the
+          # cumulative matrix for everything changed since master. Falls back to
+          # master for non-PR (push) events, where this matrix is unused anyway.
+          BASE="${{ github.base_ref }}"
+          BASE="${BASE:-master}"
+          git fetch --no-tags origin "$BASE" >/dev/null 2>&1 || true
+          changed_files=$(git diff --name-only --diff-filter=ADMR "origin/$BASE"...HEAD)
           spec_list=()
           declare -A spec_seen
 
