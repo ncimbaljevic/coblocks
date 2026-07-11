@@ -17,7 +17,7 @@ import Inspector from './inspector';
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { store as blockEditorStore } from '@wordpress/block-editor';
+import { store as blockEditorStore, useBlockProps } from '@wordpress/block-editor';
 import { compose } from '@wordpress/compose';
 import { useDispatch } from '@wordpress/data';
 import {
@@ -113,6 +113,12 @@ const Edit = ( props ) => {
 		setAttributes( { address: addressState, pinned: true } );
 	};
 
+	const blockProps = useBlockProps( {
+		className: classnames( className, {
+			'is-selected': isSelected,
+		} ),
+	} );
+
 	return (
 		<>
 			{ isSelected && (
@@ -127,9 +133,7 @@ const Edit = ( props ) => {
 			) }
 			{ pinned ? (
 				<ResizableBox
-					className={ classnames( className, {
-						'is-selected': isSelected,
-					} ) }
+					{ ...blockProps }
 					enable={ {
 						bottom: true,
 						bottomLeft: false,
@@ -157,6 +161,7 @@ const Edit = ( props ) => {
 				</ResizableBox>
 			) : (
 				<Placeholder
+					{ ...blockProps }
 					icon={ <Icon icon={ icon } /> }
 					instructions={ __(
 						'Enter a location or address to drop a pin on a Google map.',
