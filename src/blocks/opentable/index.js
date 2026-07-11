@@ -6,6 +6,7 @@ import { OpentableIcon as icon } from '@godaddy-wordpress/coblocks-icons';
 /**
  * Internal dependencies
  */
+import deprecated from './deprecated';
 import edit from './edit';
 import metadata from './block.json';
 import save from './save';
@@ -63,6 +64,7 @@ const settings = {
 		},
 	},
 	attributes,
+	deprecated,
 	edit,
 	save,
 };

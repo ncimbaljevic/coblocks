@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 /**
  * Internal dependencies.
  */
-import { name, settings } from '../index';
+import { metadata, name, settings } from '../index';
 
 // Make variables accessible for all tests.
 let block;
@@ -28,7 +28,7 @@ const DEFAULT_IMAGE_ATTRIBUTES = {
 describe( 'coblocks/media-card', () => {
 	beforeAll( () => {
 		// Register the block.
-		registerBlockType( name, { category: 'common', ...settings } );
+		registerBlockType( name, { category: 'common', ...metadata, ...settings } );
 	} );
 
 	beforeEach( () => {
