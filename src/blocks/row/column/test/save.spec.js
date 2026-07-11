@@ -7,7 +7,7 @@ import { createBlock, registerBlockType, serialize } from '@wordpress/blocks';
 /**
  * Internal dependencies.
  */
-import { name, settings } from '../index';
+import { metadata, name, settings } from '../index';
 
 // Make variables accessible for all tests.
 let block;
@@ -15,8 +15,10 @@ let serializedBlock;
 
 describe( 'coblocks/column', () => {
 	beforeAll( () => {
-		// Register the block.
-		registerBlockType( name, { category: 'common', ...settings } );
+		// Register the block. Include the apiVersion so the block registers as
+		// v3 and `getSaveElement` does not re-apply the `extraProps` filter on
+		// top of `useBlockProps.save()` (which would duplicate the block class).
+		registerBlockType( name, { category: 'common', ...settings, apiVersion: metadata.apiVersion } );
 	} );
 
 	beforeEach( () => {

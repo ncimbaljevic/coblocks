@@ -11,7 +11,7 @@ import { BackgroundStyles, BackgroundClasses, BackgroundVideo } from '../../../c
 /**
  * WordPress dependencies
  */
-import { InnerBlocks, getColorClassName } from '@wordpress/block-editor';
+import { InnerBlocks, getColorClassName, useBlockProps } from '@wordpress/block-editor';
 
 const save = ( { attributes } ) => {
 	const {
@@ -50,8 +50,10 @@ const save = ( { attributes } ) => {
 		color: textClass ? undefined : customTextColor,
 	};
 
+	const blockProps = useBlockProps.save( { className: classes } );
+
 	return (
-		<div className={ classes } >
+		<div { ...blockProps } >
 			<div className={ innerClasses } style={ innerStyles }>
 				{ BackgroundVideo( attributes ) }
 				<InnerBlocks.Content />

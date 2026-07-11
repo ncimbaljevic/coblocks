@@ -6,9 +6,9 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { getColorClassName } from '@wordpress/block-editor';
+import { getColorClassName, useBlockProps } from '@wordpress/block-editor';
 
-const save = ( { attributes, className } ) => {
+const save = ( { attributes } ) => {
 	const {
 		color,
 		customColor,
@@ -17,19 +17,19 @@ const save = ( { attributes, className } ) => {
 
 	const colorClass = getColorClassName( 'color', color );
 
-	const classes = classnames(
-		className, {
+	const blockProps = useBlockProps.save( {
+		className: classnames( {
 			'has-background': color || customColor,
 			[ colorClass ]: colorClass,
-		} );
-
-	const styles = {
-		color: colorClass ? undefined : customColor,
-		height: height ? height + 'px' : undefined,
-	};
+		} ),
+		style: {
+			color: colorClass ? undefined : customColor,
+			height: height ? height + 'px' : undefined,
+		},
+	} );
 
 	return (
-		<hr className={ classes } style={ styles }></hr>
+		<hr { ...blockProps }></hr>
 	);
 };
 

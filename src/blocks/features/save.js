@@ -12,9 +12,9 @@ import GutterWrapper from '../../components/gutter-control/gutter-wrapper';
 /**
  * WordPress dependencies
  */
-import { InnerBlocks, getColorClassName } from '@wordpress/block-editor';
+import { InnerBlocks, getColorClassName, useBlockProps } from '@wordpress/block-editor';
 
-const save = ( { attributes, className } ) => {
+const save = ( { attributes } ) => {
 	const {
 		coblocks,
 		columns,
@@ -28,11 +28,15 @@ const save = ( { attributes, className } ) => {
 	// Body color class and styles.
 	const textClass = getColorClassName( 'color', textColor );
 
-	let classes = className;
+	let idClass;
 
 	if ( coblocks && ( typeof coblocks.id !== 'undefined' ) ) {
-		classes = classnames( classes, `coblocks-features-${ coblocks.id }` );
+		idClass = `coblocks-features-${ coblocks.id }`;
 	}
+
+	const blockProps = useBlockProps.save( {
+		className: idClass,
+	} );
 
 	const innerClasses = classnames(
 		'wp-block-coblocks-features__inner',
@@ -55,7 +59,7 @@ const save = ( { attributes, className } ) => {
 	};
 
 	return (
-		<div className={ classes }>
+		<div { ...blockProps }>
 			<GutterWrapper { ...attributes }>
 				<div className={ innerClasses } style={ innerStyles }>
 					{ BackgroundVideo( attributes ) }

@@ -6,15 +6,17 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies.
  */
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 export default function save( { attributes } ) {
 	const { className, externalCalendarUrl, showCarousel } = attributes;
 
 	const classes = classnames( className, 'wp-block-coblocks-front-events-swiper-container' );
 
+	const blockProps = useBlockProps.save( { className: 'wp-block-coblocks-events-front-container' } );
+
 	return ! externalCalendarUrl && (
-		<div className="wp-block-coblocks-events-front-container">
+		<div { ...blockProps }>
 			<div className={ classes }>
 				<div className={ showCarousel ? 'swiper-wrapper-loading' : '' }>
 					<InnerBlocks.Content />

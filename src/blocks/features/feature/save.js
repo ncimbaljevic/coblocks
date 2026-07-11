@@ -11,9 +11,9 @@ import { BackgroundStyles, BackgroundClasses, BackgroundVideo } from '../../../c
 /**
  * WordPress dependencies
  */
-import { InnerBlocks, getColorClassName } from '@wordpress/block-editor';
+import { InnerBlocks, getColorClassName, useBlockProps } from '@wordpress/block-editor';
 
-const save = ( { attributes, className } ) => {
+const save = ( { attributes } ) => {
 	const {
 		coblocks,
 		contentAlign,
@@ -25,14 +25,17 @@ const save = ( { attributes, className } ) => {
 	// Body color class and styles.
 	const textClass = getColorClassName( 'color', textColor );
 
-	let classes = classnames(
-		className, {
-			[ `has-${ contentAlign }-content` ]: contentAlign,
-		} );
+	let extraClasses = classnames( {
+		[ `has-${ contentAlign }-content` ]: contentAlign,
+	} );
 
 	if ( coblocks && ( typeof coblocks.id !== 'undefined' ) ) {
-		classes = classnames( classes, `coblocks-feature-${ coblocks.id }` );
+		extraClasses = classnames( extraClasses, `coblocks-feature-${ coblocks.id }` );
 	}
+
+	const blockProps = useBlockProps.save( {
+		className: extraClasses,
+	} );
 
 	const innerClasses = classnames(
 		'wp-block-coblocks-feature__inner',
@@ -49,7 +52,7 @@ const save = ( { attributes, className } ) => {
 	};
 
 	return (
-		<div className={ classes }>
+		<div { ...blockProps }>
 			<div className={ innerClasses } style={ innerStyles }>
 				{ BackgroundVideo( attributes ) }
 				<InnerBlocks.Content />

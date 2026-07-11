@@ -14,6 +14,7 @@ import applyWithColors from './colors';
  */
 import { compose } from '@wordpress/compose';
 import { ResizableBox } from '@wordpress/components';
+import { useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Block edit function
@@ -31,18 +32,22 @@ const DynamicSeparatorEdit = ( props ) => {
 		color,
 	} = props;
 
+	const blockProps = useBlockProps( {
+		className: classnames( className, {
+			'is-selected': isSelected,
+			'has-background': color.color,
+			[ color.class ]: color.class,
+		} ),
+		style: {
+			color: color.color,
+		},
+	} );
+
 	return (
 		<>
 			{ isSelected && <Inspector { ...props } /> }
 			<ResizableBox
-				className={ classnames( className, {
-					'is-selected': isSelected,
-					'has-background': color.color,
-					[ color.class ]: color.class,
-				} ) }
-				style={ {
-					color: color.color,
-				} }
+				{ ...blockProps }
 				size={ {
 					height,
 				} }
