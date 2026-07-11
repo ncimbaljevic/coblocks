@@ -57,7 +57,7 @@ $icons: (popular), (spicy), (vegan), (vegetarian), (pescatarian), (gluten-free);
 		margin-left: 0.4em;
 
 		svg {
-			fill: currentcolor;
+			fill: currentColor;
 			height: 18px;
 			width: 18px;
 
@@ -93,7 +93,7 @@ $icons: (popular), (spicy), (vegan), (vegetarian), (pescatarian), (gluten-free);
 	}
 
 	&__icon {
-		background-color: currentcolor;
+		background-color: currentColor;
 		background-repeat: no-repeat;
 		background-size: cover;
 		display: inline-block;

@@ -23,7 +23,7 @@ describe( 'coblocks/highlight transforms', () => {
 		const transformed = switchToBlockType( coreParagraph, name );
 
 		expect( transformed[ 0 ].isValid ).toBe( true );
-		expect( transformed[ 0 ].attributes.content.toString() ).toBe( 'paragraph content' );
+		expect( transformed[ 0 ].attributes.content ).toBe( 'paragraph content' );
 	} );
 
 	it( 'should transform to core/paragraph block', () => {
@@ -31,7 +31,7 @@ describe( 'coblocks/highlight transforms', () => {
 		const transformed = switchToBlockType( block, 'core/paragraph' );
 
 		expect( transformed[ 0 ].isValid ).toBe( true );
-		expect( transformed[ 0 ].attributes.content.toString() ).toBe( 'paragraph content' );
+		expect( transformed[ 0 ].attributes.content ).toBe( 'paragraph content' );
 	} );
 
 	it( 'should transform to core/paragraph block without content', () => {
@@ -39,7 +39,7 @@ describe( 'coblocks/highlight transforms', () => {
 		const transformed = switchToBlockType( block, 'core/paragraph' );
 
 		expect( transformed[ 0 ].isValid ).toBe( true );
-		expect( transformed[ 0 ].attributes.content.toString() ).toBe( '' );
+		expect( transformed[ 0 ].attributes.content ).toBe( '' );
 	} );
 
 	it( 'should transform when :highlight prefix is seen', () => {
@@ -49,7 +49,7 @@ describe( 'coblocks/highlight transforms', () => {
 
 		expect( block.isValid ).toBe( true );
 		expect( block.name ).toBe( name );
-		expect( block.attributes.content.toString() ).toBe( content );
+		expect( block.attributes.content ).toBe( content );
 	} );
 
 	// This test is failing due to removal of raw transforms.
@@ -62,6 +62,6 @@ describe( 'coblocks/highlight transforms', () => {
 
 		expect( block[ 0 ].isValid ).toBe( true );
 		expect( block[ 0 ].name ).toBe( name );
-		expect( block[ 0 ].attributes.content.toString() ).toBe( content );
+		expect( block[ 0 ].attributes.content ).toBe( content );
 	} );
 } );

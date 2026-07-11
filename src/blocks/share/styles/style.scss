@@ -85,7 +85,7 @@ $icons:
 	}
 
 	&__icon {
-		background-color: currentcolor;
+		background-color: currentColor;
 		background-repeat: no-repeat;
 		background-size: cover;
 		display: inline-block;
@@ -123,13 +123,11 @@ $icons:
 
 	// Social colors.
 	&.has-colors {
-
 		@each $icon, $color in $icons {
 			.wp-block-coblocks-social__button--#{$icon} {
 				background-color: $color !important;
 			}
 		}
-
 		@each $icon, $color in $icons {
 			&.is-style-mask .wp-block-coblocks-social__button--#{$icon} {
 				color: $color !important;
@@ -266,7 +264,6 @@ $icons:
 }
 
 @keyframes pulse {
-
 	0% {
 		transform: scale(1);
 	}

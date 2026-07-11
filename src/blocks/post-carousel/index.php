@@ -239,6 +239,7 @@ function coblocks_post_carousel( $posts, $attributes ) {
 	$block_content .= '</div>';
 
 	return $block_content;
+
 }
 
 /**
@@ -277,6 +278,7 @@ function coblocks_get_post_carousel_info( $posts ) {
 	}
 
 	return $formatted_posts;
+
 }
 
 /**
@@ -319,6 +321,7 @@ function coblocks_get_rss_post_carousel_info( $posts ) {
 	}
 
 	return $formatted_posts;
+
 }
 
 /**

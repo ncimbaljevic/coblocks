@@ -3,7 +3,7 @@
  */
 import '@testing-library/jest-dom';
 import { createBlock, registerBlockType, serialize } from '@wordpress/blocks';
-import { replaceActiveStyle } from '../../../../.dev/tests/jest/helpers';
+import { replaceActiveStyle } from '@wordpress/block-editor/build/components/block-styles/utils';
 
 /**
  * Internal dependencies.

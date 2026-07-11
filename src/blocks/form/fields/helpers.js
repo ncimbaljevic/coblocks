@@ -34,7 +34,7 @@ export const editMultiField = ( type ) => ( props ) => {
 					<PanelBody title={ __( 'Display settings', 'coblocks' ) }>
 						<ToggleControl
 							label={ sprintf(
-								/* translators: %s: field type eg: checkbox */
+								/* translators: field type eg: checkbox */
 								__( 'Inline %s', 'coblocks' ),
 								type
 							) }
@@ -42,11 +42,11 @@ export const editMultiField = ( type ) => ( props ) => {
 							checked={ isInline }
 							onChange={ ( value ) => setAttributes( { isInline: value } ) }
 							help={ !! isInline ? sprintf(
-								/* translators: %s: field type eg: checkbox */
+								/* translators: field type eg: checkbox */
 								__( 'Displaying the %s inline.', 'coblocks' ),
 								type
 							) : sprintf(
-								/* translators: %s: field type eg: checkbox */
+								/* translators: field type eg: checkbox */
 								__( 'Toggle to display the %s inline.', 'coblocks' ),
 								type
 							) }

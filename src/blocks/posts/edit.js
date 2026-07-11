@@ -15,7 +15,9 @@ import { compose, usePrevious } from '@wordpress/compose';
 import { lazy, RawHTML, useState, useEffect, useRef } from '@wordpress/element';
 import { escapeHTML } from '@wordpress/escape-html';
 import { addQueryArgs } from '@wordpress/url';
-import { dateI18n, format, getSettings } from '@wordpress/date';
+// Disable reason: We choose to use unsafe APIs in our codebase.
+// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
+import { dateI18n, format, __experimentalGetSettings } from '@wordpress/date';
 import { withSelect } from '@wordpress/data';
 import { BlockControls, RichText } from '@wordpress/block-editor';
 import {
@@ -222,7 +224,7 @@ const PostsEdit = ( props ) => {
 		onClick: () => setAttributes( { listPosition: 'right' } ),
 	} ];
 
-	const dateFormat = getSettings().formats.date;
+	const dateFormat = __experimentalGetSettings().formats.date; // eslint-disable-line no-restricted-syntax
 
 	const updateStyle = ( style ) => {
 		const newActiveStyle = getActiveStyle( styleOptions, className );

@@ -19,21 +19,21 @@ describe( 'Block: Food Item', () => {
 	it( 'removes .is-empty when the \'title\', \'description\', \'price\' attributes have content', () => {
 		cy.get( '[data-type="coblocks/food-item"]' ).first().within( () => {
 		// Set heading.
-			cy.get( '.wp-block-coblocks-food-item__heading-wrapper .block-editor-rich-text__editable' ).first().focus().type( 'item heading', { force: true } );
+			cy.get( '.wp-block-coblocks-food-item__heading-wrapper .block-editor-rich-text__editable' ).focus().type( 'item heading', { force: true } );
 			cy.get( '.wp-block-coblocks-food-item' ).should( 'not.have.class', 'is-empty' );
-			cy.get( '.wp-block-coblocks-food-item__heading-wrapper .block-editor-rich-text__editable' ).first().focus().type( '{selectall}{del}', { force: true } );
+			cy.get( '.wp-block-coblocks-food-item__heading-wrapper .block-editor-rich-text__editable' ).focus().type( '{selectall}{del}', { force: true } );
 			cy.get( '.wp-block-coblocks-food-item' ).should( 'have.class', 'is-empty' );
 
 			// Set price.
-			cy.get( '[aria-label="$0.00"]' ).first().focus().type( 'item price', { force: true } );
+			cy.get( '[aria-label="$0.00"]' ).focus().type( 'item price', { force: true } );
 			cy.get( '.wp-block-coblocks-food-item' ).should( 'not.have.class', 'is-empty' );
-			cy.get( '[aria-label="$0.00"]' ).first().focus().type( '{selectall}{del}', { force: true } );
+			cy.get( '[aria-label="$0.00"]' ).focus().type( '{selectall}{del}', { force: true } );
 			cy.get( '.wp-block-coblocks-food-item' ).should( 'have.class', 'is-empty' );
 
 			// Set description.
-			cy.get( '[aria-label="Add description…"]' ).first().focus().type( 'item description', { force: true } );
+			cy.get( '[aria-label="Add description…"]' ).focus().type( 'item description', { force: true } );
 			cy.get( '.wp-block-coblocks-food-item' ).should( 'not.have.class', 'is-empty' );
-			cy.get( '[aria-label="Add description…"]' ).first().focus().type( '{selectall}{del}', { force: true } );
+			cy.get( '[aria-label="Add description…"]' ).focus().type( '{selectall}{del}', { force: true } );
 			cy.get( '.wp-block-coblocks-food-item' ).should( 'have.class', 'is-empty' );
 		} );
 

@@ -264,7 +264,7 @@ const Edit = ( props ) => {
 			} )
 			.then( ( data ) => {
 				setAttributes( { fetching: false, matches: data.data } );
-			} ).catch( () => {
+			} ).catch( ( ) => {
 				setAttributes( { fetching: false } );
 			} );
 	}, 1000 );

@@ -15,7 +15,9 @@ import { PlainText } from '@wordpress/block-editor';
 import { RawHTML } from '@wordpress/element';
 import { escapeHTML } from '@wordpress/escape-html';
 import { withSelect } from '@wordpress/data';
-import { getSettings, dateI18n, format } from '@wordpress/date';
+// Disable reason: We choose to use unsafe APIs in our codebase.
+// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
+import { __experimentalGetSettings, dateI18n, format } from '@wordpress/date';
 
 const PostItem = ( {
 	post,
@@ -43,7 +45,7 @@ const PostItem = ( {
 	excerptElement.innerHTML = excerpt;
 	excerpt = excerptElement.textContent || excerptElement.innerText || '';
 
-	const dateFormat = getSettings().formats.date;
+	const dateFormat = __experimentalGetSettings().formats.date; // eslint-disable-line no-restricted-syntax
 
 	return (
 		<div className="wp-block-coblocks-post-carousel__item">

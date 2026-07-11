@@ -59,7 +59,6 @@
 }
 
 .coblocks-events-carousel-button-container {
-
 	&__prev,
 	&__next {
 		position: absolute;
@@ -76,7 +75,6 @@
 }
 
 .coblocks-events-nav-button {
-
 	&__prev,
 	&__next {
 		background-color: transparent;
@@ -119,7 +117,6 @@
 }
 
 .coblocks-events-swiper-container-external-calendar-edit .coblocks-events-nav-button {
-
 	&__prev,
 	&__next {
 		top: 10%;
@@ -127,9 +124,7 @@
 }
 
 .coblocks-events-block-inner-blocks-container-edit {
-
 	.coblocks-events-nav-button {
-
 		&__prev,
 		&__next {
 			top: 10%;
@@ -137,7 +132,6 @@
 	}
 
 	.block-editor-inner-blocks .block-editor-block-list__layout {
-
 		[data-type="coblocks/event-item"]:not(:first-of-type) {
 			display: none;
 		}
@@ -151,7 +145,6 @@
 		}
 
 		.coblocks-events-nav-button {
-
 			&__prev,
 			&__next {
 				top: 10% !important;

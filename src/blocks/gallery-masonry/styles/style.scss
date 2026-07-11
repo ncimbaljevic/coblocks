@@ -1,5 +1,5 @@
 // Import styles for rendering the static content of deprecated gallery versions.
-@import "../v1/deprecated";
+@import "../v1/deprecated.scss";
 
 // We utilize similar styles here as in the editor.scss for Masonry block.
 // Because of differing markup produced in edit and save we have variation on selectors.
@@ -87,7 +87,6 @@ figure.wp-block-coblocks-gallery-masonry.masonry-grid {
 
 	/* Masonry on tablets */
 	@media only screen and (min-width: 768px) and (max-width: 1023px) {
-
 		& {
 			column-count: 2;
 		}
@@ -95,7 +94,6 @@ figure.wp-block-coblocks-gallery-masonry.masonry-grid {
 
 	/* Masonry on big screens */
 	@media only screen and (min-width: 1024px) {
-
 		& {
 			column-count: 3;
 		}
@@ -103,7 +101,6 @@ figure.wp-block-coblocks-gallery-masonry.masonry-grid {
 }
 
 .is-twentytwenty {
-
 	figure.wp-block-coblocks-gallery-masonry.masonry-grid {
 		margin-left: auto;
 		margin-right: auto;

@@ -25,6 +25,7 @@ class Coblocks_Opentable {
 		add_action( 'rest_api_init', array( $this, 'api_endpoints' ) );
 
 		add_action( 'enqueue_block_editor_assets', array( $this, 'editor_scripts' ) );
+
 	}
 
 	/**
@@ -39,7 +40,7 @@ class Coblocks_Opentable {
 			$this->search_proxy_path . '(?P<query>.*)',
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
-				'permission_callback' => function () {
+				'permission_callback' => function() {
 					// See https://wordpress.org/support/article/roles-and-capabilities/#edit_posts.
 					return current_user_can( 'edit_posts' );
 				},
@@ -54,6 +55,7 @@ class Coblocks_Opentable {
 				'callback'            => array( $this, 'api_proxy' ),
 			)
 		);
+
 	}
 
 	/**
@@ -98,6 +100,7 @@ class Coblocks_Opentable {
 				$api_resp['response']['code']
 			)
 		);
+
 	}
 
 	/**
@@ -114,7 +117,9 @@ class Coblocks_Opentable {
 				'searchProxy' => COBLOCKS_API_NAMESPACE . $this->search_proxy_path,
 			)
 		);
+
 	}
+
 }
 
 new Coblocks_Opentable();

@@ -98,8 +98,8 @@ describe( 'Test CoBlocks Gallery Stacked Block', function() {
 
 		helpers.toggleSettingCheckbox( /captions/i );
 
-		cy.get( '.coblocks-gallery--item' ).first().find( 'img' ).click( { force: true } );
-		cy.get( '.coblocks-gallery--item' ).first().find( 'figcaption' ).focus().type( caption );
+		cy.get( '.coblocks-gallery--item' ).first().click()
+			.find( 'figcaption' ).focus().type( caption );
 
 		helpers.savePage();
 
@@ -130,8 +130,8 @@ describe( 'Test CoBlocks Gallery Stacked Block', function() {
 
 		cy.get( '.block-editor-format-toolbar' ).should( 'not.exist' );
 
-		cy.get( '.coblocks-gallery--item' ).first().find( 'img' ).click( { force: true } );
-		cy.get( '.coblocks-gallery--item' ).first().find( 'figcaption' ).focus();
+		cy.get( '.coblocks-gallery--item' ).first().click()
+			.find( 'figcaption' ).focus();
 
 		cy.get( '.block-editor-format-toolbar, .block-editor-rich-text__inline-format-toolbar-group' );
 
@@ -176,30 +176,23 @@ describe( 'Test CoBlocks Gallery Stacked Block', function() {
 
 		helpers.toggleSettingCheckbox( /captions/i );
 
-		cy.get( '.coblocks-gallery--item' ).first().find( 'img' ).click( { force: true } );
-		cy.get( '.coblocks-gallery--item' ).first().find( 'figcaption' ).focus().type( caption );
+		cy.get( '.coblocks-gallery--item' ).first().click()
+			.find( 'figcaption' ).focus().type( caption );
 
 		// Styles tab introduced in 6.2.
 		helpers.selectStylesTabIfExists();
 
-		// The Typography panel now shows the Font size control directly, so
-		// interact with its options rather than adding it via the panel menu.
-		// The caption lives inside the editor-canvas iframe, so read its computed
-		// font size from the iframe document rather than the top-level Cypress.$.
-		const captionFontSize = () => {
-			const iframe = Cypress.$( 'iframe[name="editor-canvas"]' )[ 0 ];
-			const captionEl = iframe && iframe.contentDocument.querySelector( 'figcaption.coblocks-gallery--caption' );
-			return captionEl ? iframe.contentWindow.getComputedStyle( captionEl ).fontSize : undefined;
-		};
+		cy.get( '[data-wp-component="ToolsPanelHeader"] button' ).click();
+		cy.get( 'button' ).contains( 'Font size' ).click();
 
 		cy.get( '.components-toggle-group-control-option, .components-toggle-group-control-option-base' ).then( ( elems ) => {
-			let dataValue = captionFontSize();
+			let dataValue = Cypress.$( 'figcaption.coblocks-gallery--caption' ).css( 'font-size' );
 			Array.from( elems ).forEach( ( elem ) => {
 				cy.get( elem ).focus().click().then( () => {
 					// We do not test the value due to theme setting specified font sizes.
 					// Instead we test that the value has changed from previous value.
-					cy.get( 'figcaption.coblocks-gallery--caption' ).should( 'not.have.css', 'font-size', dataValue );
-					dataValue = captionFontSize();
+					cy.get( 'figcaption.coblocks-gallery--caption' ).should( 'not.to.have.css', 'font-size', dataValue );
+					dataValue = Cypress.$( 'figcaption.coblocks-gallery--caption' ).css( 'font-size' );
 				} );
 			} );
 		} );

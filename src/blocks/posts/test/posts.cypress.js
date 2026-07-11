@@ -101,6 +101,9 @@ describe( 'Test CoBlocks Posts Block', function() {
 
 		cy.get( '.wp-block-coblocks-posts' ).find( '.has-2-columns' ).should( 'exist' );
 
+		// Make sure that controls who are lazy loaded finished loading
+		cy.contains( 'Styles' );
+
 		helpers.setBlockStyle( 'horizontal' );
 
 		helpers.savePage();

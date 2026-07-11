@@ -15,5 +15,6 @@
 function coblocks_click_to_tweet_post_permalink( $block_content ) {
 
 	return str_replace( '[post_permalink]', rawurlencode( get_permalink() ), $block_content );
+
 }
 add_filter( 'render_block_coblocks/click-to-tweet', 'coblocks_click_to_tweet_post_permalink' );

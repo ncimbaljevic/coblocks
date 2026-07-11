@@ -116,7 +116,7 @@ const Inspector = ( props ) => {
 							label={
 								sprintf(
 									/* translators: %s: Placeholder is either 'Card, or 'Image' */
-									__( '%s shadow', 'coblocks' ),
+									__( ' %s shadow', 'coblocks' ),
 									mediaType.charAt( 0 ).toUpperCase() + mediaType.slice( 1 )
 								)
 							}

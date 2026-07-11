@@ -28,32 +28,12 @@ describe( 'Test CoBlocks Gallery Masonry Block', function() {
 	 * to successfully save the block without errors.
 	 */
 	it( 'Test masonry block saves with image upload.', function() {
-		const { imageBase, fileName, pathToFixtures } = helpers.upload.spec;
+		const { imageBase } = helpers.upload.spec;
 		helpers.addBlockToPost( 'coblocks/gallery-masonry', true );
 
-		cy.get( 'figure[data-type="coblocks/gallery-masonry"]' )
-			.click()
-			.contains( /media library/i )
-			.click();
+		cy.get( 'figure[data-type="coblocks/gallery-masonry"]' ).click();
 
-		// Masonry delegates its in-block upload to nested core/image blocks via
-		// createBlobURL. That blob URL is minted in Cypress' test realm and never
-		// resolves inside the editor iframe, so a synthetic drop / file-input upload
-		// never persists an attachment (both leave a pending blob:). Upload a fresh
-		// file through the media modal instead — a real XHR upload — which satisfies
-		// this test and also seeds the media library for the media-library tests that
-		// follow (in an isolated CI job the library is otherwise empty).
-		cy.fixture( pathToFixtures + fileName, { encoding: null } ).then( ( fileContent ) => {
-			cy.get( '[class^="moxie"] [type="file"]' ).selectFile(
-				{ contents: fileContent, fileName: pathToFixtures + fileName, mimeType: 'image/png' },
-				{ force: true }
-			);
-		} );
-
-		cy.get( '.attachment.selected.save-ready' );
-
-		cy.get( 'button' ).contains( /create a new gallery/i ).click();
-		cy.get( 'button' ).contains( /insert gallery/i ).click();
+		helpers.upload.imageToBlock( 'coblocks/gallery-masonry' );
 
 		cy.get( 'figure[data-type="core/image"] img[src*="http"]' ).should( 'have.attr', 'src' ).should( 'include', imageBase );
 

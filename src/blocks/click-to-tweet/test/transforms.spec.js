@@ -22,7 +22,7 @@ describe( 'coblocks/click-to-tweet transforms', () => {
 		const transformed = switchToBlockType( coreParagraph, name );
 
 		expect( transformed[ 0 ].isValid ).toBe( true );
-		expect( transformed[ 0 ].attributes.content.toString() ).toBe( 'paragraph content' );
+		expect( transformed[ 0 ].attributes.content ).toBe( 'paragraph content' );
 	} );
 
 	it( 'should transform from core/pullquote block', () => {
@@ -30,7 +30,7 @@ describe( 'coblocks/click-to-tweet transforms', () => {
 		const transformed = switchToBlockType( corePullquote, name );
 
 		expect( transformed[ 0 ].isValid ).toBe( true );
-		expect( transformed[ 0 ].attributes.content.toString() ).toBe( 'pullquote content' + 'citation content' );
+		expect( transformed[ 0 ].attributes.content ).toBe( 'pullquote content' + 'citation content' );
 	} );
 
 	it( 'should transform from core/quote block', () => {
@@ -38,7 +38,7 @@ describe( 'coblocks/click-to-tweet transforms', () => {
 		const transformed = switchToBlockType( coreQuote, name );
 
 		expect( transformed[ 0 ].isValid ).toBe( true );
-		expect( transformed[ 0 ].attributes.content.toString() ).toBe( 'quote content' + 'citation content' );
+		expect( transformed[ 0 ].attributes.content ).toBe( 'quote content' + 'citation content' );
 	} );
 
 	it( 'should transform to core/paragraph block', () => {
@@ -46,7 +46,7 @@ describe( 'coblocks/click-to-tweet transforms', () => {
 		const transformed = switchToBlockType( block, 'core/paragraph' );
 
 		expect( transformed[ 0 ].isValid ).toBe( true );
-		expect( transformed[ 0 ].attributes.content.toString() ).toBe( 'paragraph content' );
+		expect( transformed[ 0 ].attributes.content ).toBe( 'paragraph content' );
 	} );
 
 	it( 'should transform to core/pullquote block', () => {
@@ -54,7 +54,7 @@ describe( 'coblocks/click-to-tweet transforms', () => {
 		const transformed = switchToBlockType( block, 'core/pullquote' );
 
 		expect( transformed[ 0 ].isValid ).toBe( true );
-		expect( transformed[ 0 ].attributes.value.toString() ).toBe( '<p>pullquote content</p>' );
+		expect( transformed[ 0 ].attributes.value ).toBe( '<p>pullquote content</p>' );
 	} );
 
 	it( 'should transform to core/quote block', () => {
@@ -62,6 +62,6 @@ describe( 'coblocks/click-to-tweet transforms', () => {
 		const transformed = switchToBlockType( block, 'core/quote' );
 
 		expect( transformed[ 0 ].isValid ).toBe( true );
-		expect( transformed[ 0 ].attributes.value.toString() ).toBe( '<p>quote content</p>' );
+		expect( transformed[ 0 ].attributes.value ).toBe( '<p>quote content</p>' );
 	} );
 } );

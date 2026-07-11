@@ -25,10 +25,8 @@
 		}
 
 		.wp-coblocks-post-carousel-nav-button {
-
 			&__prev,
 			&__next {
-
 				@include make_nav_button();
 			}
 
@@ -131,10 +129,8 @@ body.rtl {
 }
 
 .wp-coblocks-post-carousel-nav-button {
-
 	&__prev,
 	&__next {
-
 		@include make_nav_button();
 	}
 

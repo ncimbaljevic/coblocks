@@ -233,6 +233,7 @@ function coblocks_posts( $posts, $attributes ) {
 	$block_content .= '</div>';
 
 	return $block_content;
+
 }
 
 /**
@@ -271,6 +272,7 @@ function coblocks_get_post_info( $posts ) {
 	}
 
 	return $formatted_posts;
+
 }
 
 /**
@@ -313,6 +315,7 @@ function coblocks_get_rss_post_info( $posts ) {
 	}
 
 	return $formatted_posts;
+
 }
 
 /**

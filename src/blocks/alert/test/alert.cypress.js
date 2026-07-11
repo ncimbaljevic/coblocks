@@ -6,9 +6,10 @@ import * as helpers from '../../../../.dev/tests/cypress/helpers';
 describe( 'Test CoBlocks Alert Block', function() {
 	let postId;
 	before( () => {
-		helpers.createFixturePost( Cypress.spec.name ).then( ( id ) => {
-			postId = id;
-		} );
+		cy.fixture( `../.dev/tests/cypress/fixtures/${ Cypress.spec.name }.json` )
+			.then( ( output ) => {
+				postId = output[ Cypress.spec.name ] ?? '';
+			} );
 	} );
 
 	it( 'Test Alert block migrates into core blocks.', function() {
