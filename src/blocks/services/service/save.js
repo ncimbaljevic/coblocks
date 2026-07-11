@@ -1,9 +1,9 @@
 /**
  * WordPress dependencies.
  */
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
-export default function save( { className, attributes } ) {
+export default function save( { attributes } ) {
 	const {
 		focalPoint,
 		href,
@@ -13,6 +13,8 @@ export default function save( { className, attributes } ) {
 		linkTarget,
 		rel,
 	} = attributes;
+
+	const blockProps = useBlockProps.save();
 
 	const image = (
 		<img
@@ -38,7 +40,7 @@ export default function save( { className, attributes } ) {
 	);
 
 	return (
-		<div className={ className }>
+		<div { ...blockProps }>
 			{ imageUrl && figure }
 			<div className="wp-block-coblocks-service__content">
 				<InnerBlocks.Content />

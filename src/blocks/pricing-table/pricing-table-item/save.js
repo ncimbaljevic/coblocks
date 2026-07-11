@@ -8,7 +8,7 @@ import fromEntries from '../../../js/coblocks-fromEntries';
 /**
  * WordPress dependencies
  */
-import { RichText, getColorClassName, InnerBlocks } from '@wordpress/block-editor';
+import { RichText, getColorClassName, InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 const isEmpty = ( attributes ) => {
 	const attributesToCheck = [ 'title', 'features', 'currency', 'amount' ];
@@ -46,11 +46,13 @@ const save = ( { attributes } ) => {
 		color: textColorClass ? undefined : customTextColor,
 	};
 
+	const blockProps = useBlockProps.save( {
+		className: classes,
+		style: styles,
+	} );
+
 	return isEmpty( attributes ) ? null : (
-		<div
-			className={ classes }
-			style={ styles }
-		>
+		<div { ...blockProps }>
 			{ ! RichText.isEmpty( title ) && (
 				<RichText.Content
 					tagName="span"

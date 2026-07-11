@@ -11,7 +11,7 @@ import GutterWrapper from '../../components/gutter-control/gutter-wrapper';
 /**
  * WordPress dependencies
  */
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 const save = ( { attributes } ) => {
 	const {
@@ -19,11 +19,13 @@ const save = ( { attributes } ) => {
 		count,
 	} = attributes;
 
-	const classes = classnames(
-		{
-			[ `has-text-align-${ contentAlign }` ]: contentAlign,
-		}
-	);
+	const blockProps = useBlockProps.save( {
+		className: classnames(
+			{
+				[ `has-text-align-${ contentAlign }` ]: contentAlign,
+			}
+		),
+	} );
 
 	const innerClasses = classnames( 'wp-block-coblocks-pricing-table__inner',
 		{
@@ -34,7 +36,7 @@ const save = ( { attributes } ) => {
 	);
 
 	return (
-		<div className={ classes }>
+		<div { ...blockProps }>
 			<GutterWrapper { ...attributes } >
 				<div className={ innerClasses }>
 					<InnerBlocks.Content />
