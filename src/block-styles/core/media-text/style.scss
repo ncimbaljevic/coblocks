@@ -1,4 +1,4 @@
-@import "../../../styles/common.scss";
+@import "../../../styles/common";
 
 .wp-block-media-text.is-style-card {
 
@@ -18,6 +18,7 @@
 			right: 1px;
 			width: initial;
 		}
+
 		@include break-large() {
 			padding: calc(2 * var(--coblocks-spacing--6, map-get($spacing, 6)));
 		}
@@ -47,9 +48,11 @@
 			margin-top: initial;
 			width: auto;
 		}
+
 		@include break-small() {
 			margin-left: calc(-1 * var(--coblocks-spacing--8, map-get($spacing, 8)));
 		}
+
 		@include break-large() {
 			margin-left: calc(-2 * var(--coblocks-spacing--10, map-get($spacing, 10)));
 		}
@@ -66,6 +69,7 @@
 			margin-right: calc(-1 * var(--coblocks-spacing--8, map-get($spacing, 8)));
 			width: 175%;
 		}
+
 		@include break-large() {
 			margin-right: calc(-2 * var(--coblocks-spacing--10, map-get($spacing, 10)));
 		}
@@ -77,12 +81,14 @@
 .wp-block-media-text.is-style-outline {
 
 	.wp-block-media-text__content {
+
 		@include break-small() {
 			margin-left: calc(-1 * var(--coblocks-spacing--10, map-get($spacing, 10)));
 		}
 	}
 
 	&.has-media-on-the-right .wp-block-media-text__content {
+
 		@include break-small() {
 			margin-left: 0;
 			margin-right: calc(-1 * var(--coblocks-spacing--10, map-get($spacing, 10)));
@@ -139,12 +145,14 @@
 .editor-styles-wrapper {
 
 	.wp-block-media-text.is-style-card .wp-block-media-text__content {
+
 		@include break-small() {
 			right: 1px;
 		}
 	}
 
 	.wp-block-media-text.is-style-card.has-media-on-the-right .wp-block-media-text__content {
+
 		@include break-small() {
 			left: 1px;
 			right: initial;

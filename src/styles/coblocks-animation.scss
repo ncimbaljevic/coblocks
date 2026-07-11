@@ -1,4 +1,7 @@
 
-@import "node_modules/@wordpress/base-styles/variables";
-@import "../extensions/animation/styles/editor.scss";
-@import "../extensions/animation/styles/style.scss";
+@import "@wordpress/base-styles/variables";
+@import "@wordpress/base-styles/colors";
+@import "@wordpress/base-styles/mixins";
+@import "@wordpress/base-styles/breakpoints";
+@import "../extensions/animation/styles/editor";
+@import "../extensions/animation/styles/style";

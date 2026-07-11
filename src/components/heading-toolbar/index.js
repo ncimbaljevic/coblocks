@@ -24,7 +24,7 @@ class HeadingToolbar extends Component {
 			icon: <HeadingLevelIcon isPressed={ isActive } level={ targetLevel } />,
 			isActive,
 			onClick: () => onChange( targetLevel ),
-			// translators: %s: heading level e.g: "1", "2", "3"
+			// translators: %d: heading level e.g: "1", "2", "3"
 			title: sprintf( __( 'Heading %d', 'coblocks' ), targetLevel ),
 		};
 	}

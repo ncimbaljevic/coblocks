@@ -70,7 +70,6 @@ class CoBlocks_Form {
 
 		add_action( 'init', array( $this, 'register_settings' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'form_recaptcha_assets' ) );
-
 	}
 
 	/**
@@ -139,7 +138,6 @@ class CoBlocks_Form {
 			);
 
 		}
-
 	}
 
 	/**
@@ -243,7 +241,7 @@ class CoBlocks_Form {
 
 			<?php
 
-			$name_count++;
+			++$name_count;
 
 			return ob_get_clean();
 
@@ -255,10 +253,9 @@ class CoBlocks_Form {
 
 		<?php
 
-		$name_count++;
+		++$name_count;
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -286,7 +283,6 @@ class CoBlocks_Form {
 		<?php
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -314,10 +310,9 @@ class CoBlocks_Form {
 
 		<?php
 
-		$textarea_count++;
+		++$textarea_count;
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -345,10 +340,9 @@ class CoBlocks_Form {
 
 		<?php
 
-		$text_count++;
+		++$text_count;
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -376,10 +370,9 @@ class CoBlocks_Form {
 
 		<?php
 
-		$date_count++;
+		++$date_count;
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -407,10 +400,9 @@ class CoBlocks_Form {
 
 		<?php
 
-		$phone_count++;
+		++$phone_count;
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -480,10 +472,9 @@ class CoBlocks_Form {
 
 		print( '</fieldset></div>' );
 
-		$radio_count++;
+		++$radio_count;
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -529,10 +520,9 @@ class CoBlocks_Form {
 
 		print( '</select>' );
 
-		$select_count++;
+		++$select_count;
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -619,10 +609,9 @@ class CoBlocks_Form {
 
 		print( '</div>' );
 
-		$checkbox_count++;
+		++$checkbox_count;
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -650,10 +639,9 @@ class CoBlocks_Form {
 
 		<?php
 
-		$website_count++;
+		++$website_count;
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -683,10 +671,9 @@ class CoBlocks_Form {
 
 		<?php
 
-		$hidden_count++;
+		++$hidden_count;
 
 		return ob_get_clean();
-
 	}
 
 	/**
@@ -738,7 +725,6 @@ class CoBlocks_Form {
 		<input type="hidden" name="field-<?php echo esc_attr( $label_slug ); ?>[label]" value="<?php echo esc_attr( $label ); ?>">
 
 		<?php
-
 	}
 
 	/**
@@ -986,7 +972,6 @@ class CoBlocks_Form {
 		do_action( 'coblocks_form_submit', $_POST, $atts, $email );
 
 		return $email;
-
 	}
 
 	/**
@@ -1009,7 +994,7 @@ class CoBlocks_Form {
 
 			array_walk(
 				$matches[1],
-				function( $match, $key ) use ( $matches, &$subject, &$name_field_value, &$email_field_value ) {
+				function ( $match, $key ) use ( $matches, &$subject, &$name_field_value, &$email_field_value ) {
 					$slug_match = strtolower( str_replace( ' ', '', $match ) );
 
 					if ( __( 'name', 'coblocks' ) === $slug_match ) {
@@ -1042,7 +1027,6 @@ class CoBlocks_Form {
 		}
 
 		return $subject;
-
 	}
 
 	/**
@@ -1053,7 +1037,6 @@ class CoBlocks_Form {
 	public function enable_html_email() {
 
 		return 'text/html';
-
 	}
 
 	/**
@@ -1086,7 +1069,6 @@ class CoBlocks_Form {
 		$this->remove_url_form_hash();
 
 		echo wp_kses_post( $success_message );
-
 	}
 
 	/**
@@ -1104,7 +1086,6 @@ class CoBlocks_Form {
 		</script>
 
 		<?php
-
 	}
 
 	/**
@@ -1150,7 +1131,6 @@ class CoBlocks_Form {
 		}
 
 		return $response['success'];
-
 	}
 }
 

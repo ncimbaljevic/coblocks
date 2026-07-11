@@ -91,6 +91,7 @@
 				}
 
 				> div {
+
 					@include break-medium() {
 						align-self: center;
 						flex: 1 0 auto;
@@ -203,6 +204,7 @@
 			flex-direction: column;
 
 			&__settings {
+
 				.coblocks-layout-selector__dropdown-button.is-link {
 					font-size: 1.1em;
 					margin-top: 0;
@@ -297,9 +299,11 @@
 			column-count: 2;
 			column-gap: 2em;
 		}
+
 		@include break-medium() {
 			column-count: 1;
 		}
+
 		@include break-large() {
 			column-count: 2;
 		}
@@ -347,7 +351,9 @@
 		// Safari-only hack. Welcome back to 2005.
 		// Hide spinner because there is a bug with how Safari is rendering column-count
 		@media not all and ( min-resolution: 0.001dpcm ) {
+
 			@supports ( -webkit-appearance: none ) {
+
 				.components-spinner {
 					display: none;
 				}

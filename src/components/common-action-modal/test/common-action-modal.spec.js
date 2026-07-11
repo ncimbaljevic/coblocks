@@ -8,7 +8,7 @@ const defaultProps = {
 	formData: {
 		choices: [],
 		coblocks_version: '2.26.0',
-		domain: 'http://localhost:8888',
+		domain: 'http://localhost:9264',
 		hostname: '298769f6195d',
 		language: 'en-US',
 		persona: null,

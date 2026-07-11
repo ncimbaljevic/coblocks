@@ -11,6 +11,7 @@
 }
 
 .is-twentynineteen {
+
 	@include coblocksGalleryEditorBlocks {
 		margin-bottom: 48px;
 		margin-top: 50px;
@@ -22,6 +23,7 @@
 }
 
 .is-twentyfifteen {
+
 	@include coblocksGalleryEditorBlocks {
 		margin-bottom: 42px;
 		margin-top: 42px;
@@ -37,15 +39,19 @@
 		@media screen and (min-width: 46.25em) {
 			font-size: 14px;
 		}
+
 		@media screen and (min-width: 55em) {
 			font-size: 16px;
 		}
+
 		@media screen and (min-width: 59.6875em) {
 			font-size: 12px;
 		}
+
 		@media screen and (min-width: 68.75em) {
 			font-size: 14px;
 		}
+
 		@media screen and (min-width: 77.5em) {
 			font-size: 16px;
 		}
@@ -64,6 +70,7 @@
 }
 
 .is-twentythirteen {
+
 	@include coblocksGalleryEditorBlocks {
 		margin-bottom: 40px;
 		margin-top: 40px;

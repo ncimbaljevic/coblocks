@@ -12,17 +12,10 @@ import { createBlock } from '@wordpress/blocks';
 import { View } from '@wordpress/primitives';
 import { VisuallyHidden } from '@wordpress/components';
 import {
-	// Disable reason: We choose to use an experimental API here.
-	// eslint-disable-next-line import/named, @wordpress/no-unsafe-wp-apis
-	__experimentalUseInnerBlocksProps,
-	useInnerBlocksProps as promotedUseInnerBlocksProps,
+	useInnerBlocksProps,
 	RichText,
 } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
-
-const useInnerBlocksProps = typeof __experimentalUseInnerBlocksProps === 'function'
-	? __experimentalUseInnerBlocksProps
-	: promotedUseInnerBlocksProps;
 
 const allowedBlocks = [ 'core/image' ];
 
