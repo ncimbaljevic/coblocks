@@ -16,11 +16,11 @@ import { BackgroundClasses, BackgroundDropZone, BackgroundStyles, BackgroundVide
  */
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { isBlobURL } from '@wordpress/blob';
 import { ResizableBox, Spinner } from '@wordpress/components';
 import { useDispatch, withDispatch, withSelect } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 
 /**
  * Allowed blocks and template constant is passed to InnerBlocks precisely as specified here.
@@ -117,29 +117,37 @@ const Edit = ( props ) => {
 	const [ resizing, setResizing ] = useState( false );
 	const [ innerWidth, setInnerWidth ] = useState( null );
 
+	// Ref to the block's own rendered root node. Used instead of top-level
+	// `document`/`window` so the block works inside the editor iframe (Block API v3).
+	const ref = useRef();
+
 	const { __unstableMarkAutomaticChange } = useDispatch( 'core/block-editor' );
 
 	useEffect( () => {
-		const currentBlock = document.getElementById( 'block-' + clientId );
+		const currentBlock = ref.current;
 		if ( currentBlock ) {
 			currentBlock.getElementsByClassName( 'wp-block-coblocks-hero__content' )[ 0 ].style.width = 'auto';
 			currentBlock.getElementsByClassName( 'wp-block-coblocks-hero__content' )[ 0 ].style.maxWidth = attributes.maxWidth + 'px';
 		}
 
-		const win = document.defaultView;
+		const win = ref.current?.ownerDocument?.defaultView;
 
 		getBrowserWidth();
-		win.addEventListener( 'resize', getBrowserWidth );
+		win?.addEventListener( 'resize', getBrowserWidth );
 
 		__unstableMarkAutomaticChange();
 
 		return () => {
-			win.removeEventListener( 'resize', getBrowserWidth );
+			win?.removeEventListener( 'resize', getBrowserWidth );
 		};
 	}, [] );
 
 	const getBrowserWidth = () => {
-		const win = document.defaultView;
+		const win = ref.current?.ownerDocument?.defaultView;
+
+		if ( ! win ) {
+			return;
+		}
 
 		setInnerWidth( win.innerWidth );
 		return win.innerWidth;
@@ -189,11 +197,13 @@ const Edit = ( props ) => {
 		/>
 	);
 
-	let classes = classnames( 'wp-block-coblocks-hero', className );
+	let classes = classnames( className );
 
 	if ( attributes.coblocks && ( typeof attributes.coblocks.id !== 'undefined' ) ) {
 		classes = classnames( classes, `coblocks-hero-${ attributes.coblocks.id }` );
 	}
+
+	const blockProps = useBlockProps( { className: classes, ref } );
 
 	const innerClasses = classnames(
 		'wp-block-coblocks-hero__inner',
@@ -267,7 +277,7 @@ const Edit = ( props ) => {
 				/>
 			) }
 			<div
-				className={ classes }
+				{ ...blockProps }
 			>
 				{ fullscreen
 					? <div className={ innerClasses } style={ innerStyles } >
@@ -287,7 +297,7 @@ const Edit = ( props ) => {
 									minWidth="400"
 									onResizeStart={ () => {
 										setResizing( true );
-										const currentBlock = document.getElementById( 'block-' + clientId );
+										const currentBlock = ref.current;
 										currentBlock.getElementsByClassName( 'wp-block-coblocks-hero__content' )[ 0 ].style.maxWidth = '';
 										currentBlock.getElementsByClassName( 'wp-block-coblocks-hero__content' )[ 0 ].style.width = maxWidth + 'px';
 									} }
@@ -296,7 +306,7 @@ const Edit = ( props ) => {
 											maxWidth: parseInt( maxWidth + delta.width, 10 ),
 										} );
 										setResizing( false );
-										const currentBlock = document.getElementById( 'block-' + clientId );
+										const currentBlock = ref.current;
 										currentBlock.getElementsByClassName( 'wp-block-coblocks-hero__content' )[ 0 ].style.width = 'auto';
 										currentBlock.getElementsByClassName( 'wp-block-coblocks-hero__content' )[ 0 ].style.maxWidth = parseInt( maxWidth + delta.width, 10 ) + 'px';
 									} }
@@ -374,7 +384,7 @@ const Edit = ( props ) => {
 										minWidth="400"
 										onResizeStart={ () => {
 											setResizing( true );
-											const currentBlock = document.getElementById( 'block-' + clientId );
+											const currentBlock = ref.current;
 											currentBlock.getElementsByClassName( 'wp-block-coblocks-hero__content' )[ 0 ].style.maxWidth = '';
 											currentBlock.getElementsByClassName( 'wp-block-coblocks-hero__content' )[ 0 ].style.width = maxWidth + 'px';
 										} }
@@ -383,7 +393,7 @@ const Edit = ( props ) => {
 												maxWidth: parseInt( maxWidth + delta.width, 10 ),
 											} );
 											setResizing( false );
-											const currentBlock = document.getElementById( 'block-' + clientId );
+											const currentBlock = ref.current;
 											currentBlock.getElementsByClassName( 'wp-block-coblocks-hero__content' )[ 0 ].style.width = 'auto';
 											currentBlock.getElementsByClassName( 'wp-block-coblocks-hero__content' )[ 0 ].style.maxWidth = parseInt( maxWidth + delta.width, 10 ) + 'px';
 										} }

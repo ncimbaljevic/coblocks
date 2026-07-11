@@ -13,7 +13,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { compose, usePrevious } from '@wordpress/compose';
 import { Placeholder, Spinner, ResizableBox, Icon } from '@wordpress/components';
 import { withSelect } from '@wordpress/data';
-import { RichText } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
@@ -94,6 +94,8 @@ const Edit = ( props ) => {
 		'is-focused': isSelected,
 	} );
 
+	const blockProps = useBlockProps( { className: url ? classes : className } );
+
 	let results = [];
 
 	if ( url ) {
@@ -109,7 +111,7 @@ const Edit = ( props ) => {
 						{ ...props }
 					/>
 				) }
-				<figure key="image" className={ classes }>
+				<figure key="image" { ...blockProps }>
 					<Size src={ url } dirtynessTrigger={ align }>
 						{ ( sizes ) => {
 							const {
@@ -264,7 +266,7 @@ const Edit = ( props ) => {
 			} )
 			.then( ( data ) => {
 				setAttributes( { fetching: false, matches: data.data } );
-			} ).catch( ( ) => {
+			} ).catch( () => {
 				setAttributes( { fetching: false } );
 			} );
 	}, 1000 );
@@ -272,11 +274,11 @@ const Edit = ( props ) => {
 	return (
 		<>
 			<Placeholder
+				{ ...blockProps }
 				key="placeholder"
 				label="Gif"
 				icon={ <Icon icon={ GifIcon } /> }
-				instructions={ __( 'Search for that perfect gif on Giphy', 'coblocks' ) }
-				className={ className }>
+				instructions={ __( 'Search for that perfect gif on Giphy', 'coblocks' ) }>
 				{ icons.giphy }
 				<input
 					key="search-field"

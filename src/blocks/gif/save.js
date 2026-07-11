@@ -6,7 +6,7 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { RichText } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 import { Fragment } from '@wordpress/element';
 
 const save = ( { attributes } ) => {
@@ -42,7 +42,7 @@ const save = ( { attributes } ) => {
 
 	if ( 'left' === align || 'right' === align || 'center' === align ) {
 		return (
-			<div className={ 'wp-block-image' }>
+			<div { ...useBlockProps.save( { className: 'wp-block-image' } ) }>
 				<figure className={ classes }>
 					{ figure }
 				</figure>
@@ -51,7 +51,7 @@ const save = ( { attributes } ) => {
 	}
 
 	return (
-		<figure className={ classes }>
+		<figure { ...useBlockProps.save( { className: classes } ) }>
 			{ figure }
 		</figure>
 	);
