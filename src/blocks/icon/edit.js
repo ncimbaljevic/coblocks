@@ -9,6 +9,7 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 import { compose } from '@wordpress/compose';
+import { useBlockProps } from '@wordpress/block-editor';
 import { withSelect } from '@wordpress/data';
 import { lazy, useEffect, useState } from '@wordpress/element';
 import { ResizableBox, Spinner } from '@wordpress/components';
@@ -79,13 +80,15 @@ const Edit = ( props ) => {
 		};
 	}, [] );
 
+	const blockProps = useBlockProps( {
+		className: classnames( className, {
+			[ `has-text-align-${ contentAlign }` ]: contentAlign,
+		} ),
+	} );
+
 	if ( ! svgs ) {
 		return <Spinner />;
 	}
-
-	const classes = classnames( className, {
-		[ `has-text-align-${ contentAlign }` ]: contentAlign,
-	} );
 
 	const innerClasses = classnames( 'wp-block-coblocks-icon__inner', {
 		'has-background': backgroundColor.color,
@@ -149,7 +152,7 @@ const Edit = ( props ) => {
 					</InspectorLoader>
 				</>
 			) }
-			<div className={ classes }>
+			<div { ...blockProps }>
 				<ResizableBox
 					className={ innerClasses }
 					enable={ {
