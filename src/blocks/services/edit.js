@@ -25,7 +25,7 @@ import {
 import { createBlock } from '@wordpress/blocks';
 import { useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { AlignmentToolbar, BlockControls, InnerBlocks } from '@wordpress/block-editor';
+import { AlignmentToolbar, BlockControls, InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 const Edit = ( props ) => {
 	const {	className, attributes, setAttributes, clientId } = props;
@@ -132,6 +132,9 @@ const Edit = ( props ) => {
 	);
 
 	const activeStyle = getActiveStyle( layoutOptions, className );
+
+	const blockProps = useBlockProps( { className } );
+
 	return (
 		<>
 			<BlockControls>
@@ -154,7 +157,7 @@ const Edit = ( props ) => {
 				onUpdateStyle={ updateStyle }
 				onSetColumns={ setColumns }
 			/>
-			<div className={ className }>
+			<div { ...blockProps }>
 				<GutterWrapper { ...attributes } >
 					<div className={ classes }>
 						<InnerBlocks
