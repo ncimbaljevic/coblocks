@@ -34,6 +34,7 @@
 // Because of differing markup produced in edit and save we have variation on selectors.
 // Eventually we should try to improve these selectors to reduce the code duplication in editor.scss.
 figure.wp-block-coblocks-gallery-masonry {
+
 	&.alignwide,
 	&.alignfull {
 		margin: 0;
@@ -91,6 +92,7 @@ figure.wp-block-coblocks-gallery-masonry {
 
 		/* Masonry on tablets */
 		@media only screen and (min-width: 768px) and (max-width: 1023px) {
+
 			& {
 				column-count: 2;
 			}
@@ -98,6 +100,7 @@ figure.wp-block-coblocks-gallery-masonry {
 
 		/* Masonry on big screens */
 		@media only screen and (min-width: 1024px) {
+
 			& {
 				column-count: 3;
 			}
