@@ -172,7 +172,7 @@ async function runPerformanceTests( branches, options ) {
 	log(
 		formats.title( '\n💃 Performance Tests 🕺\n' ),
 		'\nWelcome! This tool runs the performance tests on multiple branches and displays a comparison table.\n' +
-			'In order to run the tests, the tool is going to load a WordPress environment on 8889 port.\n'
+			'In order to run the tests, the tool is going to load a WordPress environment on 9281 port.\n'
 	);
 
 	if ( ! options.ci ) {
@@ -197,7 +197,7 @@ async function runPerformanceTests( branches, options ) {
 		await runShellScript( `./vendor/bin/wp core download --path=${ environmentDirectory }` );
 		await runShellScript( `./vendor/bin/wp config create --dbhost=127.0.0.1 --dbname=coblocks${ index } --dbuser=root --dbpass='' --path=${ environmentDirectory }` );
 		await runShellScript( `./vendor/bin/wp db create --path=${ environmentDirectory }` );
-		await runShellScript( `./vendor/bin/wp core install --url="http://localhost:8889" --title=CoBlocks --admin_user=admin --admin_password=password --admin_email=test@admin.com --skip-email --path=${ environmentDirectory }` );
+		await runShellScript( `./vendor/bin/wp core install --url="http://localhost:9281" --title=CoBlocks --admin_user=admin --admin_password=password --admin_email=test@admin.com --skip-email --path=${ environmentDirectory }` );
 		await runShellScript( `./vendor/bin/wp post generate --count=5 --path=${ environmentDirectory }` );
 		await runShellScript( `./vendor/bin/wp theme install go --activate --path=${ environmentDirectory }` );
 
@@ -244,7 +244,7 @@ async function runPerformanceTests( branches, options ) {
 				if ( i === 0 ) {
 					log( '        >> Starting the environment.' );
 					await runShellScript(
-						`./vendor/bin/wp server --host=0.0.0.0 --port=8889 --allow-root --path=${ environmentDirectory } > /dev/null 2>&1 &`
+						`./vendor/bin/wp server --host=0.0.0.0 --port=9281 --allow-root --path=${ environmentDirectory } > /dev/null 2>&1 &`
 					);
 				}
 

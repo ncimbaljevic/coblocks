@@ -15,7 +15,7 @@ module.exports = defineConfig( {
 		testIsolation: false,
 	},
 	env: {
-		testURL: 'http://localhost:8889',
+		testURL: 'http://localhost:9281',
 		wpPassword: 'password',
 		wpUsername: 'admin',
 	},

@@ -52,7 +52,7 @@ In Windows, you can set the `WP_DEVELOP_DIR` environment variable using the appr
 ### Step 2: Accessing and Configuring the Local WordPress Install
 #### Accessing the Local WordPress Install
 
-Whether you decided to use Docker or an existing local WordPress install, the WordPress installation should now be available at `http://localhost:8889` (**Username**: `admin`, **Password**: `password`).
+Whether you decided to use Docker or an existing local WordPress install, the WordPress installation should now be available at `http://localhost:9281` (**Username**: `admin`, **Password**: `password`).
 If this port is in use, you can override it using the `LOCAL_PORT` environment variable. For example running the below command on your computer will change the URL to
 `http://localhost:7777` .
 

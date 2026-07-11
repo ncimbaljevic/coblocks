@@ -37,7 +37,7 @@ global.coblocksLayoutSelector = {
 };
 
 // Mock site design state for tests.
-const siteDesignURLBase = 'http://localhost:8889';
+const siteDesignURLBase = 'http://localhost:9281';
 // Disable reason: sorting keys for this object is superfluous.
 /* eslint-disable sort-keys */
 global.siteDesign = {
