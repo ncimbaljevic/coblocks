@@ -6,6 +6,7 @@ import { GifIcon as icon } from '@godaddy-wordpress/coblocks-icons';
 /**
  * Internal dependencies
  */
+import deprecated from './deprecated';
 import edit from './edit';
 import { hasFormattingCategory } from '../../utils/block-helpers';
 import metadata from './block.json';
@@ -25,6 +26,7 @@ const { name, category, attributes } = metadata;
 const settings = {
 	attributes,
 	category: hasFormattingCategory ? 'common' : 'media',
+	deprecated,
 	/* translators: block description */
 	description: __( 'Pick a gif, any gif.', 'coblocks' ),
 	edit,
