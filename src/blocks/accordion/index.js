@@ -6,6 +6,7 @@ import { AccordionIcon as icon } from '@godaddy-wordpress/coblocks-icons';
 /**
  * Internal dependencies
  */
+import deprecated from './deprecated';
 import edit from './edit';
 import metadata from './block.json';
 import transforms from './transforms';
@@ -15,7 +16,7 @@ import transforms from './transforms';
  */
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/components';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Block constants
@@ -41,8 +42,9 @@ const settings = {
 		__( 'faq', 'coblocks' ),
 	],
 	save() {
+		const blockProps = useBlockProps.save();
 		return (
-			<div>
+			<div { ...blockProps }>
 				<InnerBlocks.Content />
 			</div>
 		);
@@ -54,6 +56,7 @@ const settings = {
 	/* translators: block name */
 	title: __( 'Accordion', 'coblocks' ),
 	transforms,
+	deprecated,
 };
 
 export { name, category, metadata, settings };

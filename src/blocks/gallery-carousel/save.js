@@ -2,7 +2,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { RichText } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
@@ -127,8 +127,12 @@ const save = ( props ) => {
 		uuid,
 	};
 
+	const blockProps = useBlockProps.save( {
+		'aria-label': __( `Carousel Gallery`, 'coblocks' ),
+	} );
+
 	return (
-		<div aria-label={ __( `Carousel Gallery`, 'coblocks' ) } >
+		<div { ...blockProps }>
 			<div className={ innerClasses }>
 				<div className={ swiperClasses } data-swiper={ JSON.stringify( swiperOptions ) } style={ swiperStyles } >
 					<div className="swiper-wrapper">

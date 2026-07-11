@@ -24,6 +24,7 @@ import { compose } from '@wordpress/compose';
 import { Icon } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
 import { ResizableBox, withNotices } from '@wordpress/components';
+import { useBlockProps } from '@wordpress/block-editor';
 import { useCallback, useContext, useEffect, useMemo } from '@wordpress/element';
 
 const GalleryCarouselEdit = ( props ) => {
@@ -57,6 +58,8 @@ const GalleryCarouselEdit = ( props ) => {
 		gridSize,
 		alignCells,
 	} = attributes;
+
+	const blockProps = useBlockProps( { className } );
 
 	const { selectedImage, setSelectedImage } = useContext( GalleryCarouselContext );
 
@@ -298,7 +301,7 @@ const GalleryCarouselEdit = ( props ) => {
 					marginBottom: thumbnails ? '80px' : null,
 				} }
 			>
-				<div className={ className }>
+				<div { ...blockProps }>
 					<div className={ innerClasses } style={ swiperStyles }>
 						{ renderSwiper }
 					</div>

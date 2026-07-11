@@ -6,7 +6,7 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { getColorClassName, InnerBlocks, RichText } from '@wordpress/block-editor';
+import { getColorClassName, InnerBlocks, RichText, useBlockProps } from '@wordpress/block-editor';
 
 const save = ( { attributes } ) => {
 	const {
@@ -39,8 +39,10 @@ const save = ( { attributes } ) => {
 		borderColor: borderColor ? borderColor : customBackgroundColor,
 	};
 
+	const blockProps = useBlockProps.save();
+
 	return (
-		<div>
+		<div { ...blockProps }>
 			{ ! RichText.isEmpty( title ) &&
 			<details open={ open }>
 				<RichText.Content
