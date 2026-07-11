@@ -1,4 +1,12 @@
 
+/**
+ * WordPress dependencies
+ */
+import { useBlockProps } from '@wordpress/block-editor';
+
+/**
+ * Internal dependencies
+ */
 import { transformRIDs } from './opentable';
 
 export default function save( { attributes } ) {
@@ -12,9 +20,12 @@ export default function save( { attributes } ) {
 	}
 
 	const ridsString = transformRIDs( rids, className );
+
+	const blockProps = useBlockProps.save( { className: 'iframe__overflow-wrapper' } );
+
 	if ( ! attributes?.className || ( ! styles.includes( className ) ) ) {
 		return (
-			<div className="iframe__overflow-wrapper">
+			<div { ...blockProps }>
 				<iframe
 					id="opentable-iframe"
 					scrolling="no"
@@ -28,7 +39,7 @@ export default function save( { attributes } ) {
 		);
 	}
 	return (
-		<div className="iframe__overflow-wrapper">
+		<div { ...blockProps }>
 			{ { tall: (
 				<iframe
 					id="opentable-iframe"

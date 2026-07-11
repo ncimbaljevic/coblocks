@@ -18,6 +18,8 @@ import Inspector from './inspector';
 /**
  * WordPress dependencies
  */
+import { useBlockProps } from '@wordpress/block-editor';
+import { View } from '@wordpress/primitives';
 import { withSelect } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
 import { compose, usePrevious } from '@wordpress/compose';
@@ -35,7 +37,6 @@ const Edit = ( props ) => {
 		wideControlsEnabled,
 		attributes,
 		setAttributes,
-		className,
 		noticeUI,
 	} = props;
 
@@ -168,27 +169,25 @@ const Edit = ( props ) => {
 	};
 
 	const hasImages = !! attributes.images.length;
+	const blockProps = useBlockProps( { className: classnames( { 'has-lightbox': lightbox } ) } );
+
+	// The placeholder should use the block props when no images are present.
+	const placeHolderBlockProps = ! hasImages ? blockProps : null;
 
 	const offsetGalleryPlaceholder = (
-		<>
+		<View { ...placeHolderBlockProps }>
 			{ ! hasImages ? noticeUI : null }
 			<GalleryPlaceholder
 				{ ...props }
 				icon={ <Icon icon={ icon } /> }
 				label={ __( 'Offset', 'coblocks' ) }
 			/>
-		</>
+		</View>
 	);
 
 	if ( ! hasImages ) {
 		return offsetGalleryPlaceholder;
 	}
-
-	const wrapperClasses = classnames(
-		className, {
-			'has-lightbox': lightbox,
-		}
-	);
 
 	const innerClasses = classnames(
 		...GalleryClasses( attributes ), {
@@ -209,7 +208,7 @@ const Edit = ( props ) => {
 				{ ...props }
 			/>
 			{ noticeUI }
-			<div className={ wrapperClasses }>
+			<div { ...blockProps }>
 				<GutterWrapper { ...attributes }>
 					<ul className={ innerClasses }>
 						{ attributes.images.map( ( img, index ) => {

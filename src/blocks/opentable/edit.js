@@ -19,6 +19,7 @@ import OpenTable from './opentable';
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { compose } from '@wordpress/compose';
+import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Button,
 	FormTokenField,
@@ -32,6 +33,8 @@ import { useEffect, useState } from '@wordpress/element';
 
 const Edit = ( props ) => {
 	const { className, attributes, noticeUI, noticeOperations, setAttributes } = props;
+
+	const blockProps = useBlockProps( { className } );
 
 	const [ ridField, setRidField ] = useState( attributes.restaurantIDs?.map( ( restaurantObject ) => restaurantObject.name ) ?? [] );
 	const [ queryResults, setQueryResults ] = useState( [] );
@@ -113,7 +116,7 @@ const Edit = ( props ) => {
 				className={ className }
 				setAttributes={ setAttributes }
 			/>
-			<div className={ className }>
+			<div { ...blockProps }>
 
 				{ ( isEditing ) ? (
 					<Placeholder
