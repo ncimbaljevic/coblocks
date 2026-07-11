@@ -7,8 +7,9 @@ import { chunk } from 'lodash';
  * WordPress dependencies.
  */
 import { __ } from '@wordpress/i18n';
+import { useBlockProps } from '@wordpress/block-editor';
 
-export default function save( { attributes, className } ) {
+export default function save( { attributes } ) {
 	const { align } = attributes;
 
 	const hasImages = !! attributes.images.length;
@@ -16,6 +17,10 @@ export default function save( { attributes, className } ) {
 	if ( ! hasImages ) {
 		return null;
 	}
+
+	const blockProps = useBlockProps.save( {
+		'aria-label': __( `List of logos`, 'coblocks' ),
+	} );
 
 	let count;
 
@@ -34,9 +39,7 @@ export default function save( { attributes, className } ) {
 	const imageChunks = chunk( attributes.images, count );
 
 	return (
-		<div
-			aria-label={ __( `List of logos`, 'coblocks' ) }
-			className={ className }>
+		<div { ...blockProps }>
 			{ Object.keys( imageChunks ).map( ( keyOuter ) => {
 				const images = imageChunks[ keyOuter ];
 
