@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { useBlockProps } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
 	const {
@@ -42,8 +43,10 @@ function Save( { attributes } ) {
 
 	const dataMap = { 'data-map-attr': attr };
 
+	const blockProps = useBlockProps.save( { style: backgroundStyles, ...dataMap } );
+
 	return (
-		<div style={ backgroundStyles } { ...dataMap } >
+		<div { ...blockProps } >
 			{
 				! hasApiKey &&
 				<iframe
