@@ -17,6 +17,7 @@ import { getDividerFromStyle } from './utils';
 import { useEffect } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { ResizableBox } from '@wordpress/components';
+import { useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Block edit function
@@ -59,6 +60,14 @@ const Edit = ( props ) => {
 		}
 	}, [] );
 
+	const blockProps = useBlockProps( {
+		className: classnames( className, {
+			'is-vertically-flipped': verticalFlip,
+			'is-horizontally-flipped': horizontalFlip,
+		} ),
+		style: { backgroundColor: backgroundColor.color, color: color.color },
+	} );
+
 	return (
 		<>
 			{ isSelected && (
@@ -67,13 +76,7 @@ const Edit = ( props ) => {
 					<Controls { ...props } />
 				</>
 			) }
-			<div
-				className={ classnames( className, {
-					'is-vertically-flipped': verticalFlip,
-					'is-horizontally-flipped': horizontalFlip,
-				} ) }
-				style={ { backgroundColor: backgroundColor.color, color: color.color } }
-			>
+			<div { ...blockProps }>
 				<ResizableBox
 					className={ classnames(
 						'wp-block-coblocks-shape-divider__svg-wrapper', {
