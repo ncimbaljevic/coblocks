@@ -12,6 +12,7 @@ import { keyboardReturn } from '@wordpress/icons';
 import { Button, Dashicon, Popover, TextControl } from '@wordpress/components';
 import { compose, usePrevious } from '@wordpress/compose';
 import { lazy, useEffect, useState } from '@wordpress/element';
+import { useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
@@ -186,6 +187,11 @@ const SocialProfilesEdit = ( props ) => {
 		houzz
 	);
 
+	const blockProps = useBlockProps( {
+		className: classes,
+		style: { textAlign, backgroundColor: blockBackgroundColor.color || '' },
+	} );
+
 	return (
 		<>
 			{ isSelected && (
@@ -197,7 +203,7 @@ const SocialProfilesEdit = ( props ) => {
 				</>
 			) }
 
-			<div className={ classes } style={ { textAlign, backgroundColor: blockBackgroundColor.color || '' } }>
+			<div { ...blockProps }>
 				<ul>
 					{ socialItems.map( ( socialItem ) => (
 						( placeholder || ( attributes[ socialItem.slug ] || isSelected ) ) && (
