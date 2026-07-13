@@ -5,7 +5,7 @@
 
 	svg {
 		bottom: -1px; // Add a tiny bit of overlap so that there's not a line divider
-		fill: currentColor;
+		fill: currentcolor;
 		height: 100%;
 		left: 0;
 		position: absolute;
@@ -17,7 +17,7 @@
 	}
 
 	&__alt-wrapper {
-		background-color: currentColor;
+		background-color: currentcolor;
 	}
 
 	&.is-horizontally-flipped svg {

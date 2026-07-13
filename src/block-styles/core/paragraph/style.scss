@@ -1,7 +1,8 @@
-@import "~@wordpress/base-styles/variables";
+@import "@wordpress/base-styles/variables";
 
 .wp-block-paragraph,
 p {
+
 	&.is-style-info,
 	&.is-style-success,
 	&.is-style-warning,

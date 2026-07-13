@@ -23,6 +23,7 @@
 		}
 	}
 }
+
 @include break-small-max() {
 	// Add gutter margin to the figure elements.
 	@for $i from 1 through 10 {
