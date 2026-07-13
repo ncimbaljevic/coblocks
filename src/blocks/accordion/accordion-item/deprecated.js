@@ -19,6 +19,63 @@ const deprecated = [
 			...currentBlock.attributes,
 		},
 
+		// v1 (apiVersion 1) markup, before the migration to `useBlockProps.save()`
+		// for Block API v3. Kept so existing content continues to validate.
+		save( { attributes } ) {
+			const {
+				backgroundColor,
+				customBackgroundColor,
+				customTextColor,
+				open,
+				textColor,
+				borderColor,
+				title,
+			} = attributes;
+
+			const backgroundColorClass = getColorClassName( 'background-color', backgroundColor );
+			const textColorClass = getColorClassName( 'color', textColor );
+
+			const titleClasses = classnames(
+				'wp-block-coblocks-accordion-item__title', {
+					'has-background': backgroundColor || customBackgroundColor,
+					[ backgroundColorClass ]: backgroundColorClass,
+					'has-text-color': textColor || customTextColor,
+					[ textColorClass ]: textColorClass,
+				} );
+
+			const titleStyles = {
+				backgroundColor: backgroundColorClass ? undefined : customBackgroundColor,
+				color: textColorClass ? undefined : customTextColor,
+			};
+
+			const borderStyle = {
+				borderColor: borderColor ? borderColor : customBackgroundColor,
+			};
+
+			return (
+				<div>
+					{ ! RichText.isEmpty( title ) &&
+					<details open={ open }>
+						<RichText.Content
+							className={ titleClasses }
+							style={ titleStyles }
+							tagName="summary"
+							value={ title }
+						/>
+						<div className="wp-block-coblocks-accordion-item__content" style={ borderStyle }>
+							<InnerBlocks.Content />
+						</div>
+					</details>
+					}
+				</div>
+			);
+		},
+	},
+	{
+		attributes: {
+			...currentBlock.attributes,
+		},
+
 		save( { attributes } ) {
 			const {
 				backgroundColor,

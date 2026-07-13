@@ -6,13 +6,15 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies.
  */
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
-export default function save( { attributes, className } ) {
+export default function save( { attributes } ) {
 	const {
 		contentAlign,
 		isStackedOnMobile,
 	} = attributes;
+
+	const blockProps = useBlockProps.save();
 
 	const innerClasses = classnames(
 		'wp-block-coblocks-buttons__inner', {
@@ -22,7 +24,7 @@ export default function save( { attributes, className } ) {
 	);
 
 	return (
-		<div className={ className }>
+		<div { ...blockProps }>
 			<div className={ innerClasses }>
 				<InnerBlocks.Content />
 			</div>
