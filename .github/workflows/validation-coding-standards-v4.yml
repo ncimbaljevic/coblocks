@@ -19,6 +19,7 @@ concurrency:
 jobs:
   php:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     name: PHP
     steps:
       - name: Checkout
@@ -32,6 +33,7 @@ jobs:
 
   css:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     name: CSS
     steps:
       - name: Checkout
@@ -51,6 +53,7 @@ jobs:
 
   js:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     name: JS
     steps:
       - name: Checkout

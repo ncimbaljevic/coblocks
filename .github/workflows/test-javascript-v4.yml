@@ -19,6 +19,7 @@ jobs:
   js_unit:
     name: Unit
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v5
