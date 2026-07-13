@@ -12,6 +12,7 @@ import CoBlocksFieldLabel from './field-label';
  * WordPress dependencies
  */
 import { TextControl } from '@wordpress/components';
+import { useBlockProps } from '@wordpress/block-editor';
 
 function CoBlocksField( {
 	isSelected,
@@ -23,9 +24,13 @@ function CoBlocksField( {
 	customTextColor,
 	name,
 } ) {
+	const blockProps = useBlockProps( {
+		className: classnames( 'coblocks-field', { 'is-selected': isSelected } ),
+	} );
+
 	return (
 		<>
-			<div className={ classnames( 'coblocks-field', { 'is-selected': isSelected } ) }>
+			<div { ...blockProps }>
 				<CoBlocksFieldLabel
 					required={ required }
 					label={ label }

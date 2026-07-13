@@ -7,24 +7,28 @@ import CoBlocksFieldLabel from '../field-label';
  * WordPress dependencies
  */
 import { TextControl, PanelBody } from '@wordpress/components';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 
 function CoBlocksFieldHidden( props ) {
 	const { attributes, setAttributes, isSelected } = props;
 	const { label, value } = attributes;
 
+	const blockProps = useBlockProps();
+
 	return (
 		<>
-			<CoBlocksFieldLabel
-				label={ label }
-				setAttributes={ setAttributes }
-				isSelected={ isSelected }
-				showRequiredToggle={ false }
-			/>
-			<TextControl
-				value={ value }
-			/>
+			<div { ...blockProps }>
+				<CoBlocksFieldLabel
+					label={ label }
+					setAttributes={ setAttributes }
+					isSelected={ isSelected }
+					showRequiredToggle={ false }
+				/>
+				<TextControl
+					value={ value }
+				/>
+			</div>
 			<InspectorControls>
 				<PanelBody title={ __( 'Hidden Field settings', 'coblocks' ) }>
 					<TextControl
