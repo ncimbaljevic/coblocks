@@ -1,12 +1,13 @@
 name: Test / E2E Runner & Jest & PHP Unit runner for WordPress Next version. [v4]
 
 on:
-  pull_request:
-    branches: [ release/4.0.0 ]
-  push:
-    branches: [ release/4.0.0 ]
+  # On-demand and nightly only — never on every PR.
+  workflow_dispatch:
+  schedule:
+    # Nightly at 02:30 UTC against WP nightly. Remove this block to disable.
+    - cron: '30 2 * * *'
 
-# Cancel superseded runs so each new push doesn't stack another full nightly
+# Cancel superseded runs so each new trigger doesn't stack another full nightly
 # E2E fan-out on top of the one already in flight.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -32,7 +33,6 @@ jobs:
       wp_next: "https://wordpress.org/nightly-builds/wordpress-latest.zip"
     steps:
       - run: echo "Setting WP Next Constant"
-
 
   # E2E Testing
   chrome_e2e_wp_next:
