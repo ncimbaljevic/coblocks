@@ -10,7 +10,7 @@ import times from 'lodash/times';
  */
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { Button, Tooltip } from '@wordpress/components';
 import { Icon, plus } from '@wordpress/icons';
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -69,6 +69,8 @@ const AccordionEdit = ( props ) => {
 
 	const items = getBlocksByClientId( clientId );
 
+	const blockProps = useBlockProps( { className } );
+
 	const handleEvent = () => {
 		const lastId = items[ 0 ].innerBlocks[ items[ 0 ].innerBlocks.length - 1 ]?.clientId;
 		let copyAttributes = {};
@@ -95,7 +97,7 @@ const AccordionEdit = ( props ) => {
 					{ ...props }
 				/>
 			) }
-			<div className={ className }>
+			<div { ...blockProps }>
 				<InnerBlocks
 					__experimentalCaptureToolbars={ true }
 					allowedBlocks={ ALLOWED_BLOCKS }

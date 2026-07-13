@@ -14,8 +14,8 @@ import Controls from './controls';
 /**
  * WordPress dependencies
  */
-import { Component, Fragment } from '@wordpress/element';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { useEffect } from '@wordpress/element';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { createBlock, getBlockType } from '@wordpress/blocks';
 import { select, dispatch } from '@wordpress/data';
 
@@ -34,62 +34,64 @@ const getCount = memoize( ( count ) => {
 	return times( count, () => [ 'core/button' ] );
 } );
 
-class ButtonsEdit extends Component {
-	componentDidMount() {
-		const { clientId } = this.props;
+const ButtonsEdit = ( props ) => {
+	const {
+		attributes,
+		className,
+		clientId,
+		isSelected,
+	} = props;
+
+	const {
+		items,
+		contentAlign,
+		isStackedOnMobile,
+	} = attributes;
+
+	// Replace this deprecated block with the core Buttons block on mount,
+	// mirroring the previous `componentDidMount` behavior.
+	useEffect( () => {
 		if ( ! getBlockType( 'core/buttons' ) ) {
 			return;
 		}
 		const thisBlock = select( 'core/block-editor' ).getBlock( clientId );
 		const coreButtons = createBlock( 'core/buttons', { align: thisBlock.attributes.contentAlign }, thisBlock.innerBlocks );
 		dispatch( 'core/block-editor' ).replaceBlock( clientId, coreButtons );
-	}
+	}, [] );
 
-	render() {
-		const {
-			attributes,
-			className,
-			isSelected,
-		} = this.props;
+	const classes = classnames(
+		'wp-block-coblocks-buttons__inner', {
+			[ `flex-align-${ contentAlign }` ]: contentAlign,
+			'is-stacked-on-mobile': isStackedOnMobile,
+		}
+	);
 
-		const {
-			items,
-			contentAlign,
-			isStackedOnMobile,
-		} = attributes;
+	const blockProps = useBlockProps( { className } );
 
-		const classes = classnames(
-			'wp-block-coblocks-buttons__inner', {
-				[ `flex-align-${ contentAlign }` ]: contentAlign,
-				'is-stacked-on-mobile': isStackedOnMobile,
-			}
-		);
-
-		return (
-			<Fragment>
-				{ isSelected && (
-					<Inspector
-						{ ...this.props }
+	return (
+		<>
+			{ isSelected && (
+				<Inspector
+					{ ...props }
+				/>
+			) }
+			{ isSelected && (
+				<Controls
+					{ ...props }
+				/>
+			) }
+			<div { ...blockProps }>
+				<div className={ classes }>
+					<InnerBlocks
+						allowedBlocks={ ALLOWED_BLOCKS }
+						template={ getCount( items ) }
+						templateLock="all"
+						templateInsertUpdatesSelection={ false }
 					/>
-				) }
-				{ isSelected && (
-					<Controls
-						{ ...this.props }
-					/>
-				) }
-				<div className={ className }>
-					<div className={ classes }>
-						<InnerBlocks
-							allowedBlocks={ ALLOWED_BLOCKS }
-							template={ getCount( items ) }
-							templateLock="all"
-							templateInsertUpdatesSelection={ false }
-						/>
-					</div>
 				</div>
-			</Fragment>
-		);
-	}
-}
+			</div>
+		</>
+	);
+};
 
 export default ButtonsEdit;
