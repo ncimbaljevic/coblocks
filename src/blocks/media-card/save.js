@@ -12,7 +12,7 @@ import { BackgroundStyles, BackgroundClasses, BackgroundVideo } from '../../comp
 /**
  * WordPress dependencies
  */
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 const save = ( { attributes } ) => {
 	const {
@@ -73,8 +73,10 @@ const save = ( { attributes } ) => {
 			'has-shadow': hasCardShadow,
 		} );
 
+	const blockProps = useBlockProps.save( { className: classes } );
+
 	return (
-		<div className={ classes }>
+		<div { ...blockProps }>
 			<div className={ innerClasses } style={ innerStyles } >
 				{ BackgroundVideo( attributes ) }
 				<div className="wp-block-coblocks-media-card__wrapper" style={ wrapperStyles }>

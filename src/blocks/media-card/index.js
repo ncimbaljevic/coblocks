@@ -2,6 +2,7 @@
  * Internal dependencies
  */
 import { BackgroundAttributes } from '../../components/background';
+import deprecated from './deprecated';
 import DimensionsAttributes from '../../components/dimensions-control/attributes';
 import edit from './edit';
 import { MediaCardIcon as icon } from '@godaddy-wordpress/coblocks-icons';
@@ -46,6 +47,7 @@ const settings = {
 		},
 	},
 	attributes,
+	deprecated,
 	transforms,
 	edit,
 	save,
