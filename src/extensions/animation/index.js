@@ -24,7 +24,7 @@ const dataAnimationHolder = 'data-coblocks-animation';
  *
  * @function useAnimationControls
  * @param {Object} props
- * @return {JSX} Wrapped component.
+ * @return {Element} Wrapped component.
  */
 const useAnimationControls = ( ( props ) => {
 	const block = select( 'core/block-editor' ).getBlock( props.clientId );

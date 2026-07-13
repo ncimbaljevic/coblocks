@@ -280,7 +280,7 @@ const FormEdit = ( props ) => {
 					onChange={ onChangeSubject }
 					help={
 						<>
-							{ __( 'You may use the following tags in the subject field: ', 'coblocks' ) }
+							{ __( 'You may use the following tags in the subject field:', 'coblocks' ) }
 							<Button
 								isLink
 								onClick={ appendTagsToSubject }

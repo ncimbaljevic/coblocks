@@ -9,9 +9,13 @@ module.exports = defineConfig( {
 		},
 		specPattern: './/**/*.cypress.js',
 		supportFile: '.dev/tests/cypress/support/commands.js',
+		// Preserve cookies/localStorage (notably the WordPress login) across the
+		// tests within a spec. Replaces the removed `Cypress.Cookies.defaults()`
+		// call after the Cypress 13 upgrade.
+		testIsolation: false,
 	},
 	env: {
-		testURL: 'http://localhost:8889',
+		testURL: 'http://localhost:9281',
 		wpPassword: 'password',
 		wpUsername: 'admin',
 	},

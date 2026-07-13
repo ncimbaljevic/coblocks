@@ -115,12 +115,7 @@ describe( 'Test CoBlocks Social Profiles Block', function() {
 		cy.get( '.wp-block-coblocks-social-profiles button[aria-label="Add Facebook profile"]' ).first().click();
 		cy.get( '.block-editor-url-input' ).type( 'https://www.facebook.com/test' );
 
-		cy.get( '.components-panel__body-title' ).contains( 'Styles' ).then( ( $panelTop ) => {
-			const $parentPanel = Cypress.$( $panelTop ).closest( 'div.components-panel__body' );
-			if ( ! $parentPanel.hasClass( 'is-opened' ) ) {
-				$panelTop.click();
-			}
-		} );
+		helpers.selectStylesTabIfExists();
 
 		cy.get( '.block-editor-block-styles__item:nth-child(1)' ).click();
 		cy.get( '.wp-block-coblocks-social-profiles' )
@@ -139,12 +134,7 @@ describe( 'Test CoBlocks Social Profiles Block', function() {
 
 		cy.get( 'div[data-type="coblocks/social-profiles"]' ).first().click( { force: true } );
 
-		cy.get( '.components-panel__body-title' ).contains( 'Styles' ).then( ( $panelTop ) => {
-			const $parentPanel = Cypress.$( $panelTop ).closest( 'div.components-panel__body' );
-			if ( ! $parentPanel.hasClass( 'is-opened' ) ) {
-				$panelTop.click();
-			}
-		} );
+		helpers.selectStylesTabIfExists();
 
 		cy.get( '.block-editor-block-styles__item:nth-child(2)' ).click();
 		cy.get( '.wp-block-coblocks-social-profiles' )
@@ -163,12 +153,7 @@ describe( 'Test CoBlocks Social Profiles Block', function() {
 
 		cy.get( 'div[data-type="coblocks/social-profiles"]' ).first().click( { force: true } );
 
-		cy.get( '.components-panel__body-title' ).contains( 'Styles' ).then( ( $panelTop ) => {
-			const $parentPanel = Cypress.$( $panelTop ).closest( 'div.components-panel__body' );
-			if ( ! $parentPanel.hasClass( 'is-opened' ) ) {
-				$panelTop.click();
-			}
-		} );
+		helpers.selectStylesTabIfExists();
 
 		cy.get( '.block-editor-block-styles__item:nth-child(3)' ).click();
 		cy.get( '.wp-block-coblocks-social-profiles' )
@@ -187,12 +172,7 @@ describe( 'Test CoBlocks Social Profiles Block', function() {
 
 		cy.get( 'div[data-type="coblocks/social-profiles"]' ).first().click( { force: true } );
 
-		cy.get( '.components-panel__body-title' ).contains( 'Styles' ).then( ( $panelTop ) => {
-			const $parentPanel = Cypress.$( $panelTop ).closest( 'div.components-panel__body' );
-			if ( ! $parentPanel.hasClass( 'is-opened' ) ) {
-				$panelTop.click();
-			}
-		} );
+		helpers.selectStylesTabIfExists();
 
 		cy.get( '.block-editor-block-styles__item:nth-child(4)' ).click();
 		cy.get( '.wp-block-coblocks-social-profiles' )
@@ -211,12 +191,7 @@ describe( 'Test CoBlocks Social Profiles Block', function() {
 
 		cy.get( 'div[data-type="coblocks/social-profiles"]' ).first().click( { force: true } );
 
-		cy.get( '.components-panel__body-title' ).contains( 'Styles' ).then( ( $panelTop ) => {
-			const $parentPanel = Cypress.$( $panelTop ).closest( 'div.components-panel__body' );
-			if ( ! $parentPanel.hasClass( 'is-opened' ) ) {
-				$panelTop.click();
-			}
-		} );
+		helpers.selectStylesTabIfExists();
 
 		cy.get( '.block-editor-block-styles__item:nth-child(5)' ).click();
 		cy.get( '.wp-block-coblocks-social-profiles' )
@@ -246,13 +221,6 @@ describe( 'Test CoBlocks Social Profiles Block', function() {
 		cy.get( '.wp-block-coblocks-social-profiles button[aria-label="Add Facebook profile"]' ).first().click();
 		cy.get( '.block-editor-url-input' ).type( 'https://www.facebook.com/test' );
 
-		cy.get( '.components-panel__body-title' ).contains( 'Styles' ).then( ( $panelTop ) => {
-			const $parentPanel = Cypress.$( $panelTop ).closest( 'div.components-panel__body' );
-			if ( $parentPanel.hasClass( 'is-opened' ) ) {
-				$panelTop.click();
-			}
-		} );
-
 		helpers.openSettingsPanel( 'Icon settings' );
 		helpers.toggleSettingCheckbox( 'Social colors' );
 
@@ -279,13 +247,6 @@ describe( 'Test CoBlocks Social Profiles Block', function() {
 
 		cy.get( '.wp-block-coblocks-social-profiles button[aria-label="Add Facebook profile"]' ).first().click();
 		cy.get( '.block-editor-url-input' ).type( 'https://www.facebook.com/test' );
-
-		cy.get( '.components-panel__body-title' ).contains( 'Styles' ).then( ( $panelTop ) => {
-			const $parentPanel = Cypress.$( $panelTop ).closest( 'div.components-panel__body' );
-			if ( $parentPanel.hasClass( 'is-opened' ) ) {
-				$panelTop.click();
-			}
-		} );
 
 		helpers.openSettingsPanel( 'Icon settings' );
 
@@ -331,13 +292,6 @@ describe( 'Test CoBlocks Social Profiles Block', function() {
 		cy.get( '.wp-block-coblocks-social-profiles button[aria-label="Add Facebook profile"]' ).first().click();
 		cy.get( '.block-editor-url-input' ).type( 'https://www.facebook.com/test' );
 
-		cy.get( '.components-panel__body-title' ).contains( 'Styles' ).then( ( $panelTop ) => {
-			const $parentPanel = Cypress.$( $panelTop ).closest( 'div.components-panel__body' );
-			if ( $parentPanel.hasClass( 'is-opened' ) ) {
-				$panelTop.click();
-			}
-		} );
-
 		helpers.openSettingsPanel( 'Icon settings' );
 
 		cy.get( '.components-coblocks-inspector__social-button-size select' )
@@ -364,13 +318,6 @@ describe( 'Test CoBlocks Social Profiles Block', function() {
 
 		cy.get( '.wp-block-coblocks-social-profiles button[aria-label="Add Facebook profile"]' ).first().click();
 		cy.get( '.block-editor-url-input' ).type( 'https://www.facebook.com/test' );
-
-		cy.get( '.components-panel__body-title' ).contains( 'Styles' ).then( ( $panelTop ) => {
-			const $parentPanel = Cypress.$( $panelTop ).closest( 'div.components-panel__body' );
-			if ( $parentPanel.hasClass( 'is-opened' ) ) {
-				$panelTop.click();
-			}
-		} );
 
 		helpers.openSettingsPanel( 'Profiles' );
 
@@ -401,13 +348,6 @@ describe( 'Test CoBlocks Social Profiles Block', function() {
 
 		cy.get( '.wp-block-coblocks-social-profiles button[aria-label="Add Facebook profile"]' ).first().click();
 		cy.get( '.block-editor-url-input' ).type( 'https://www.facebook.com/test' );
-
-		cy.get( '.components-panel__body-title' ).contains( 'Styles' ).then( ( $panelTop ) => {
-			const $parentPanel = Cypress.$( $panelTop ).closest( 'div.components-panel__body' );
-			if ( $parentPanel.hasClass( 'is-opened' ) ) {
-				$panelTop.click();
-			}
-		} );
 
 		helpers.addCustomBlockClass( 'my-custom-class', 'social-profiles' );
 

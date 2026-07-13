@@ -1,16 +1,16 @@
-// WordPress variables and mixins
-@import "~@wordpress/base-styles/variables";
-@import "~@wordpress/base-styles/mixins";
-@import "~@wordpress/base-styles/breakpoints";
-@import "~@wordpress/base-styles/animations";
-@import "~@wordpress/components/src/modal/style";
-@import "~@wordpress/components/src/button-group/style";
-@import "~@wordpress/components/src/utils/theme-variables";
-@import "~@wordpress/components/src/button/style";
-@import "~@wordpress/components/src/checkbox-control/style";
-@import "~@wordpress/components/src/text-control/style";
+// Bundle the WordPress component styles used by the modal. Each component
+// stylesheet `@use`s the base-styles it needs itself, so we use `@use`
+// (module-scoped) rather than `@import` to avoid the global variable
+// collisions that mixing `@import` with the components' modern `@use ... as *`
+// would otherwise cause.
+@use "@wordpress/components/src/modal/style" as modal;
+@use "@wordpress/components/src/button-group/style" as button-group;
+@use "@wordpress/components/src/button/style" as button;
+@use "@wordpress/components/src/checkbox-control/style" as checkbox-control;
+@use "@wordpress/components/src/text-control/style" as text-control;
 
 .common-deactivate-modal {
+
 	.components-modal__content {
 		width: 600px;
 	}

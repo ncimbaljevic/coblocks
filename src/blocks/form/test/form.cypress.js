@@ -483,7 +483,7 @@ describe( 'Test CoBlocks Form Block', function() {
 			.contains( /Success Message/i )
 			.next( 'textarea' )
 			.then( ( $inputElem ) => {
-				cy.get( $inputElem ).invoke( 'val' ).then( ( ) => {
+				cy.get( $inputElem ).invoke( 'val' ).then( () => {
 					cy.get( $inputElem )
 						.clear()
 						.type( 'Thank you for submitting this form!', { force: true } );
@@ -602,6 +602,8 @@ describe( 'Test CoBlocks Form Block', function() {
 			const buttonStyleClass = `is-style-${ styles[ i ] }`;
 
 			cy.get( '[data-type="coblocks/form"] .coblocks-form__submit' ).click( { force: true } );
+
+			helpers.selectStylesTabIfExists();
 
 			// Switch styles.
 			// Note: We use i+2 to avoid 'Fill'.

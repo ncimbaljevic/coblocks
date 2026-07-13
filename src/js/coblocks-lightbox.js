@@ -1,5 +1,5 @@
 /*global coblocksLightboxData */
-( function( ) {
+( function() {
 	'use strict';
 
 	const { closeLabel, leftLabel, rightLabel } = coblocksLightboxData;

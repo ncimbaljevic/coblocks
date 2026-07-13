@@ -1,8 +1,23 @@
 /**
- * Returns true if styles tab exists false otherwise.
+ * Select the block inspector's "Styles" tab. Ensures the settings sidebar is
+ * open first, because some flows (e.g. closing the media modal) leave it closed,
+ * which would hide the block's Styles tab.
  */
 export function selectStylesTabIfExists() {
-	cy.get( sidebarClass() ).find( 'button[aria-label="Styles"]' ).click();
+	cy.get( 'button[aria-label="Settings"]' ).then( ( $settings ) => {
+		if ( ! $settings.hasClass( 'is-pressed' ) && ! $settings.hasClass( 'is-toggled' ) ) {
+			cy.wrap( $settings ).click();
+		}
+	} );
+	// Click the Styles inspector tab only when the block exposes one. Some blocks
+	// (e.g. logos) render their style variations within the Settings tab instead
+	// of a dedicated Styles tab, so there is nothing to switch to.
+	cy.get( sidebarClass() ).then( ( $sidebar ) => {
+		const $tab = $sidebar.find( 'button[aria-label="Styles"]' );
+		if ( $tab.length ) {
+			cy.wrap( $tab ).click();
+		}
+	} );
 }
 
 /**
@@ -11,23 +26,26 @@ export function selectStylesTabIfExists() {
  * @param {string} name the name of the child block to add.
  */
 export function addFormChild( name ) {
-	cy.get( '[data-type="coblocks/form"] [data-type^="coblocks/field"]' ).first().click( { force: true } );
-	cy.get( '.block-editor-block-settings-menu' ).click();
-	cy.get( '.components-popover__content button' ).contains( /insert after|add after/i ).click( { force: true } );
-	cy.get( '[data-type="coblocks/form"] [data-type="core/paragraph"]' ).click( { force: true } );
+	// Insert the field into the form via the data store rather than driving the
+	// block-settings menu + inserter, which races under the WP 7.0 editor.
+	getWPBlocksObject().then( ( blocks ) => {
+		getWPDataObject().then( ( data ) => {
+			const form = data.select( 'core/block-editor' ).getBlocks().find( ( block ) => block.name === 'coblocks/form' );
+			if ( ! form ) {
+				return;
+			}
+			// Keep the submit button last where present.
+			const submitIndex = form.innerBlocks.findIndex( ( block ) => block.name === 'coblocks/field-submit-button' );
+			data.dispatch( 'core/block-editor' ).insertBlock(
+				blocks.createBlock( `coblocks/field-${ name }` ),
+				submitIndex >= 0 ? submitIndex : form.innerBlocks.length,
+				form.clientId,
+				true
+			);
+		} );
+	} );
 
-	if ( isWP65AtLeast() ) {
-		cy.get( '.edit-post-header-toolbar' ).find( '.editor-document-tools__inserter-toggle' ).click( { force: true } );
-
-		cy.get( '.components-input-control__input' ).click().type( name );
-	} else {
-		cy.get( '.edit-post-header-toolbar' ).find( '.edit-post-header-toolbar__inserter-toggle' ).click( { force: true } );
-
-		cy.get( '.block-editor-inserter__search .components-search-control__input' ).click().type( name );
-	}
-
-	cy.get( '.editor-block-list-item-coblocks-field-' + name ).first().click( { force: true } );
-	cy.get( `[data-type="coblocks/field-${ name }"]` ).should( 'exist' ).click( { force: true } );
+	cy.get( `[data-type="coblocks/field-${ name }"]` ).should( 'exist' );
 }
 
 /**
@@ -55,6 +73,30 @@ export function goTo( path = '/wp-admin', login = false ) {
 		return login ? cy.window().then( ( win ) => {
 			return win;
 		} ) : getWPDataObject();
+	} );
+}
+
+/**
+ * Create a published post from a spec's HTML fixture and return its ID. Used by
+ * the migration specs (alert/author) so they run locally as well as in CI,
+ * without depending on a separate workflow step to pre-create the post. Relies
+ * on the logged-in session cookie plus the REST nonce for authentication.
+ *
+ * @param {string} specName The spec file name, e.g. Cypress.spec.name.
+ * @return {Cypress.Chainable<number>} The created post ID.
+ */
+export function createFixturePost( specName ) {
+	return cy.readFile( `.dev/tests/cypress/fixtures/${ specName }.html` ).then( ( content ) => {
+		return cy.window().its( 'wpApiSettings.nonce' ).then( ( nonce ) => {
+			return cy.request( {
+				body: { content, status: 'publish', title: specName },
+				headers: { 'X-WP-Nonce': nonce },
+				method: 'POST',
+				// Use the rest_route form so it works without pretty permalinks
+				// (the local wp-env does not enable them the way CI does).
+				url: `${ Cypress.env( 'testURL' ) }/?rest_route=/wp/v2/posts`,
+			} ).then( ( response ) => response.body.id );
+		} );
 	} );
 }
 
@@ -113,12 +155,15 @@ export function addBlockToPost( blockName, clearEditor = false ) {
 		return;
 	}
 
+	// Ensure the editor is ready BEFORE touching blocks. After a navigation
+	// (e.g. viewPage()/editPage() in a previous test) the editor re-hydrates its
+	// saved content asynchronously, so clearing before it is ready would race the
+	// hydration and leave stale blocks behind alongside the one we insert.
+	cy.get( '.is-root-container.wp-block-post-content' );
+
 	if ( clearEditor ) {
 		clearBlocks();
 	}
-
-	// Ensure editor is ready for blocks.
-	cy.get( '.is-root-container.wp-block-post-content' );
 
 	/**
 	 * Insert the block using dispatch to avoid the block inserter
@@ -128,14 +173,28 @@ export function addBlockToPost( blockName, clearEditor = false ) {
 	 */
 	getWPDataObject().then( ( data ) => {
 		getWPBlocksObject().then( ( blocks ) => {
-			data.dispatch( 'core/block-editor' ).insertBlock(
-				blocks.createBlock( blockName )
-			);
+			// Wait until the block type is registered on the client before inserting.
+			// On a slow editor (e.g. the plugin bundle served from a Docker mount) the
+			// CoBlocks script can take a moment to register its blocks; inserting before
+			// then produces an invalid block that never renders. (In CI registration is
+			// immediate, so this passes on the first check.)
+			cy.wrap( null ).should( () => {
+				expect(
+					blocks.getBlockType( blockName ),
+					`${ blockName } is registered`
+				).to.not.equal( undefined );
+			} ).then( () => {
+				data.dispatch( 'core/block-editor' ).insertBlock(
+					blocks.createBlock( blockName )
+				);
+			} );
 		} );
 	} );
 
-	// Make sure the block was added to our page
-	cy.get( `[class*="-visual-editor"] [data-type="${ blockName }"]` ).should( 'exist' );
+	// Make sure the block was added to our page. The block renders inside the
+	// editor-canvas iframe under WP 7.0, so query the block wrapper directly
+	// (the cy.get override scopes it into the canvas).
+	cy.get( `[data-type="${ blockName }"]` ).should( 'exist' );
 
 	// Give a short delay for blocks to render.
 	cy.wait( 250 );
@@ -180,8 +239,14 @@ export function savePage() {
 
 	cy.get( '.components-editor-notices__snackbar', { timeout: 120000 } ).should( 'not.be.empty' );
 
-	// Reload the page to ensure that we're not hitting any block errors
-	cy.reload();
+	// Reload the saved post to ensure we're not hitting any block errors. We
+	// navigate to the post's edit screen by ID rather than cy.reload(): saving a
+	// new post no longer updates the post-new.php URL in a way cy.reload() can
+	// follow, so a reload would re-open an empty new post.
+	getWPDataObject().then( ( data ) => {
+		const postId = data.select( 'core/editor' ).getCurrentPostId();
+		goTo( `/wp-admin/post.php?post=${ postId }&action=edit` );
+	} );
 }
 
 /**
@@ -243,9 +308,19 @@ export function editPage() {
  */
 export function clearBlocks() {
 	getWPDataObject().then( ( data ) => {
-		data.dispatch( 'core/block-editor' ).removeBlocks(
-			data.select( 'core/block-editor' ).getBlocks().map( ( block ) => block.clientId )
-		);
+		// Remove every block, retrying until the editor is genuinely empty. After a
+		// navigation the editor re-hydrates its saved content asynchronously, so a
+		// single removeBlocks() pass can miss blocks that arrive a tick later and
+		// leave the editor with stale content.
+		cy.wrap( null ).should( () => {
+			const blocks = data.select( 'core/block-editor' ).getBlocks();
+			if ( blocks.length ) {
+				data.dispatch( 'core/block-editor' ).removeBlocks(
+					blocks.map( ( block ) => block.clientId )
+				);
+			}
+			expect( data.select( 'core/block-editor' ).getBlocks() ).to.have.length( 0 );
+		} );
 	} );
 }
 
@@ -265,9 +340,30 @@ export function getBlockSlug() {
  * @param {string} style Name of the style to apply
  */
 export function setBlockStyle( style ) {
-	openSettingsPanel( RegExp( 'styles', 'i' ) );
+	// Core block styles moved into a dedicated "Styles" inspector tab (WP 6.3+);
+	// select it when present.
+	selectStylesTabIfExists();
 
-	cy.get( sidebarClass() + ' [class*="editor-block-styles"]' )
+	// Some blocks (e.g. posts, food-and-drinks) instead render a custom "Styles"
+	// PanelBody in the Settings tab that is collapsed by default — expand it so
+	// its style items are visible.
+	cy.get( 'body' ).then( ( $body ) => {
+		const $toggle = $body
+			.find( 'button.components-panel__body-toggle' )
+			.filter( ( i, el ) => /^\s*styles\s*$/i.test( el.textContent || '' ) );
+		if ( $toggle.length && $toggle.first().attr( 'aria-expanded' ) === 'false' ) {
+			cy.wrap( $toggle.first() ).click();
+		}
+	} );
+
+	// Style variations render either within the settings sidebar (older layout)
+	// or under the Styles tab's variants list, depending on the block, so match
+	// across both containers.
+	cy.get( [
+		sidebarClass() + ' [class*="editor-block-styles"]',
+		'.block-editor-block-styles__variants',
+		'.block-editor-block-styles__item',
+	].join( ', ' ) )
 		.contains( RegExp( style, 'i' ) )
 		.click();
 }
@@ -328,7 +424,6 @@ export function selectBlock( name ) {
  * Helper function to set the block alignment.
  *
  * @param {string} alignment The alignment to set.
- *
  */
 export function setBlockAlignment( alignment ) {
 	// Open alignment toolbar for selected block.
@@ -485,6 +580,16 @@ export function setColorPanelSetting( settingName, hexColor ) {
  * @param {RegExp} panelText The panel label text to open. eg: Color Settings
  */
 export function openSettingsPanel( panelText ) {
+	// Block styles moved from a settings panel into a dedicated "Styles"
+	// inspector tab in WP 6.3+, so route requests for the Styles panel there.
+	const wantsStyles = panelText instanceof RegExp
+		? panelText.test( 'Styles' )
+		: /^\s*styles\s*$/i.test( String( panelText ) );
+	if ( wantsStyles ) {
+		selectStylesTabIfExists();
+		return;
+	}
+
 	if ( isWP65AtLeast() ) {
 		cy.get( '[data-tab-id="edit-post/block"]' ).click();
 	} else {
@@ -533,11 +638,23 @@ export function openHeadingToolbarAndSelect( headingLevel ) {
  * @param {string} checkboxLabelText The checkbox label text. eg: Drop Cap
  */
 export function toggleSettingCheckbox( checkboxLabelText ) {
-	cy.get( '.components-toggle-control__label' )
-		.contains( checkboxLabelText )
-		.closest( '.components-base-control__field' )
-		.find( '.components-form-toggle__input' )
-		.click();
+	// Ensure the block settings sidebar is open and on the block tab — flows such
+	// as closing the media modal can leave it closed, which hides the toggle.
+	cy.get( 'button[aria-label="Settings"]' ).then( ( $settings ) => {
+		if ( ! $settings.hasClass( 'is-pressed' ) && ! $settings.hasClass( 'is-toggled' ) ) {
+			cy.wrap( $settings ).click();
+		}
+	} );
+	if ( isWP65AtLeast() ) {
+		cy.get( '[data-tab-id="edit-post/block"]' ).click();
+	}
+
+	// Match the ToggleControl by its label text and click the underlying
+	// checkbox input. The `__label` element class changed in newer
+	// @wordpress/components, so locate the control by its stable root class.
+	cy.contains( '.components-toggle-control', checkboxLabelText )
+		.find( 'input[type="checkbox"]' )
+		.click( { force: true } );
 }
 
 /**
@@ -580,7 +697,7 @@ export function addCustomBlockClass( classes, blockID = '' ) {
  */
 export function openCoBlocksLabsModal() {
 	// Open "more" menu.
-	cy.get( '.edit-post-more-menu button, .interface-more-menu-dropdown button' ).click();
+	cy.get( 'button[aria-label="Options"]' ).click();
 	cy.get( '.components-menu-group' ).contains( 'CoBlocks Labs' ).click( { force: true } );
 
 	cy.get( '.components-modal__frame' ).contains( 'CoBlocks Labs' ).should( 'exist' );
@@ -613,15 +730,37 @@ export function hexToRGB( hex ) {
 }
 
 export function isNotWPLocalEnv() {
-	return Cypress.env( 'testURL' ) !== 'http://localhost:8889';
+	return Cypress.env( 'testURL' ) !== 'http://localhost:9281';
+}
+
+/**
+ * Whether the running WordPress is at least the given branch. Parses the
+ * `branch-<major>-<minor>` body class instead of matching hard-coded branches,
+ * so it keeps working for WordPress 7.0+ (previously these only checked for
+ * specific 6.x branch classes and wrongly returned false on newer versions).
+ *
+ * @param {number} major Minimum major version.
+ * @param {number} minor Minimum minor version.
+ * @return {boolean} True when the current branch is >= major.minor.
+ */
+function wpBranchAtLeast( major, minor ) {
+	// WordPress adds a `branch-<major>-<minor>` body class, but drops the minor
+	// for x.0 releases (WP 7.0 is `branch-7`), so the minor group is optional.
+	const match = ( Cypress.$( "[class*='branch-']" ).attr( 'class' ) || '' ).match( /branch-(\d+)(?:-(\d+))?/ );
+	if ( ! match ) {
+		return false;
+	}
+	const branchMajor = Number( match[ 1 ] );
+	const branchMinor = match[ 2 ] !== undefined ? Number( match[ 2 ] ) : 0;
+	return branchMajor > major || ( branchMajor === major && branchMinor >= minor );
 }
 
 export function isWP65AtLeast() {
-	return Cypress.$( "[class*='branch-6-5']" ).length > 0 || Cypress.$( "[class*='branch-6-6']" ).length > 0;
+	return wpBranchAtLeast( 6, 5 );
 }
 
 export function isWP66AtLeast() {
-	return Cypress.$( "[class*='branch-6-6']" ).length > 0 || Cypress.$( "[class*='branch-6-7']" ).length > 0;
+	return wpBranchAtLeast( 6, 6 );
 }
 
 function getIframeDocument( containerClass ) {

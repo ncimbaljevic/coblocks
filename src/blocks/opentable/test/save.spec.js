@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { replaceActiveStyle } from '@wordpress/block-editor/build/components/block-styles/utils';
+import { replaceActiveStyle } from '../../../../.dev/tests/jest/helpers';
 import { createBlock, registerBlockType, serialize } from '@wordpress/blocks';
 import '@testing-library/jest-dom';
 

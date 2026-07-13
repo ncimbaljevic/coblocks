@@ -73,6 +73,7 @@
 	}
 
 	.has-medium-image & {
+
 		@include break-small() {
 			height: 20%;
 			width: 20%;
@@ -80,6 +81,7 @@
 	}
 
 	.has-large-image & {
+
 		@include break-small() {
 			height: 33.33%;
 			width: 33.33%;
@@ -87,10 +89,12 @@
 	}
 
 	.has-huge-image & {
+
 		@include break-small() {
 			height: 33.33%;
 			width: 33.33%;
 		}
+
 		@include break-medium() {
 			height: 50%;
 			width: 50%;

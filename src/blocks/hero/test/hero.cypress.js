@@ -114,6 +114,10 @@ describe( 'Test CoBlocks Hero Block', function() {
 
 		cy.get( '.block-editor-media-replace-flow__media-upload-menu .components-menu-item__button' ).contains( 'Open Media Library' ).click();
 
-		cy.get( '.components-popover__content' ).should( 'not.be.visible' );
+		// Selecting an image completes the flow and closes the replace popover.
+		cy.get( '.media-modal-content' ).find( 'li.attachment' ).first().click();
+		cy.get( '.media-toolbar-primary > .button' ).click();
+
+		cy.get( '.components-popover__content' ).should( 'not.exist' );
 	} );
 } );
