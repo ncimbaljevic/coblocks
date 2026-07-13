@@ -8,7 +8,7 @@ import '@testing-library/jest-dom';
 /**
  * Internal dependencies.
  */
-import { name, settings } from '../index';
+import { metadata, name, settings } from '../index';
 
 // Make variables accessible for all tests.
 let block;
@@ -17,7 +17,7 @@ let serializedBlock;
 describe( 'coblocks/opentable', () => {
 	beforeAll( () => {
 		// Register the block.
-		registerBlockType( name, { category: 'common', ...settings } );
+		registerBlockType( name, { category: 'common', ...settings, ...metadata } );
 	} );
 
 	beforeEach( () => {

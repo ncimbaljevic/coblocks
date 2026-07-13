@@ -18,7 +18,7 @@ import MediaContainer from './media-container';
  */
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { mediaUpload } from '@wordpress/editor';
 import { Spinner } from '@wordpress/components';
 import { isBlobURL } from '@wordpress/blob';
@@ -162,6 +162,8 @@ const Edit = ( props ) => {
 		classes = classnames( classes, `coblocks-media-card-${ coblocks.id }` );
 	}
 
+	const blockProps = useBlockProps( { className: classes } );
+
 	const commitWidthChange = ( width ) => {
 		setAttributes( {
 			mediaWidth: width,
@@ -240,7 +242,7 @@ const Edit = ( props ) => {
 				/>
 			) }
 			<div
-				className={ classes }
+				{ ...blockProps }
 			>
 				<div className={ innerClasses } style={ innerStyles } >
 					{ isBlobURL( backgroundImg ) && <Spinner /> }

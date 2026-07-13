@@ -11,11 +11,11 @@ import { GalleryClasses } from '../../components/block-gallery/shared';
 /**
  * WordPress dependencies
  */
-import { RichText } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 import GutterWrapper from '../../components/gutter-control/gutter-wrapper';
 import { __ } from '@wordpress/i18n';
 
-const save = ( { attributes, className } ) => {
+const save = ( { attributes } ) => {
 	const {
 		animation,
 		captions,
@@ -27,11 +27,11 @@ const save = ( { attributes, className } ) => {
 		target,
 	} = attributes;
 
-	const wrapperClasses = classnames(
-		className, {
+	const blockProps = useBlockProps.save( {
+		className: classnames( {
 			'has-lightbox': lightbox,
-		}
-	);
+		} ),
+	} );
 
 	const innerClasses = classnames(
 		...GalleryClasses( attributes ), {
@@ -47,7 +47,7 @@ const save = ( { attributes, className } ) => {
 
 	return (
 		<div aria-label={ __( `Offset Gallery`, 'coblocks' ) }
-			className={ wrapperClasses }>
+			{ ...blockProps }>
 			<GutterWrapper { ...attributes }>
 				<ul className={ innerClasses } >
 					{ images.map( ( image ) => {
