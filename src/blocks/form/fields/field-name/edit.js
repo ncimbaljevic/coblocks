@@ -13,22 +13,24 @@ import LabelColorWrapper from '../../../../components/form-label-colors/label-co
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, RichText } from '@wordpress/block-editor';
+import { InspectorControls, RichText, useBlockProps } from '@wordpress/block-editor';
 import { PanelBody, TextControl, ToggleControl } from '@wordpress/components';
 
 function CoBlocksFieldName( props ) {
 	const { attributes, setAttributes, isSelected, name } = props;
 	const { required, label, hasLastName, labelFirstName, labelLastName, textColor, customTextColor } = attributes;
 
+	const blockProps = useBlockProps( {
+		className: classnames(
+			'coblocks-field',
+			'coblocks-field--name',
+			{ 'is-selected': isSelected }
+		),
+	} );
+
 	return (
 		<>
-			<div className={
-				classnames(
-					'coblocks-field',
-					'coblocks-field--name',
-					{ 'is-selected': isSelected }
-				) }
-			>
+			<div { ...blockProps }>
 				<CoBlocksFieldLabel
 					required={ required }
 					label={ label }
