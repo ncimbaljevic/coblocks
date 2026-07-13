@@ -1,5 +1,57 @@
 import { disableGutenbergFeatures, goTo, loginToSite } from '../helpers';
 
+// WordPress 7.0 renders the editor canvas inside an `iframe[name="editor-canvas"]`.
+// Editor-content selectors (block wrappers, block content, the post title) live
+// inside that iframe, while chrome (toolbar, inspector/sidebar, modals) stays in
+// the top document. To avoid rewriting every spec, transparently extend
+// `cy.get()` so that, for a plain string selector at the query root, it also
+// searches the canvas iframe body when nothing matches in the top document.
+// `get` is a query in Cypress 13, so it must be extended via overwriteQuery; the
+// returned function is re-run on every retry, so this stays fully retryable.
+Cypress.Commands.overwriteQuery( 'get', function( originalFn, selector, options ) {
+	const getFn = originalFn.call( this, selector, options );
+	return function( subject ) {
+		// When scoped by `.within()`, defer to the original query so that scoping
+		// (and its iframe context) is honoured rather than searching the whole
+		// document/canvas. The scope arrives either as an explicit subject or via
+		// Cypress's within-subject state.
+		const withinChain = cy && cy.state ? cy.state( 'withinSubjectChain' ) : null;
+		if ( subject || ( withinChain && withinChain.length ) ) {
+			return getFn.call( this, subject );
+		}
+		if ( typeof selector === 'string' && ! ( options && options.withinSubject ) ) {
+			const topEls = Cypress.$( selector );
+			if ( topEls.length ) {
+				return topEls;
+			}
+			const $canvas = Cypress.$( 'iframe[name="editor-canvas"]' );
+			const canvasDoc = $canvas.length ? $canvas[ 0 ].contentDocument : null;
+			if ( canvasDoc ) {
+				const canvasEls = Cypress.$( canvasDoc.body ).find( selector );
+				if ( canvasEls.length ) {
+					return canvasEls;
+				}
+				// Handle selectors that span the iframe boundary, e.g.
+				// '[class*="-visual-editor"] [data-type="core/image"]': the editor
+				// wrapper lives in the top document but the block content is inside
+				// the canvas. Strip a leading editor-wrapper segment and retry
+				// within the canvas body.
+				const stripped = selector.replace(
+					/^\s*(?:\.edit-post-visual-editor|\.editor-visual-editor|\[class\*?="-visual-editor"\])\s+/,
+					''
+				);
+				if ( stripped !== selector ) {
+					const strippedEls = Cypress.$( canvasDoc.body ).find( stripped );
+					if ( strippedEls.length ) {
+						return strippedEls;
+					}
+				}
+			}
+		}
+		return getFn.call( this, subject );
+	};
+} );
+
 before( function() {
 	loginToSite().then( () => {
 		goTo( '/wp-admin/post-new.php?post_type=post' ).then( () => {
@@ -7,11 +59,6 @@ before( function() {
 			disableGutenbergFeatures();
 		} );
 	} );
-} );
-
-// Maintain WordPress logged in state
-Cypress.Cookies.defaults( {
-	preserve: /wordpress_.*/,
 } );
 
 // Custom uploadFile command

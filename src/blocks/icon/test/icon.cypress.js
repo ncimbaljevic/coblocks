@@ -31,9 +31,6 @@ describe( 'Test CoBlocks Icon Block', function() {
 	it( 'Test the icon block style.', function() {
 		helpers.addBlockToPost( 'coblocks/icon', true );
 
-		// Make sure that controls who are lazy loaded finished loading
-		cy.contains( 'Styles' );
-
 		helpers.openSettingsPanel( 'Styles' );
 
 		cy.get( '.block-editor-block-styles__item[aria-label="Filled"]' ).click();
