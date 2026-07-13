@@ -111,4 +111,3 @@ function coblocks_render_coblocks_shape_divider_block( $attributes ) {
 		$dividers[ $style_slug ]
 	);
 }
-

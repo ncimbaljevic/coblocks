@@ -44,7 +44,6 @@ class CoBlocks_Labs {
 		add_action( 'init', array( $this, 'register_settings' ) );
 		add_action( 'init', array( $this, 'propagate_settings' ) );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'editor_assets' ) );
-
 	}
 
 	/**
@@ -99,7 +98,6 @@ class CoBlocks_Labs {
 				'default'           => false,
 			)
 		);
-
 	}
 
 	/**
@@ -135,7 +133,6 @@ class CoBlocks_Labs {
 			)
 		);
 	}
-
 }
 
 CoBlocks_Labs::register();

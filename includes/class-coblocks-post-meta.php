@@ -77,7 +77,6 @@ class CoBlocks_Post_Meta {
 	public function auth_callback() {
 
 		return current_user_can( 'edit_posts' );
-
 	}
 }
 

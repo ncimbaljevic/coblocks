@@ -57,7 +57,7 @@ class CoBlocks_Google_Map_Block {
 	 */
 	public function __construct() {
 		$this->slug = 'coblocks';
-		$this->url  = untrailingslashit( plugins_url( '/', dirname( __FILE__ ) ) );
+		$this->url  = untrailingslashit( plugins_url( '/', __DIR__ ) );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'map_assets' ) );
 		add_action( 'the_post', array( $this, 'map_assets' ) );
@@ -124,7 +124,6 @@ class CoBlocks_Google_Map_Block {
 			)
 		);
 	}
-
 }
 
 CoBlocks_Google_Map_Block::register();

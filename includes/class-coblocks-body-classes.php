@@ -113,7 +113,6 @@ class CoBlocks_Body_Classes {
 
 		return $classes;
 	}
-
 }
 
 new CoBlocks_Body_Classes();

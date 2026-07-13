@@ -143,7 +143,7 @@ class CoBlocks_Block_Patterns {
 		);
 
 		return array_map(
-			function( $val, $key ) {
+			function ( $val, $key ) {
 				return array(
 					'slug'  => $key,
 					'title' => $val,
