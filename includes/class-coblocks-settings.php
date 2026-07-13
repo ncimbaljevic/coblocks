@@ -188,7 +188,6 @@ class CoBlocks_Settings {
 				'default'           => true,
 			)
 		);
-
 	}
 }
 

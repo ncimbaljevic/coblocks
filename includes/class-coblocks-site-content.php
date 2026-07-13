@@ -22,7 +22,6 @@ class CoBlocks_Site_Content {
 
 		add_action( 'init', array( $this, 'register_settings' ), 11 );
 		add_filter( 'wp_insert_post_empty_content', array( $this, 'allow_empty_post_content' ), 10, 2 );
-
 	}
 
 	/**
@@ -67,7 +66,6 @@ class CoBlocks_Site_Content {
 		ksort( $post_types );
 
 		return $post_types;
-
 	}
 
 	/**
@@ -80,7 +78,7 @@ class CoBlocks_Site_Content {
 			array(
 				'show_in_rest' => true,
 				'type'         => 'string',
-				'description'  => __( 'What to show on the front page', 'gutenberg' ),
+				'description'  => __( 'What to show on the front page', 'coblocks' ),
 			)
 		);
 
@@ -90,7 +88,7 @@ class CoBlocks_Site_Content {
 			array(
 				'show_in_rest' => true,
 				'type'         => 'number',
-				'description'  => __( 'The ID of the page that should be displayed on the front page', 'gutenberg' ),
+				'description'  => __( 'The ID of the page that should be displayed on the front page', 'coblocks' ),
 			)
 		);
 
@@ -100,7 +98,7 @@ class CoBlocks_Site_Content {
 			array(
 				'show_in_rest' => true,
 				'type'         => 'number',
-				'description'  => __( 'The ID of the page that display the posts', 'gutenberg' ),
+				'description'  => __( 'The ID of the page that display the posts', 'coblocks' ),
 			)
 		);
 	}
