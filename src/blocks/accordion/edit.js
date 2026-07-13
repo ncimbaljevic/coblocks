@@ -69,7 +69,7 @@ const AccordionEdit = ( props ) => {
 
 	const items = getBlocksByClientId( clientId );
 
-	const handleEvent = ( ) => {
+	const handleEvent = () => {
 		const lastId = items[ 0 ].innerBlocks[ items[ 0 ].innerBlocks.length - 1 ]?.clientId;
 		let copyAttributes = {};
 		if ( !! lastId ) {

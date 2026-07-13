@@ -4,6 +4,11 @@
 import { omit } from 'lodash';
 
 /**
+ * WordPress dependencies
+ */
+import TokenList from '@wordpress/token-list';
+
+/**
  * Internal dependencies.
  */
 import '../../../src/extensions/advanced-controls';
@@ -45,6 +50,28 @@ import { createBlock, getBlockTransforms, parse, registerBlockType, serialize, u
  * Register all gallery blocks to be used for transforms testing.
  *
  */
+/**
+ * Replaces the active block style class name with a new one. Mirrors the
+ * internal `replaceActiveStyle` from `@wordpress/block-editor` (which is not a
+ * public export) so tests do not depend on that package's private build paths.
+ *
+ * @param {string} className   The current className.
+ * @param {Object} activeStyle The currently active style, or null/undefined.
+ * @param {Object} newStyle    The new style to apply.
+ * @return {string} The updated className.
+ */
+export const replaceActiveStyle = ( className, activeStyle, newStyle ) => {
+	const list = new TokenList( className );
+
+	if ( activeStyle ) {
+		list.remove( 'is-style-' + activeStyle.name );
+	}
+
+	list.add( 'is-style-' + newStyle.name );
+
+	return list.value;
+};
+
 export const registerGalleryBlocks = () => {
 	[ carouselSettings, masonrySettings, offsetSettings, stackedSettings, collageSettings ].forEach( ( settings ) => {
 		registerBlock( settings );

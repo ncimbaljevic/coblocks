@@ -39,7 +39,7 @@ const utilitySizes = [
 ];
 
 export default class DimensionsSelect extends Component {
-	constructor( ) {
+	constructor() {
 		super( ...arguments );
 
 		this.getSelectValuesFromUtilitySizes = this.getSelectValuesFromUtilitySizes.bind( this );

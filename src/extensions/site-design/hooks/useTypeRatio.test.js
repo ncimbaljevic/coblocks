@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 /**
  * WordPress dependencies
@@ -24,7 +24,9 @@ const elementMock = [
 
 const getElementByClassNameMock = jest.fn( () => elementMock );
 
-jest.mock( '@wordpress/data/build/components/use-select', () => jest.fn() );
+jest.mock( '@wordpress/data', () => ( {
+	useSelect: jest.fn(),
+} ) );
 
 describe( 'site-design, hooks, useTypeRatio', () => {
 	beforeEach( () => {

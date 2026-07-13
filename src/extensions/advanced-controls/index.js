@@ -125,7 +125,7 @@ const useAdvancedControls = ( props ) => {
 		}
 	};
 
-	useEffect( ( ) => {
+	useEffect( () => {
 		// Check if alignment wrapper has been applied - Gutenberg 8.2.1
 		if ( !! document.getElementsByClassName( 'block-editor-block-list__layout is-root-container' ).length ) {
 			const targetElems = document.querySelectorAll( '.block-editor-block-list__layout' );

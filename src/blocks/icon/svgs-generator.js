@@ -1,10 +1,20 @@
-require = require( 'esm' )( module );
+/**
+ * Load the ESM `@godaddy-wordpress/coblocks-icons` package from this CommonJS
+ * script via jiti. The package's barrel re-exports (`export { meta as XMeta }
+ * from './library/x'`) are only reliable when each icon module is required
+ * directly, so we read `meta`/`styles` per-icon from `build/library/<slug>.js`
+ * while taking the canonical icon list from the barrel.
+ */
+const path = require( 'path' );
+const jiti = require( 'jiti' )( __filename, { interopDefault: false } );
 
-const CoblocksIcons = require( '@godaddy-wordpress/coblocks-icons/build/index.js' );
+const iconsEntry = require.resolve( '@godaddy-wordpress/coblocks-icons/build/index.js' );
+const iconsLibDir = path.join( path.dirname( iconsEntry ), 'library' );
+
+const CoblocksIcons = jiti( iconsEntry );
 const fs = require( 'fs' ).promises;
 const prettier = require( 'prettier' );
 
-const path = __dirname + '/';
 const warningHeader = `// --
 // -- WARNING!
 // -- This is an auto-generated file. Do not edit.
@@ -35,9 +45,12 @@ const createFile = async ( svgs ) => {
 
 		const svgs = {`;
 
-	svgs.forEach( async ( svg ) => {
-		const metas = CoblocksIcons[ `${ toPascalCase( svg ) }Meta` ];
-		const styles = CoblocksIcons[ `${ toPascalCase( svg ) }Styles` ];
+	svgs.forEach( ( svg ) => {
+		// The barrel's named re-exports are unreliable through jiti, so read the
+		// icon's metadata directly from its own module.
+		const iconModule = jiti( path.join( iconsLibDir, `${ svg }.js` ) );
+		const metas = iconModule.meta;
+		const styles = iconModule.styles;
 
 		content =
 			content +
@@ -54,14 +67,14 @@ const createFile = async ( svgs ) => {
 
 	content = content + '};\r\n\r\n export default svgs;';
 
-	content = prettier.format( content, {
+	content = await prettier.format( content, {
 		parser: 'babel',
 		singleQuote: true,
 		tabWidth: 4,
 		useTabs: true,
 	} );
 
-	await fs.writeFile( `${ path }svgs-generated.js`, content );
+	await fs.writeFile( path.join( __dirname, 'svgs-generated.js' ), content );
 };
 
 /**
