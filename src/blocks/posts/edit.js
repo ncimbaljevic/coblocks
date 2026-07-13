@@ -17,7 +17,7 @@ import { escapeHTML } from '@wordpress/escape-html';
 import { addQueryArgs } from '@wordpress/url';
 import { dateI18n, format, getSettings } from '@wordpress/date';
 import { withSelect } from '@wordpress/data';
-import { BlockControls, RichText } from '@wordpress/block-editor';
+import { BlockControls, RichText, useBlockProps } from '@wordpress/block-editor';
 import {
 	Button,
 	Disabled,
@@ -247,6 +247,8 @@ const PostsEdit = ( props ) => {
 		}
 	};
 
+	const blockProps = useBlockProps( { className } );
+
 	if ( ! hasPosts && postFeedType === 'internal' ) {
 		return (
 			<>
@@ -370,7 +372,7 @@ const PostsEdit = ( props ) => {
 			}
 			{ postFeedType === 'internal' &&
 
-				<div className={ className }>
+				<div { ...blockProps }>
 					<GutterWrapper { ...attributes } condition={ attributes.columns >= 2 }>
 						<div className={ classnames( 'wp-block-coblocks-posts__inner', {
 							'has-columns': columns,
