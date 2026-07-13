@@ -12,7 +12,7 @@ import { BackgroundClasses, BackgroundVideo } from '../../components/background'
 /**
  * WordPress dependencies
  */
-import { getColorClassName, InnerBlocks } from '@wordpress/block-editor';
+import { getColorClassName, InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 const save = ( { attributes } ) => {
 	const {
@@ -69,8 +69,10 @@ const save = ( { attributes } ) => {
 		minHeight: fullscreen ? undefined : height,
 	};
 
+	const blockProps = useBlockProps.save( { className: classes, style: styles } );
+
 	return (
-		<div className={ classes } style={ styles } >
+		<div { ...blockProps } >
 			<div className={ innerClasses } style={ innerStyles }>
 				{ BackgroundVideo( attributes ) }
 				<div className="wp-block-coblocks-hero__content-wrapper">
