@@ -1,0 +1,55 @@
+name: Test / Full Validation (on-demand) [v4]
+
+on:
+  # Milestone / ship-check entrypoint. Runs the full WP x PHP gamut on demand.
+  workflow_dispatch:
+    inputs:
+      specFilter:
+        description: 'Optional Cypress spec glob (empty = all specs)'
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Full E2E gamut: current WP (7.0) on every supported PHP (7.4 + 8.4),
+  # previous WP (6.9) on the lowest supported PHP (7.4).
+  e2e_gamut:
+    name: E2E - WP${{ matrix.wp }} + PHP${{ matrix.php }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - wp: "7.0"
+            php: "7.4"
+          - wp: "7.0"
+            php: "8.4"
+          - wp: "6.9"
+            php: "7.4"
+    uses: ./.github/workflows/test-e2e-cypress-v4.yml
+    with:
+      wpVersion: "WordPress/WordPress#${{ matrix.wp }}"
+      phpVersion: ${{ matrix.php }}
+      specFilter: ${{ inputs.specFilter }}
+      theme: ""
+
+  # Full PHP unit gamut: same WP x PHP pattern as the E2E gamut.
+  php_gamut:
+    name: PHP Unit ${{ matrix.php }} | WP Version ${{ matrix.wp }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - wp: '7.0'
+            php: '7.4'
+          - wp: '7.0'
+            php: '8.4'
+          - wp: '6.9'
+            php: '7.4'
+    uses: ./.github/workflows/test-php-unit-v4.yml
+    with:
+      phpVersion: ${{ matrix.php }}
+      wpVersion: 'WordPress/WordPress#${{ matrix.wp }}'

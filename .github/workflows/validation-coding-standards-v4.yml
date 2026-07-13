@@ -19,10 +19,11 @@ concurrency:
 jobs:
   php:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     name: PHP
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Composer Install
         run: composer install --prefer-dist --optimize-autoloader
@@ -32,13 +33,14 @@ jobs:
 
   css:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     name: CSS
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
@@ -51,13 +53,14 @@ jobs:
 
   js:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     name: JS
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
