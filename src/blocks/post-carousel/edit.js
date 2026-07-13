@@ -19,7 +19,7 @@ import Swiper from '../../components/swiper';
 import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
-import { BlockControls } from '@wordpress/block-editor';
+import { BlockControls, useBlockProps } from '@wordpress/block-editor';
 import { compose } from '@wordpress/compose';
 import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 // Disable reason: We choose to use unsafe APIs in our codebase.
@@ -72,6 +72,8 @@ const PostCarousel = ( props ) => {
 
 	let isStillMounted = useRef( true );
 
+	const externalContainerRef = useRef( null );
+
 	useEffect( () => {
 		apiFetch( {
 			path: addQueryArgs( '/wp/v2/categories', CATEGORIES_LIST_QUERY ),
@@ -105,7 +107,13 @@ const PostCarousel = ( props ) => {
 	useEffect( () => {
 		if ( postFeedType === 'external' ) {
 			setTimeout( () => {
-				const postCarouselContainer = document.querySelector( `.wp-block-coblocks-post-carousel-external-container-${ carouselUuid }` );
+				// Use the block node's own ref instead of the top-level `document`,
+				// which under the API v3 editor iframe points at the wrong document.
+				const postCarouselContainer = externalContainerRef.current;
+
+				if ( ! postCarouselContainer ) {
+					return;
+				}
 
 				// remove the swiper classes so that the external feed does not display within carousel in editor
 				const swiperWrapper = postCarouselContainer.querySelector( '.swiper-wrapper' );
@@ -151,6 +159,8 @@ const PostCarousel = ( props ) => {
 	const hasPosts = Array.isArray( latestPosts ) && latestPosts.length;
 
 	const displayPosts = Array.isArray( latestPosts ) && latestPosts.length > postsToShow ? latestPosts.slice( 0, postsToShow ) : latestPosts;
+
+	const blockProps = useBlockProps();
 
 	const renderCarousel = useMemo( () => {
 		if ( displayPosts?.length === 1 ) {
@@ -274,16 +284,21 @@ const PostCarousel = ( props ) => {
 					/>
 				}
 			</BlockControls>
-			{ postFeedType === 'external' &&
-				<span className={ `wp-block-coblocks-post-carousel-external-container-${ carouselUuid }` }>
-					<ServerSideRender
-						attributes={ attributes }
-						block="coblocks/post-carousel"
-						className="coblocks-slick pb-8"
-					/>
-				</span>
-			}
-			{ postFeedType === 'internal' && renderCarousel }
+			<div { ...blockProps }>
+				{ postFeedType === 'external' &&
+					<span
+						className={ `wp-block-coblocks-post-carousel-external-container-${ carouselUuid }` }
+						ref={ externalContainerRef }
+					>
+						<ServerSideRender
+							attributes={ attributes }
+							block="coblocks/post-carousel"
+							className="coblocks-slick pb-8"
+						/>
+					</span>
+				}
+				{ postFeedType === 'internal' && renderCarousel }
+			</div>
 		</>
 	);
 };
