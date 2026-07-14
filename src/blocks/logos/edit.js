@@ -18,7 +18,7 @@ import Logos from './logos';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { Icon, withNotices } from '@wordpress/components';
-import { MediaPlaceholder } from '@wordpress/block-editor';
+import { MediaPlaceholder, useBlockProps } from '@wordpress/block-editor';
 
 const Edit = ( props ) => {
 	const {
@@ -42,12 +42,14 @@ const Edit = ( props ) => {
 
 	const hasImages = !! attributes.images.length;
 
+	const blockProps = useBlockProps( { className } );
+
 	return (
 		<>
 			<Controls { ...props } />
 			<GalleryDropZone { ...props } onSelect={ onDropImages } />
 
-			<div className={ className }>
+			<div { ...blockProps }>
 				<Logos { ...props } images={ attributes.images } />
 
 				{ ( ! hasImages || isSelected ) && (
