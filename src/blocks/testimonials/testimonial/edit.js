@@ -12,7 +12,7 @@ import { mediaUpload } from '@wordpress/editor';
 import { BlockIcon, MediaUpload, MediaUploadCheck, RichText, useBlockProps } from '@wordpress/block-editor';
 import { Button, ButtonGroup, DropZone, Spinner } from '@wordpress/components';
 import { closeSmall, image } from '@wordpress/icons';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies.
@@ -53,7 +53,12 @@ const Edit = ( props ) => {
 	 *
 	 * @constant {Object} blockProps The block props.
 	 */
-	const blockProps = useBlockProps();
+	// A ref to the block's DOM root inside the editor iframe. The inspector reaches
+	// the image element through `blockRef.current.querySelector(...)` instead of
+	// `document.getElementById()`, which resolves against the top document and
+	// returns null in WP 7.0's iframed editor.
+	const blockRef = useRef();
+	const blockProps = useBlockProps( { ref: blockRef } );
 	/**
 	 * Block styles propagated from parent block.
 	 *
@@ -250,7 +255,7 @@ const Edit = ( props ) => {
 	return (
 		<>
 			<Controls { ...props } onChangeHeadingLevel={ onChangeHeadingLevel } />
-			<Inspector { ...props } />
+			<Inspector { ...props } blockRef={ blockRef } />
 			<div { ...blockProps } style={ styles }>
 				{ styleName === 'tall' && (
 					<>
