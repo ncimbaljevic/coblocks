@@ -19,7 +19,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
 import { compose, usePrevious } from '@wordpress/compose';
 import { Button, ButtonGroup, Dashicon, DropZone, Spinner, withNotices } from '@wordpress/components';
-import { MediaPlaceholder, MediaUpload, MediaUploadCheck, RichText, URLInput } from '@wordpress/block-editor';
+import { MediaPlaceholder, MediaUpload, MediaUploadCheck, RichText, URLInput, useBlockProps } from '@wordpress/block-editor';
 import { mediaUpload } from '@wordpress/editor';
 import { isBlobURL } from '@wordpress/blob';
 import { closeSmall } from '@wordpress/icons';
@@ -277,17 +277,21 @@ const GalleryCollageEdit = ( props ) => {
 		);
 	}
 
+	const blockProps = useBlockProps( {
+		className: classnames( className, {
+			[ `has-filter-${ filter }` ]: filter !== 'none',
+			[ `has-caption-style-${ captionStyle }` ]: captions && captionStyle !== undefined,
+			'has-lightbox': lightbox,
+		} ),
+	} );
+
 	return (
 		<>
 			<Controls { ...props } />
 			<Inspector { ...props } enableCaptions={ enableCaptions } enableGutter={ enableGutter } />
 			{ noticeUI }
-			<GutterWrapper { ...attributes }>
-				<div className={ classnames( className, {
-					[ `has-filter-${ filter }` ]: filter !== 'none',
-					[ `has-caption-style-${ captionStyle }` ]: captions && captionStyle !== undefined,
-					'has-lightbox': lightbox,
-				} ) }>
+			<GutterWrapper gutter={ attributes.gutter } gutterCustom={ attributes.gutterCustom }>
+				<div { ...blockProps }>
 					<ul>
 						{ images }
 					</ul>

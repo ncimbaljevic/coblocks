@@ -7,7 +7,7 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { RichText } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
@@ -32,14 +32,21 @@ const save = ( { attributes } ) => {
 		[ `shadow-${ shadow }` ]: shadow && shadow !== 'none',
 	} );
 
+	// `useBlockProps.save()` already applies the custom className, so the
+	// GutterWrapper is only used to append the gutter class/style here to avoid
+	// duplicating the custom className on the wrapper element.
+	const blockProps = useBlockProps.save( {
+		className: classnames( {
+			[ `has-filter-${ filter }` ]: filter !== 'none',
+			[ `has-caption-style-${ captionStyle }` ]: captions && captionStyle !== undefined,
+			'has-lightbox': lightbox,
+		} ),
+	} );
+
 	return (
-		<GutterWrapper { ...attributes }>
+		<GutterWrapper gutter={ attributes.gutter } gutterCustom={ attributes.gutterCustom }>
 			<div aria-label={ __( `Collage Gallery`, 'coblocks' ) }
-				className={ classnames( {
-					[ `has-filter-${ filter }` ]: filter !== 'none',
-					[ `has-caption-style-${ captionStyle }` ]: captions && captionStyle !== undefined,
-					'has-lightbox': lightbox,
-				} ) }>
+				{ ...blockProps }>
 				<ul>
 					{ images.sort( ( a, b ) => parseInt( a.index ) - parseInt( b.index ) )
 						// Limit images output based on he selector style.

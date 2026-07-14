@@ -2,12 +2,17 @@
  * Internal dependencies
  */
 import { default as currentBlock } from './block.json';
+import preApiVersionThree from './deprecated/preApiVersionThree';
 import deprecatedIcons from './deprecated/deprecatedIcons';
 import deprecatedIconsToBackgroundImage from './deprecated/deprecatedIconsToBackgroundImage';
 import migrateToColumnUtilityClasses from './deprecated/migrateToColumnUtilityClasses';
 import migrateToAccessibleIcons from './deprecated/migrateToAccessibleIcons';
 
 const deprecated = [
+	{
+		attributes: currentBlock.attributes,
+		save: preApiVersionThree,
+	},
 	{
 		attributes: currentBlock.attributes,
 		save: deprecatedIcons,

@@ -7,7 +7,7 @@ import { createBlock, registerBlockType, serialize } from '@wordpress/blocks';
 /**
  * Internal dependencies.
  */
-import { name, settings } from '../index';
+import { metadata, name, settings } from '../index';
 
 // Make variables accessible for all tests.
 let block;
@@ -15,7 +15,7 @@ let block;
 describe( 'coblocks/food-item', () => {
 	beforeAll( () => {
 		// Register the block.
-		registerBlockType( name, { category: 'common', ...settings } );
+		registerBlockType( name, { category: 'common', ...settings, ...metadata } );
 	} );
 
 	beforeEach( () => {
