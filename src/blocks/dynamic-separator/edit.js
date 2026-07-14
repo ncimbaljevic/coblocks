@@ -46,30 +46,38 @@ const DynamicSeparatorEdit = ( props ) => {
 	return (
 		<>
 			{ isSelected && <Inspector { ...props } /> }
-			<ResizableBox
-				{ ...blockProps }
-				size={ {
-					height,
-				} }
-				minHeight="20"
-				enable={ {
-					top: false,
-					right: false,
-					bottom: true,
-					left: false,
-					topRight: false,
-					bottomRight: false,
-					bottomLeft: false,
-					topLeft: false,
-				} }
-				onResizeStop={ ( _event, _direction, _elt, delta ) => {
-					const spacerHeight = parseInt( height + delta.height, 10 );
-					setAttributes( {
-						height: spacerHeight,
-					} );
-				} }
-				showHandle={ isSelected }
-			/>
+			{ /*
+			 * `useBlockProps` must own a stable DOM root that stays mounted for the
+			 * block's lifetime. Spreading it directly onto `<ResizableBox>` made
+			 * re-resizable the block root, and in WP 7.0's iframed editor it reads
+			 * `ownerDocument.defaultView` on that node and threw a TypeError. Keep the
+			 * block root a plain `<div>` and render `<ResizableBox>` inside it.
+			 */ }
+			<div { ...blockProps }>
+				<ResizableBox
+					size={ {
+						height,
+					} }
+					minHeight="20"
+					enable={ {
+						top: false,
+						right: false,
+						bottom: true,
+						left: false,
+						topRight: false,
+						bottomRight: false,
+						bottomLeft: false,
+						topLeft: false,
+					} }
+					onResizeStop={ ( _event, _direction, _elt, delta ) => {
+						const spacerHeight = parseInt( height + delta.height, 10 );
+						setAttributes( {
+							height: spacerHeight,
+						} );
+					} }
+					showHandle={ isSelected }
+				/>
+			</div>
 		</>
 	);
 };
