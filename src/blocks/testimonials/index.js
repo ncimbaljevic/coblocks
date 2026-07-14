@@ -12,6 +12,7 @@ import { Icon } from '@wordpress/components';
 /**
  * Internal dependencies.
  */
+import deprecated from './deprecated';
 import edit from './edit';
 import metadata from './block.json';
 import save from './save';
@@ -24,6 +25,7 @@ const { name, category, attributes } = metadata;
 
 const settings = {
 	attributes,
+	deprecated,
 	/* translators: block description */
 	description: __( 'Display a list of testimonials.', 'coblocks' ),
 	edit,
