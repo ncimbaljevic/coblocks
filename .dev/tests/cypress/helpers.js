@@ -308,18 +308,41 @@ export function editPage() {
  */
 export function clearBlocks() {
 	getWPDataObject().then( ( data ) => {
+		// A lone, empty `core/paragraph` counts as "empty": WP core's
+		// ensureDefaultBlock() re-inserts one automatically once the last real block
+		// is removed, so removing it would only trigger another re-insertion.
+		const isEmptyDefaultBlock = ( block ) => {
+			if ( block.name !== 'core/paragraph' ) {
+				return false;
+			}
+			const content = block.attributes?.content;
+			// `content` may be a plain string or a RichTextData instance; coerce to a
+			// string so both are treated the same.
+			return ! content || String( content ).trim().length === 0;
+		};
+
 		// Remove every block, retrying until the editor is genuinely empty. After a
 		// navigation the editor re-hydrates its saved content asynchronously, so a
 		// single removeBlocks() pass can miss blocks that arrive a tick later and
 		// leave the editor with stale content.
 		cy.wrap( null ).should( () => {
 			const blocks = data.select( 'core/block-editor' ).getBlocks();
-			if ( blocks.length ) {
+			// Only remove blocks that carry real content — leaving the auto-inserted
+			// empty paragraph in place avoids an endless remove/re-insert loop.
+			const removable = blocks.filter( ( block ) => ! isEmptyDefaultBlock( block ) );
+			if ( removable.length ) {
 				data.dispatch( 'core/block-editor' ).removeBlocks(
-					blocks.map( ( block ) => block.clientId )
+					removable.map( ( block ) => block.clientId )
 				);
 			}
-			expect( data.select( 'core/block-editor' ).getBlocks() ).to.have.length( 0 );
+
+			const remaining = data.select( 'core/block-editor' ).getBlocks();
+			// Pass when the editor is empty OR holds nothing but a single empty
+			// default paragraph (what ensureDefaultBlock() leaves behind).
+			expect(
+				remaining.length === 0 ||
+				( remaining.length === 1 && isEmptyDefaultBlock( remaining[ 0 ] ) )
+			).to.equal( true );
 		} );
 	} );
 }
@@ -502,7 +525,12 @@ export const upload = {
 		cy.get( '.attachment.selected.save-ready' );
 		cy.get( '.media-modal .media-button-select' ).click();
 
-		cy.get( '[class*="-visual-editor"]' ).find( `[data-type="${ blockName }"] img` ).first().should( 'have.attr', 'src' ).should( 'include', newImageBase );
+		// Query the replaced image with a single-string selector so the cy.get
+		// override can reach into the WP 7.0 editor-canvas iframe. Chaining
+		// `cy.get( '[class*="-visual-editor"]' ).find( … )` breaks here because the
+		// editor wrapper lives in the top document while the block/img lives inside
+		// the iframe, and `.find()` cannot cross that boundary.
+		cy.get( `[data-type="${ blockName }"] img` ).first().should( 'have.attr', 'src' ).should( 'include', newImageBase );
 	},
 	/**
 	 * Upload image to input element.

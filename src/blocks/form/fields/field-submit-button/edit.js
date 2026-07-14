@@ -92,7 +92,14 @@ const CoBlocksSubmitButton = ( props ) => {
 	const getButtonClasses = () => {
 		const backgroundClass = get( customBackgroundButtonColor, 'class' );
 
-		return classnames( 'wp-block-button__link', {
+		// Include `attributes.className` (the block's additional classes, which
+		// carry the selected block-style variation such as `is-style-outline`) on
+		// the inner `.wp-block-button__link`. Under Block API v3 the style class is
+		// merged onto the block wrapper via `useBlockProps`, but the button styles
+		// (and the server-rendered frontend, which prints the className on the
+		// `<button>`) target `.wp-block-button__link.is-style-*`, so without this
+		// the chosen style never actually applies in the editor.
+		return classnames( 'wp-block-button__link', attributes.className, {
 			[ backgroundClass ]: backgroundClass,
 			[ className ]: className,
 			'has-background': customBackgroundButtonColor,

@@ -253,12 +253,25 @@ const GalleryCarouselEdit = ( props ) => {
 		);
 	};
 
+	// The block wrapper must carry `blockProps` in every render path so that the
+	// editor applies the `data-type` wrapper attributes even while the block is
+	// still showing its variation picker or empty placeholder. Without this the
+	// block has no `[data-type="coblocks/gallery-carousel"]` element until images
+	// exist (apiVersion 3 no longer adds a separate wrapper), which breaks both
+	// selection and the E2E flows. Mirrors the sibling gallery blocks
+	// (stacked/offset) which spread their block props on the placeholder.
 	if ( ! images.length && ! variatonSelected ) {
 		return (
-			<CarouselGalleryVariationPicker { ...props } />
+			<div { ...blockProps }>
+				<CarouselGalleryVariationPicker { ...props } />
+			</div>
 		);
 	} else if ( ! images.length && variatonSelected ) {
-		return renderGalleryPlaceholder();
+		return (
+			<div { ...blockProps }>
+				{ renderGalleryPlaceholder() }
+			</div>
+		);
 	}
 
 	return (

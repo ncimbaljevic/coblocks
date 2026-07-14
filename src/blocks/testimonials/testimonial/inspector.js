@@ -16,10 +16,21 @@ import { BaseControl, Button, ExternalLink, FocalPointPicker, PanelBody, RangeCo
 const Inspector = ( props ) => {
 	const {
 		attributes,
+		blockRef,
 		clientId,
 		label,
 		setAttributes,
 	} = props;
+
+	// Reset the inline height that re-resizable stamps on the image element during a
+	// resize. Resolved through the block's ref so it works inside WP 7.0's iframed
+	// editor, where `document.getElementById()` targets the wrong document.
+	const resetImageHeight = () => {
+		const imageEl = blockRef?.current?.querySelector( '.wp-block-coblocks-testimonial__image' );
+		if ( imageEl ) {
+			imageEl.style.height = 'auto';
+		}
+	};
 
 	const {
 		alt,
@@ -76,7 +87,7 @@ const Inspector = ( props ) => {
 								isSecondary
 								isSmall
 								onClick={ () => {
-									document.getElementById( 'block-' + clientId ).getElementsByClassName( 'wp-block-coblocks-testimonial__image' )[ 0 ].style.height = 'auto';
+									resetImageHeight();
 									onChangeSize( 'medium', DEFAULT_IMAGE_SIZE );
 								} }
 								type="button"
@@ -88,7 +99,7 @@ const Inspector = ( props ) => {
 								max={ MAX_IMAGE_SIZE }
 								min={ MIN_IMAGE_SIZE }
 								onChange={ ( nextWidth ) => {
-									document.getElementById( 'block-' + clientId ).getElementsByClassName( 'wp-block-coblocks-testimonial__image' )[ 0 ].style.height = 'auto';
+									resetImageHeight();
 									setAttributes( {
 										imageHeight: nextWidth,
 										imageWidth: nextWidth,

@@ -65,10 +65,13 @@ describe( 'Block: Food and Drinks', function() {
 	it( 'can toggle images for inner food-item blocks', () => {
 		helpers.addBlockToPost( 'coblocks/food-and-drinks', true );
 
-		cy.get( '[data-type="coblocks/food-and-drinks"]' ).first().within( () => {
-			cy.get( '[data-type="coblocks/food-item"]' ).first().click( 'left' );
-			cy.get( '[data-type="coblocks/food-item"]' ).first().find( '.block-editor-media-placeholder' ).should( 'not.exist' );
-		} );
+		// A `.within()` on a block that lives inside the WP 7.0 editor-canvas
+		// iframe is not scoped into the iframe by Cypress, so its inner queries
+		// find nothing. Use single-string descendant selectors (resolved into the
+		// canvas by the cy.get override) instead. Only one food-and-drinks block
+		// exists here, so no explicit scoping is needed.
+		cy.get( '[data-type="coblocks/food-and-drinks"] [data-type="coblocks/food-item"]' ).first().click( 'left' );
+		cy.get( '[data-type="coblocks/food-and-drinks"] [data-type="coblocks/food-item"]' ).first().find( '.block-editor-media-placeholder' ).should( 'not.exist' );
 
 		// An unknown condition is causing the food-and-drinks block to become unselected.
 		// Two select block logics are needed to get the block to be selected.
@@ -78,10 +81,8 @@ describe( 'Block: Food and Drinks', function() {
 		helpers.openSettingsPanel( /food & drinks settings/i );
 		cy.get( '.components-toggle-control' ).find( '.components-base-control__field' ).contains( /images/i ).click();
 
-		cy.get( '[data-type="coblocks/food-and-drinks"]' ).first().within( () => {
-			cy.get( '[data-type="coblocks/food-item"]' ).first().click( 'left' );
-			cy.get( '[data-type="coblocks/food-item"]' ).first().find( '.block-editor-media-placeholder' ).should( 'exist' );
-		} );
+		cy.get( '[data-type="coblocks/food-and-drinks"] [data-type="coblocks/food-item"]' ).first().click( 'left' );
+		cy.get( '[data-type="coblocks/food-and-drinks"] [data-type="coblocks/food-item"]' ).first().find( '.block-editor-media-placeholder' ).should( 'exist' );
 
 		helpers.savePage();
 
@@ -91,10 +92,8 @@ describe( 'Block: Food and Drinks', function() {
 	it( 'can toggle prices for inner food-item blocks', () => {
 		helpers.addBlockToPost( 'coblocks/food-and-drinks', true );
 
-		cy.get( '[data-type="coblocks/food-and-drinks"]' ).first().within( () => {
-			cy.get( '[data-type="coblocks/food-item"]' ).first().click( 'left' );
-			cy.get( '[data-type="coblocks/food-item"]' ).first().find( '[aria-label="$0.00"]' ).should( 'exist' );
-		} );
+		cy.get( '[data-type="coblocks/food-and-drinks"] [data-type="coblocks/food-item"]' ).first().click( 'left' );
+		cy.get( '[data-type="coblocks/food-and-drinks"] [data-type="coblocks/food-item"]' ).first().find( '[aria-label="$0.00"]' ).should( 'exist' );
 
 		// An unknown condition is causing the block to become unselected only in headless.
 		// Two select block logics are needed to get the block to be selected.
@@ -103,10 +102,8 @@ describe( 'Block: Food and Drinks', function() {
 		helpers.openSettingsPanel( /food & drinks settings/i );
 		cy.get( '.components-toggle-control' ).find( '.components-base-control__field' ).contains( /prices/i ).click();
 
-		cy.get( '[data-type="coblocks/food-and-drinks"]' ).first().within( () => {
-			cy.get( '[data-type="coblocks/food-item"]' ).first().click( 'left' );
-			cy.get( '[data-type="coblocks/food-item"]' ).first().find( '[aria-label="$0.00"]' ).should( 'not.exist' );
-		} );
+		cy.get( '[data-type="coblocks/food-and-drinks"] [data-type="coblocks/food-item"]' ).first().click( 'left' );
+		cy.get( '[data-type="coblocks/food-and-drinks"] [data-type="coblocks/food-item"]' ).first().find( '[aria-label="$0.00"]' ).should( 'not.exist' );
 
 		helpers.savePage();
 
@@ -123,10 +120,8 @@ describe( 'Block: Food and Drinks', function() {
 		helpers.openSettingsPanel( /food & drinks settings/i );
 		cy.get( '.components-toggle-control' ).find( '.components-base-control__field' ).contains( /prices/i ).click();
 
-		cy.get( '[data-type="coblocks/food-and-drinks"]' ).first().within( () => {
-			cy.get( '[data-type="coblocks/food-item"]' ).first().click( 'left' );
-			cy.get( '[data-type="coblocks/food-item"]' ).first().find( '.wp-block-coblocks-food-item__price' ).should( 'not.exist' );
-		} );
+		cy.get( '[data-type="coblocks/food-and-drinks"] [data-type="coblocks/food-item"]' ).first().click( 'left' );
+		cy.get( '[data-type="coblocks/food-and-drinks"] [data-type="coblocks/food-item"]' ).first().find( '.wp-block-coblocks-food-item__price' ).should( 'not.exist' );
 
 		helpers.savePage();
 
@@ -148,13 +143,13 @@ describe( 'Block: Food and Drinks', function() {
 		cy.get( '[data-type="coblocks/food-and-drinks"]' ).find( '.block-editor-button-block-appender' ).click();
 		cy.get( '.wp-block-coblocks-food-and-drinks' ).should( 'have.length', 2 );
 
-		cy.get( '[data-type="coblocks/food-and-drinks"]' ).last().within( () => {
-			cy.get( '[data-type="coblocks/food-item"]' ).first().click( 'left' );
-			cy.get( '[data-type="coblocks/food-item"]' ).first().find( '.block-editor-media-placeholder' ).should( 'exist' );
-			cy.get( '[data-type="coblocks/food-item"]' ).first().find( '[aria-label="$0.00"]' ).should( 'exist' );
+		// Scope to the second (last) menu section with `.last().find()` rather than
+		// `.within()`, which does not reach into the editor-canvas iframe.
+		cy.get( '[data-type="coblocks/food-and-drinks"]' ).last().find( '[data-type="coblocks/food-item"]' ).first().click( 'left' );
+		cy.get( '[data-type="coblocks/food-and-drinks"]' ).last().find( '[data-type="coblocks/food-item"]' ).first().find( '.block-editor-media-placeholder' ).should( 'exist' );
+		cy.get( '[data-type="coblocks/food-and-drinks"]' ).last().find( '[data-type="coblocks/food-item"]' ).first().find( '[aria-label="$0.00"]' ).should( 'exist' );
 
-			cy.get( '.wp-block-coblocks-food-and-drinks' ).should( 'have.class', 'my-custom-class' );
-		} );
+		cy.get( '[data-type="coblocks/food-and-drinks"]' ).last().should( 'have.class', 'my-custom-class' );
 
 		helpers.savePage();
 

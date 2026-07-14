@@ -180,8 +180,21 @@ const Edit = ( props ) => {
 		);
 	}
 
+	// `blockProps` (and its ref) must live on a plain wrapper element, never on
+	// `ResizableBox`: spreading it onto ResizableBox clobbers re-resizable's own
+	// node ref, so on mount inside the WP 7.0 canvas iframe it reads an undefined
+	// `ownerDocument` and throws ("Cannot destructure property 'defaultView'"),
+	// crashing every non-full-width column. Keeping the block wrapper as the outer
+	// div preserves the resize handlers, which locate the inner
+	// `.wp-block-coblocks-column` as a descendant of `block-<clientId>`.
 	return (
-		<>
+		<div
+			{ ...blockProps }
+			className={ classnames( blockProps.className, className, {
+				'is-selected-column': isSelected,
+				'is-resizing': resizing,
+			} ) }
+		>
 			{ dropZone }
 			{ isSelected && <Controls { ...props } /> }
 			{ isSelected && <Inspector { ...props } /> }
@@ -196,8 +209,7 @@ const Edit = ( props ) => {
 				%
 			</span>
 			<ResizableBox
-				{ ...blockProps }
-				className={ classnames( blockProps.className, className, {
+				className={ classnames( {
 					'is-selected-column': isSelected,
 					'is-resizing': resizing,
 				} ) }
@@ -289,7 +301,7 @@ const Edit = ( props ) => {
 					</div>
 				</div>
 			</ResizableBox>
-		</>
+		</div>
 	);
 };
 

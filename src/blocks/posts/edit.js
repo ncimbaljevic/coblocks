@@ -137,8 +137,8 @@ const PostsEdit = ( props ) => {
 	const [ stackedDefaultColumns ] = useState( 2 );
 	const [ horizontalDefaultColumns ] = useState( 1 );
 	const [ userModifiedColumn, setUserModifiedColumn ] = useState(
-		( className.includes( 'is-style-stacked' ) && columns !== stackedDefaultColumns ) ||
-		( className.includes( 'is-style-horizontal' ) && columns !== horizontalDefaultColumns ) ? true : false
+		( ( className || '' ).includes( 'is-style-stacked' ) && columns !== stackedDefaultColumns ) ||
+		( ( className || '' ).includes( 'is-style-horizontal' ) && columns !== horizontalDefaultColumns ) ? true : false
 	);
 
 	const prevClassname = usePrevious( className );
@@ -179,11 +179,11 @@ const PostsEdit = ( props ) => {
 		}
 
 		if ( className !== prevClassname ) {
-			if ( className.includes( 'is-style-stacked' ) ) {
+			if ( ( className || '' ).includes( 'is-style-stacked' ) ) {
 				setAttributes( { columns: userModifiedColumn ? columns : stackedDefaultColumns } );
 			}
 
-			if ( className.includes( 'is-style-horizontal' ) ) {
+			if ( ( className || '' ).includes( 'is-style-horizontal' ) ) {
 				setAttributes( { columns: userModifiedColumn ? columns : horizontalDefaultColumns } );
 			}
 		}

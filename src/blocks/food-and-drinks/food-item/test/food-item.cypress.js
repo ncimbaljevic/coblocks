@@ -17,25 +17,27 @@ describe( 'Block: Food Item', () => {
 	} );
 
 	it( 'removes .is-empty when the \'title\', \'description\', \'price\' attributes have content', () => {
-		cy.get( '[data-type="coblocks/food-item"]' ).first().within( () => {
+		// `.within()` does not scope into the WP 7.0 editor-canvas iframe, so its
+		// inner queries find nothing. Use single-string descendant selectors,
+		// resolved into the canvas by the cy.get override. Only one food-item
+		// exists here, so no explicit scoping is required.
 		// Set heading.
-			cy.get( '.wp-block-coblocks-food-item__heading-wrapper .block-editor-rich-text__editable' ).first().focus().type( 'item heading', { force: true } );
-			cy.get( '.wp-block-coblocks-food-item' ).should( 'not.have.class', 'is-empty' );
-			cy.get( '.wp-block-coblocks-food-item__heading-wrapper .block-editor-rich-text__editable' ).first().focus().type( '{selectall}{del}', { force: true } );
-			cy.get( '.wp-block-coblocks-food-item' ).should( 'have.class', 'is-empty' );
+		cy.get( '[data-type="coblocks/food-item"] .wp-block-coblocks-food-item__heading-wrapper .block-editor-rich-text__editable' ).first().focus().type( 'item heading', { force: true } );
+		cy.get( '.wp-block-coblocks-food-item' ).first().should( 'not.have.class', 'is-empty' );
+		cy.get( '[data-type="coblocks/food-item"] .wp-block-coblocks-food-item__heading-wrapper .block-editor-rich-text__editable' ).first().focus().type( '{selectall}{del}', { force: true } );
+		cy.get( '.wp-block-coblocks-food-item' ).first().should( 'have.class', 'is-empty' );
 
-			// Set price.
-			cy.get( '[aria-label="$0.00"]' ).first().focus().type( 'item price', { force: true } );
-			cy.get( '.wp-block-coblocks-food-item' ).should( 'not.have.class', 'is-empty' );
-			cy.get( '[aria-label="$0.00"]' ).first().focus().type( '{selectall}{del}', { force: true } );
-			cy.get( '.wp-block-coblocks-food-item' ).should( 'have.class', 'is-empty' );
+		// Set price.
+		cy.get( '[data-type="coblocks/food-item"] [aria-label="$0.00"]' ).first().focus().type( 'item price', { force: true } );
+		cy.get( '.wp-block-coblocks-food-item' ).first().should( 'not.have.class', 'is-empty' );
+		cy.get( '[data-type="coblocks/food-item"] [aria-label="$0.00"]' ).first().focus().type( '{selectall}{del}', { force: true } );
+		cy.get( '.wp-block-coblocks-food-item' ).first().should( 'have.class', 'is-empty' );
 
-			// Set description.
-			cy.get( '[aria-label="Add description…"]' ).first().focus().type( 'item description', { force: true } );
-			cy.get( '.wp-block-coblocks-food-item' ).should( 'not.have.class', 'is-empty' );
-			cy.get( '[aria-label="Add description…"]' ).first().focus().type( '{selectall}{del}', { force: true } );
-			cy.get( '.wp-block-coblocks-food-item' ).should( 'have.class', 'is-empty' );
-		} );
+		// Set description.
+		cy.get( '[data-type="coblocks/food-item"] [aria-label="Add description…"]' ).first().focus().type( 'item description', { force: true } );
+		cy.get( '.wp-block-coblocks-food-item' ).first().should( 'not.have.class', 'is-empty' );
+		cy.get( '[data-type="coblocks/food-item"] [aria-label="Add description…"]' ).first().focus().type( '{selectall}{del}', { force: true } );
+		cy.get( '.wp-block-coblocks-food-item' ).first().should( 'have.class', 'is-empty' );
 
 		helpers.savePage();
 

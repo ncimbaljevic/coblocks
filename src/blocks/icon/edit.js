@@ -11,7 +11,7 @@ import classnames from 'classnames';
 import { compose } from '@wordpress/compose';
 import { useBlockProps } from '@wordpress/block-editor';
 import { withSelect } from '@wordpress/data';
-import { lazy, useEffect, useState } from '@wordpress/element';
+import { lazy, useEffect, useRef, useState } from '@wordpress/element';
 import { ResizableBox, Spinner } from '@wordpress/components';
 
 /**
@@ -54,6 +54,12 @@ const Edit = ( props ) => {
 
 	const [ svgs, setSvgs ] = useState( null );
 
+	// A ref to the block's DOM root inside the editor iframe. The inspector uses it
+	// to reach the icon element via `blockRef.current.querySelector(...)` instead of
+	// `document.getElementById()`, which resolves against the top document and returns
+	// null in WP 7.0's iframed editor.
+	const blockRef = useRef();
+
 	useEffect( () => {
 		let isMounted = true;
 
@@ -84,6 +90,7 @@ const Edit = ( props ) => {
 		className: classnames( className, {
 			[ `has-text-align-${ contentAlign }` ]: contentAlign,
 		} ),
+		ref: blockRef,
 	} );
 
 	if ( ! svgs ) {
@@ -108,7 +115,10 @@ const Edit = ( props ) => {
 
 	let iconStyle = 'outlined';
 
-	if ( className.includes( 'is-style-filled' ) ) {
+	// `className` is undefined on a freshly inserted block (no style class applied
+	// yet), so guard before calling `.includes()` to avoid a render-time TypeError
+	// that crashes the block in WP 7.0's iframed editor.
+	if ( ( className || '' ).includes( 'is-style-filled' ) ) {
 		iconStyle = 'filled';
 	}
 
@@ -148,7 +158,7 @@ const Edit = ( props ) => {
 				<>
 					<Controls { ...props } />
 					<InspectorLoader>
-						<Inspector { ...props } />
+						<Inspector { ...props } blockRef={ blockRef } />
 					</InspectorLoader>
 				</>
 			) }

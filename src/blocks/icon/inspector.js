@@ -49,6 +49,7 @@ const Inspector = ( props ) => {
 	const {
 		attributes,
 		backgroundColor,
+		blockRef,
 		className,
 		clientId,
 		fallbackBackgroundColor,
@@ -60,6 +61,16 @@ const Inspector = ( props ) => {
 		setBackgroundColor,
 		setIconColor,
 	} = props;
+
+	// Reset the inline height that re-resizable stamps on the icon element during a
+	// resize. Resolved through the block's ref so it works inside WP 7.0's iframed
+	// editor, where `document.getElementById()` targets the wrong document.
+	const resetInnerHeight = () => {
+		const inner = blockRef?.current?.querySelector( '.wp-block-coblocks-icon__inner' );
+		if ( inner ) {
+			inner.style.height = 'auto';
+		}
+	};
 
 	const {
 		borderRadius,
@@ -137,7 +148,10 @@ const Inspector = ( props ) => {
 
 	let iconStyle = 'outlined';
 
-	if ( className.includes( 'is-style-filled' ) ) {
+	// `className` is undefined on a freshly inserted block (no style class applied
+	// yet), so guard before calling `.includes()` to avoid a render-time TypeError
+	// that crashes the block in WP 7.0's iframed editor.
+	if ( ( className || '' ).includes( 'is-style-filled' ) ) {
 		iconStyle = 'filled';
 	}
 
@@ -178,7 +192,7 @@ const Inspector = ( props ) => {
 								isSecondary
 								isSmall
 								onClick={ () => {
-									document.getElementById( 'block-' + clientId ).getElementsByClassName( 'wp-block-coblocks-icon__inner' )[ 0 ].style.height = 'auto';
+									resetInnerHeight();
 									onChangeSize( 'medium', DEFAULT_ICON_SIZE );
 								} }
 								type="button"
@@ -190,7 +204,7 @@ const Inspector = ( props ) => {
 								max={ MAX_ICON_SIZE }
 								min={ padding ? MIN_ICON_SIZE + 28 : MIN_ICON_SIZE }
 								onChange={ ( nextWidth ) => {
-									document.getElementById( 'block-' + clientId ).getElementsByClassName( 'wp-block-coblocks-icon__inner' )[ 0 ].style.height = 'auto';
+									resetInnerHeight();
 									setAttributes( {
 										height: nextWidth,
 										width: nextWidth,

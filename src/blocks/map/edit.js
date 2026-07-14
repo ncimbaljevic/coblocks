@@ -132,33 +132,41 @@ const Edit = ( props ) => {
 				<Controls { ...props } apiKey={ apiKeyState } />
 			) }
 			{ pinned ? (
-				<ResizableBox
-					{ ...blockProps }
-					enable={ {
-						bottom: true,
-						bottomLeft: false,
-						bottomRight: false,
-						left: false,
-						right: false,
-						top: false,
-						topLeft: false,
-						topRight: false,
-					} }
-					minHeight="200"
-					onResizeStop={ ( _event, _direction, _elt, delta ) => {
-						setAttributes( {
-							height: parseInt( height + delta.height, 10 ),
-						} );
-					} }
-					showHandle={ isSelected }
-					size={ {
-						height,
-						width: '100%',
-					} }
-				>
-					{ !! apiKeyState
-						? <GoogleMapWithApiKey apiKey={ apiKeyState } props={ props } /> : GoogleMapIframeRender( props ) }
-				</ResizableBox>
+				/*
+				 * `useBlockProps` must own a stable DOM root; spreading it directly onto
+				 * `<ResizableBox>` makes re-resizable the block root, and in WP 7.0's
+				 * iframed editor it reads `ownerDocument.defaultView` on that node and
+				 * throws a TypeError. Keep the block root a plain `<div>`.
+				 */
+				<div { ...blockProps }>
+					<ResizableBox
+						className={ classnames( { 'is-selected': isSelected } ) }
+						enable={ {
+							bottom: true,
+							bottomLeft: false,
+							bottomRight: false,
+							left: false,
+							right: false,
+							top: false,
+							topLeft: false,
+							topRight: false,
+						} }
+						minHeight="200"
+						onResizeStop={ ( _event, _direction, _elt, delta ) => {
+							setAttributes( {
+								height: parseInt( height + delta.height, 10 ),
+							} );
+						} }
+						showHandle={ isSelected }
+						size={ {
+							height,
+							width: '100%',
+						} }
+					>
+						{ !! apiKeyState
+							? <GoogleMapWithApiKey apiKey={ apiKeyState } props={ props } /> : GoogleMapIframeRender( props ) }
+					</ResizableBox>
+				</div>
 			) : (
 				<Placeholder
 					{ ...blockProps }

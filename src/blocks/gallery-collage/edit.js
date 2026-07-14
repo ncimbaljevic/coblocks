@@ -42,7 +42,7 @@ const GalleryCollageEdit = ( props ) => {
 
 	useEffect( () => {
 		if ( className !== prevClassName ) {
-			if ( className.includes( 'is-style-layered' ) ) {
+			if ( ( className || '' ).includes( 'is-style-layered' ) ) {
 				setLastGutterValue( attributes.gutter );
 				setAttributes( { gutter: 'small' } );
 			} else {
@@ -120,7 +120,7 @@ const GalleryCollageEdit = ( props ) => {
 	const renderImage = ( index ) => {
 		const image = getImageAtIndex( index );
 		const isImageSelected = isSelected && selectedImage === image.index;
-		const enableCaptions = ! className.includes( 'is-style-layered' );
+		const enableCaptions = ! ( className || '' ).includes( 'is-style-layered' );
 
 		const dropZone = (
 			<DropZone
@@ -249,8 +249,8 @@ const GalleryCollageEdit = ( props ) => {
 		lightbox,
 	} = attributes;
 
-	const enableGutter = ! className.includes( 'is-style-layered' );
-	const enableCaptions = ! className.includes( 'is-style-layered' );
+	const enableGutter = ! ( className || '' ).includes( 'is-style-layered' );
+	const enableCaptions = ! ( className || '' ).includes( 'is-style-layered' );
 
 	const images = [];
 
