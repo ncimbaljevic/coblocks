@@ -14,7 +14,7 @@ import InspectorControls from './inspector';
  */
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
-import { RichText } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 import { useDispatch } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 
@@ -58,21 +58,23 @@ const EventItemEdit = ( props ) => {
 		}
 	};
 
+	const blockProps = useBlockProps( {
+		className: classnames( className, {
+			'has-text-color': textColor.color,
+			[ textColor.class ]: textColor.class,
+		} ),
+		style: textStyles,
+	} );
+
 	return (
 		<>
 			<InspectorControls { ...props }
 			/>
 			<div
-				className={ classnames( className,
-					{
-						'has-text-color': textColor.color,
-						[ textColor.class ]: textColor.class,
-					}
-				) }
+				{ ...blockProps }
 				onClick={ handleSelectBlock }
 				onKeyDown={ handleSelectBlock }
 				role="button"
-				style={ textStyles }
 				tabIndex="0"
 			>
 				<div className="wp-block-coblocks-events__date">

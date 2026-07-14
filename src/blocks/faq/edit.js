@@ -8,7 +8,7 @@ import CustomAppender from './appender';
  */
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { useEffect } from '@wordpress/element';
 import { usePrevious } from '@wordpress/compose';
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -62,8 +62,10 @@ const Edit = ( props ) => {
 		insertBlock( newHeading, innerBlocks.length, clientId );
 	};
 
+	const blockProps = useBlockProps( { className } );
+
 	return (
-		<div className={ className }>
+		<div { ...blockProps }>
 			<InnerBlocks
 				allowedBlocks={ ALLOWED_BLOCKS }
 				renderAppender={ () =>

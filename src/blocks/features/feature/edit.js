@@ -17,7 +17,7 @@ import Inspector from './inspector';
 import { __ } from '@wordpress/i18n';
 import { compose, usePrevious } from '@wordpress/compose';
 import { useEffect } from '@wordpress/element';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { Spinner } from '@wordpress/components';
 import { isBlobURL } from '@wordpress/blob';
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -129,6 +129,10 @@ const Edit = ( props ) => {
 		classes = classnames( classes, `coblocks-feature-${ coblocks.id }` );
 	}
 
+	const blockProps = useBlockProps( {
+		className: classes,
+	} );
+
 	const innerClasses = classnames(
 		'wp-block-coblocks-feature__inner',
 		...BackgroundClasses( attributes ), {
@@ -162,7 +166,7 @@ const Edit = ( props ) => {
 					{ ...props }
 				/>
 			) }
-			<div className={ classes }>
+			<div { ...blockProps }>
 				<div className={ innerClasses } style={ innerStyles }>
 					{ isBlobURL( backgroundImg ) && <Spinner /> }
 					{ BackgroundVideo( attributes ) }

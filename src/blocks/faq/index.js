@@ -6,6 +6,7 @@ import { FaqIcon as icon } from '@godaddy-wordpress/coblocks-icons';
 /**
  * Internal dependencies.
  */
+import deprecated from './deprecated';
 import edit from './edit';
 import example from './example';
 import metadata from './block.json';
@@ -23,6 +24,7 @@ import { __, _x } from '@wordpress/i18n';
 const { name, category } = metadata;
 
 const settings = {
+	deprecated,
 	description: __( 'Add a list of questions and answers.', 'coblocks' ),
 	edit,
 	example,

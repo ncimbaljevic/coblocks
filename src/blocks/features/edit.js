@@ -17,7 +17,7 @@ import GutterWrapper from '../../components/gutter-control/gutter-wrapper';
  */
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { isBlobURL } from '@wordpress/blob';
 import { Spinner } from '@wordpress/components';
 import { useDispatch, useSelect, withDispatch, withSelect } from '@wordpress/data';
@@ -121,6 +121,10 @@ const Edit = ( props ) => {
 		classes = classnames( classes, `coblocks-features-${ coblocks.id }` );
 	}
 
+	const blockProps = useBlockProps( {
+		className: classes,
+	} );
+
 	const innerClasses = classnames(
 		'wp-block-coblocks-features__inner',
 		...BackgroundClasses( attributes ), {
@@ -161,9 +165,7 @@ const Edit = ( props ) => {
 			{ isSelected && (
 				<Inspector selectBlock={ selectBlock } { ...props } />
 			) }
-			<div
-				className={ classes }
-			>
+			<div { ...blockProps }>
 				<GutterWrapper { ...attributes }>
 					<div className={ innerClasses } style={ innerStyles }>
 						{ isBlobURL( backgroundImg ) && <Spinner /> }

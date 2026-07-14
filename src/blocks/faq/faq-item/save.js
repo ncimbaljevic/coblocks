@@ -14,7 +14,7 @@ import { hasEmptyAttributes } from '../../../utils/block-helpers';
  */
 import { CaretIcon } from '@godaddy-wordpress/coblocks-icons';
 import { Icon } from '@wordpress/components';
-import { getColorClassName, InnerBlocks, RichText } from '@wordpress/block-editor';
+import { getColorClassName, InnerBlocks, RichText, useBlockProps } from '@wordpress/block-editor';
 
 const isEmpty = ( attributes ) => {
 	const attributesToCheck = [ 'question' ];
@@ -25,7 +25,7 @@ const isEmpty = ( attributes ) => {
 	return hasEmptyAttributes( fromEntries( newAttributes ) );
 };
 
-export default function save( { className, attributes } ) {
+export default function save( { attributes } ) {
 	const {
 		customTextColor,
 		open,
@@ -35,19 +35,23 @@ export default function save( { className, attributes } ) {
 
 	const colorClass = getColorClassName( 'color', textColor );
 
-	const classes = classnames( className, {
+	const classes = classnames( {
 		[ colorClass ]: colorClass,
 		'has-text-color': textColor || customTextColor,
 	} );
 
+	const blockProps = useBlockProps.save( {
+		className: classes,
+		style: { color: colorClass ? undefined : customTextColor },
+	} );
+
 	return isEmpty( attributes ) ? null : (
 		<details
-			className={ classes }
+			{ ...blockProps }
 			itemProp="mainEntity"
 			itemScope
 			itemType="https://schema.org/Question"
 			open={ open }
-			style={ { color: colorClass ? undefined : customTextColor } }
 		>
 			<summary
 				className="wp-block-coblocks-faq-item__question"
