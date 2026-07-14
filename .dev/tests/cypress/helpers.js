@@ -525,7 +525,12 @@ export const upload = {
 		cy.get( '.attachment.selected.save-ready' );
 		cy.get( '.media-modal .media-button-select' ).click();
 
-		cy.get( '[class*="-visual-editor"]' ).find( `[data-type="${ blockName }"] img` ).first().should( 'have.attr', 'src' ).should( 'include', newImageBase );
+		// Query the replaced image with a single-string selector so the cy.get
+		// override can reach into the WP 7.0 editor-canvas iframe. Chaining
+		// `cy.get( '[class*="-visual-editor"]' ).find( … )` breaks here because the
+		// editor wrapper lives in the top document while the block/img lives inside
+		// the iframe, and `.find()` cannot cross that boundary.
+		cy.get( `[data-type="${ blockName }"] img` ).first().should( 'have.attr', 'src' ).should( 'include', newImageBase );
 	},
 	/**
 	 * Upload image to input element.
