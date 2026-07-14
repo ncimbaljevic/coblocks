@@ -46,15 +46,18 @@ describe( 'Block: Event Item', () => {
 	it( 'can save with custom content without errors', () => {
 		const { date, event, time, location } = eventItemData;
 
-		cy.get( '[data-type="coblocks/events"]' ).first().within( () => {
-			cy.get( '.wp-block-coblocks-events__day' ).type( date.day );
-			cy.get( '.wp-block-coblocks-events__month' ).type( date.month );
-			cy.get( '.wp-block-coblocks-events__year' ).type( date.year );
-			cy.get( '.wp-block-coblocks-events__title' ).type( event.title );
-			cy.get( '.wp-block-coblocks-events__description' ).type( event.description );
-			cy.get( '.wp-block-coblocks-events__time' ).type( time );
-			cy.get( '.wp-block-coblocks-events__location' ).type( location );
-		} );
+		// A `.within()` on the events block (which lives inside the WP 7.0
+		// editor-canvas iframe) is not scoped into the iframe by Cypress, so its
+		// inner queries find nothing. Use single-string descendant selectors,
+		// which the cy.get override resolves into the canvas. Only one events
+		// block exists here, so no explicit scoping is required.
+		cy.get( '[data-type="coblocks/events"] .wp-block-coblocks-events__day' ).type( date.day );
+		cy.get( '[data-type="coblocks/events"] .wp-block-coblocks-events__month' ).type( date.month );
+		cy.get( '[data-type="coblocks/events"] .wp-block-coblocks-events__year' ).type( date.year );
+		cy.get( '[data-type="coblocks/events"] .wp-block-coblocks-events__title' ).type( event.title );
+		cy.get( '[data-type="coblocks/events"] .wp-block-coblocks-events__description' ).type( event.description );
+		cy.get( '[data-type="coblocks/events"] .wp-block-coblocks-events__time' ).type( time );
+		cy.get( '[data-type="coblocks/events"] .wp-block-coblocks-events__location' ).type( location );
 
 		helpers.savePage();
 		helpers.checkForBlockErrors( 'coblocks/events' );
