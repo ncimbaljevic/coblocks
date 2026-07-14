@@ -26,6 +26,7 @@ import {
 	MediaReplaceFlow,
 	MediaUpload,
 	MediaUploadCheck,
+	useBlockProps,
 } from '@wordpress/block-editor';
 import { Button, ButtonGroup, DropZone, Spinner } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -195,6 +196,8 @@ const Edit = ( props ) => {
 		],
 	];
 
+	const blockProps = useBlockProps( { className } );
+
 	return (
 		<>
 			<BlockControls>
@@ -222,7 +225,7 @@ const Edit = ( props ) => {
 				attributes={ attributes }
 				setAttributes={ setAttributes }
 			/>
-			<div className={ className }>
+			<div { ...blockProps }>
 				{ imageUrl ? renderImage() : renderPlaceholder() }
 				<div className="wp-block-coblocks-service__content">
 					<InnerBlocks

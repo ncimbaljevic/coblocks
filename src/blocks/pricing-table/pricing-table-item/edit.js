@@ -14,7 +14,7 @@ import Inspector from './inspector';
  */
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
-import { RichText, InnerBlocks } from '@wordpress/block-editor';
+import { RichText, InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Block edit function
@@ -41,6 +41,21 @@ const Edit = ( props ) => {
 
 	const allowedFormats = [ 'bold', 'italic', 'strikethrough' ];
 
+	const blockProps = useBlockProps( {
+		className: classnames(
+			className, {
+				'has-background': backgroundColor.color,
+				'has-text-color': textColor.color,
+				[ backgroundColor.class ]: backgroundColor.class,
+				[ textColor.class ]: textColor.class,
+			}
+		),
+		style: {
+			backgroundColor: backgroundColor.color,
+			color: textColor.color,
+		},
+	} );
+
 	/**
 	 * This block now allows several innerBlock types and has refactored to
 	 * use core/list block instead of a custom RichText multiline solution.
@@ -62,20 +77,7 @@ const Edit = ( props ) => {
 					{ ...props }
 				/>
 			) }
-			<div
-				className={ classnames(
-					className, {
-						'has-background': backgroundColor.color,
-						'has-text-color': textColor.color,
-						[ backgroundColor.class ]: backgroundColor.class,
-						[ textColor.class ]: textColor.class,
-					}
-				) }
-				style={ {
-					backgroundColor: backgroundColor.color,
-					color: textColor.color,
-				} }
-			>
+			<div { ...blockProps }>
 				<RichText
 					tagName="span"
 					className="wp-block-coblocks-pricing-table-item__title"

@@ -12,7 +12,7 @@ import GutterWrapper from '../../components/gutter-control/gutter-wrapper';
 /**
  * WordPress dependencies
  */
-import { getColorClassName, InnerBlocks } from '@wordpress/block-editor';
+import { getColorClassName, InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
 	const {
@@ -65,8 +65,10 @@ function Save( { attributes } ) {
 		color: textClass ? undefined : customTextColor,
 	};
 
+	const blockProps = useBlockProps.save( { className: classes } );
+
 	return (
-		<div className={ classes } data-id={ id } data-columns={ columns } data-layout={ layout } >
+		<div { ...blockProps } data-id={ id } data-columns={ columns } data-layout={ layout } >
 			<GutterWrapper { ...attributes }>
 				<div className={ classnames( innerClasses ) } style={ innerStyles }>
 					{ BackgroundVideo( attributes ) }

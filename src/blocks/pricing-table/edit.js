@@ -17,7 +17,7 @@ import Inspector from './inspector';
  * WordPress dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { withDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 
@@ -62,12 +62,14 @@ const PricingTableEdit = ( props ) => {
 		contentAlign,
 	} = attributes;
 
-	const classes = classnames(
-		className,
-		{
-			[ `has-text-align-${ contentAlign }` ]: contentAlign,
-		}
-	);
+	const blockProps = useBlockProps( {
+		className: classnames(
+			className,
+			{
+				[ `has-text-align-${ contentAlign }` ]: contentAlign,
+			}
+		),
+	} );
 
 	return (
 		<>
@@ -81,9 +83,7 @@ const PricingTableEdit = ( props ) => {
 					{ ...props }
 				/>
 			) }
-			<div
-				className={ classes }
-			>
+			<div { ...blockProps }>
 				<GutterWrapper { ...attributes }>
 					<div className={ classnames( 'wp-block-coblocks-pricing-table__inner',
 						{
