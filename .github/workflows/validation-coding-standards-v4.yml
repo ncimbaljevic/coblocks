@@ -3,6 +3,7 @@ name: 'Validation / Coding Standards [v4]'
 on:
   pull_request:
     branches:
+      - master
       - release/4.0.0
     paths:
       - '**.php'
