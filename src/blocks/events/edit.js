@@ -18,7 +18,7 @@ import { createBlock } from '@wordpress/blocks';
 import { edit } from '@wordpress/icons';
 import ServerSideRender from '@wordpress/server-side-render';
 import { usePrevious } from '@wordpress/compose';
-import { BlockControls, InnerBlocks } from '@wordpress/block-editor';
+import { BlockControls, InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { Button, Placeholder, TextControl, ToolbarGroup, Tooltip } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
@@ -59,7 +59,6 @@ const EventsEdit = ( props ) => {
 
 	const prevShowCarousel = usePrevious( attributes.showCarousel );
 
-	const innerBlocksRef = useRef( null );
 	const toolbarRef = useRef( null );
 
 	const carouselUuid = useMemo( () => generateUuid(), [] );
@@ -186,6 +185,10 @@ const EventsEdit = ( props ) => {
 		);
 	};
 
+	const blockProps = useBlockProps( {
+		className: classNames( 'coblocks-events-swiper-container', className ),
+	} );
+
 	if ( showExternalCalendarControls && ! externalCalendarUrl ) {
 		return (
 			<Placeholder
@@ -242,14 +245,10 @@ const EventsEdit = ( props ) => {
 			}
 
 			<div
-				className={ classNames(
-					'coblocks-events-swiper-container',
-					className
-				) }
+				{ ...blockProps }
 				id={ `coblocks-events-swiper-container-${ carouselUuid }` }
 				onClick={ handleSelectBlock }
 				onKeyDown={ handleSelectBlock }
-				ref={ innerBlocksRef }
 				role="button"
 				tabIndex="0"
 			>

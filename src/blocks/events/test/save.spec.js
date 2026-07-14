@@ -16,7 +16,7 @@ let block;
 describe( 'coblocks/events', () => {
 	beforeAll( () => {
 		// Register the block.
-		registerBlockType( name, { category: 'common', ...settings, attributes: metadata.attributes } );
+		registerBlockType( name, { category: 'common', ...settings, ...metadata } );
 	} );
 
 	beforeEach( () => {

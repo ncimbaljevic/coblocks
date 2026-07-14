@@ -17,7 +17,7 @@ import { CaretIcon } from '@godaddy-wordpress/coblocks-icons';
 import { compose } from '@wordpress/compose';
 import { Icon } from '@wordpress/icons';
 import { useEffect } from '@wordpress/element';
-import { InnerBlocks, RichText } from '@wordpress/block-editor';
+import { InnerBlocks, RichText, useBlockProps } from '@wordpress/block-editor';
 
 const ALLOWED_BLOCKS = [
 	'core/heading',
@@ -53,18 +53,20 @@ const FaqItemEdit = ( props ) => {
 		}
 	}, [ attributes ] );
 
+	const blockProps = useBlockProps( {
+		className: classnames( className,
+			{
+				'has-text-color': textColor.color,
+				[ textColor.class ]: textColor.class,
+			}
+		),
+		style: textStyles,
+	} );
+
 	return (
 		<>
 			<InspectorControls { ...props } />
-			<div
-				className={ classnames( className,
-					{
-						'has-text-color': textColor.color,
-						[ textColor.class ]: textColor.class,
-					}
-				) }
-				style={ textStyles }
-			>
+			<div { ...blockProps }>
 				<div className="wp-block-coblocks-faq-item__question">
 					<RichText
 						className="wp-block-coblocks-faq-item__question__content"
