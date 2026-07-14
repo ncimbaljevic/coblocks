@@ -1,8 +1,8 @@
 /**
  * Internal dependencies.
  */
-import { hasEmptyAttributes } from '../../../utils/block-helpers';
-import fromEntries from '../../../js/coblocks-fromEntries';
+import { hasEmptyAttributes } from '../../../../utils/block-helpers';
+import fromEntries from '../../../../js/coblocks-fromEntries';
 
 /**
  * External dependencies.
@@ -13,7 +13,7 @@ import classnames from 'classnames';
  * WordPress dependencies.
  */
 import { __ } from '@wordpress/i18n';
-import { RichText, useBlockProps } from '@wordpress/block-editor';
+import { RichText } from '@wordpress/block-editor';
 
 const isEmpty = ( attributes ) => {
 	const attributesToCheck = [ 'url', 'title', 'description', 'price' ];
@@ -24,7 +24,7 @@ const isEmpty = ( attributes ) => {
 	return hasEmptyAttributes( fromEntries( newAttributes ) );
 };
 
-export default function save( { attributes } ) {
+export default function save( { attributes, className } ) {
 	const {
 		alt,
 		description,
@@ -43,11 +43,9 @@ export default function save( { attributes } ) {
 		focalPoint,
 	} = attributes;
 
-	const blockProps = useBlockProps.save();
-
 	return isEmpty( attributes ) ? null : (
 		<div
-			{ ...blockProps }
+			className={ className }
 			itemScope
 			itemType="http://schema.org/MenuItem"
 		>

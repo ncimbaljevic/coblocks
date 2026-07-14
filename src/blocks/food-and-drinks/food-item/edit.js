@@ -22,7 +22,7 @@ import { isBlobURL } from '@wordpress/blob';
 import { mediaUpload } from '@wordpress/editor';
 import { Button, ButtonGroup, DropZone, Spinner } from '@wordpress/components';
 import { compose, usePrevious } from '@wordpress/compose';
-import { MediaPlaceholder, RichText } from '@wordpress/block-editor';
+import { MediaPlaceholder, RichText, useBlockProps } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import { withDispatch, withSelect } from '@wordpress/data';
 
@@ -246,6 +246,12 @@ const FoodItem = ( props ) => {
 		allowedFormats: [ 'bold', 'italic' ],
 	};
 
+	const blockProps = useBlockProps( {
+		className: classnames( className, {
+			'is-empty': isEmpty( attributes ),
+		} ),
+	} );
+
 	return (
 		<>
 			<Controls
@@ -257,11 +263,7 @@ const FoodItem = ( props ) => {
 				setHotTo={ setHotTo }
 				setSpicyTo={ setSpicyTo }
 			/>
-			<div
-				className={ classnames( className, {
-					'is-empty': isEmpty( attributes ),
-				} ) }
-			>
+			<div { ...blockProps }>
 				{ !! showImage &&
 					( url ? renderImage() : renderPlaceholder() ) }
 				<div className="wp-block-coblocks-food-item__content">
