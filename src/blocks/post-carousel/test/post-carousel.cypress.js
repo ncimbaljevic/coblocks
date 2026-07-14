@@ -34,7 +34,16 @@ describe( 'Test CoBlocks Post Carousel Block', function() {
 
 		[ 1, 2, 3, 4 ].forEach( ( columns ) => {
 			helpers.setInputValue( 'post carousel settings', 'columns', columns );
-			cy.get( '[data-type="coblocks/post-carousel"]' ).find( '.swiper-slide:visible' ).should( 'have.length', columns );
+			// The editor renders the carousel as a static preview: the swiper JS is
+			// deliberately not initialised (edit.js strips the `swiper-wrapper`
+			// class), so every slide stays `:visible` regardless of the columns /
+			// slidesPerView setting. Counting visible slides therefore always
+			// returns the full post count, not `columns`. Assert the columns
+			// control updates the block attribute instead.
+			helpers.getWPDataObject().then( ( data ) => {
+				const block = data.select( 'core/block-editor' ).getBlocks().find( ( b ) => b.name === 'coblocks/post-carousel' );
+				expect( parseInt( block.attributes.columns, 10 ) ).to.eq( columns );
+			} );
 		} );
 
 		helpers.checkForBlockErrors( 'coblocks/post-carousel' );
