@@ -5,7 +5,7 @@ Tags: page builder, Gutenberg blocks, WordPress blocks, gutenberg, blocks
 Requires at least: 6.3
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.1.17
+Stable tag: 4.0.0
 License: GPL-2.0
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -124,6 +124,14 @@ Developers can also apply minor style touch-ups to their themes if necessary. If
 CoBlocks is designed to support the last two major versions of WordPress that are currently released. If you're using one of these versions, you're all set to enjoy everything CoBlocks has to offer!
 
 == Changelog ==
+
+= 4.0.0 / 2026-07-15 =
+# Enhancements
+* Modernized the plugin stack for WordPress 7.0: WP 7.0 `@wordpress/*` package set, Node 24, React 18, WPCS 3, and a wp-scripts build.
+* Migrated all blocks to Block API v3, removing the "Block with API version 2 or lower is deprecated" editor notice. Each block ships a deprecation for full backward compatibility, so existing content is preserved.
+* Rebuilt the CI pipeline: on-demand E2E, collapsed job fan-out, per-job timeouts, and updated GitHub Actions versions.
+# Bug Fix
+* Fixed edit-time regressions in WordPress 7.0's iframed editor surfaced during the Block API v3 migration (dynamic-separator, icon, map, gallery-carousel, row/column, posts, and the buttons submit-style).
 
 = 3.1.15 / 2025-04-09 =
 # Bug Fix

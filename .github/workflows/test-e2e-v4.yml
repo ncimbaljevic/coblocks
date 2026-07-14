@@ -23,7 +23,7 @@ on:
   # filter means a workflows-only PR creates no run at all; the `labeled` type
   # lets applying the label to an existing (src-touching) PR start a run.
   pull_request:
-    branches: [ release/4.0.0 ]
+    branches: [ master, release/4.0.0 ]
     types: [ opened, synchronize, reopened, labeled ]
     paths:
       - 'src/blocks/**'
