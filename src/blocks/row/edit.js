@@ -325,8 +325,13 @@ const Edit = ( props ) => {
 		}
 	};
 
+	// The block wrapper must carry `blockProps` here too, otherwise the editor
+	// applies no `data-type` wrapper while the block is still showing its column
+	// variation picker (apiVersion 3 no longer adds a separate wrapper). Without
+	// it `[data-type="coblocks/row"]` never renders until a layout is chosen,
+	// which breaks selection and the E2E setup.
 	return (
-		<>
+		<div { ...blockProps }>
 			<__experimentalBlockVariationPicker
 				allowSkip
 				icon={ get( blockType, [ 'icon', 'src' ] ) }
@@ -335,7 +340,7 @@ const Edit = ( props ) => {
 				onSelect={ ( nextVariation ) => blockVariationPickerOnSelect( nextVariation ) }
 				variations={ variations }
 			/>
-		</>
+		</div>
 	);
 };
 
