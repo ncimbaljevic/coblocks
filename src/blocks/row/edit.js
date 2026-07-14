@@ -17,7 +17,7 @@ import { lazy, useEffect, useState } from '@wordpress/element';
 import { useDispatch, withDispatch, withSelect } from '@wordpress/data';
 // Disable reason: We choose to use unsafe APIs in our codebase.
 // eslint-disable-next-line @wordpress/no-unsafe-wp-apis
-import { __experimentalBlockVariationPicker, InnerBlocks } from '@wordpress/block-editor';
+import { __experimentalBlockVariationPicker, InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
@@ -133,6 +133,20 @@ const Edit = ( props ) => {
 		selectedRows = parseInt( columns.toString().split( '-' ) );
 	}
 
+	let classes = classnames(
+		className, {
+			[ `coblocks-row--${ id }` ]: id,
+		}
+	);
+
+	if ( coblocks && ( typeof coblocks.id !== 'undefined' ) ) {
+		classes = classnames( classes, `coblocks-row-${ coblocks.id }` );
+	}
+
+	// `useBlockProps()` must be called unconditionally, before any early return,
+	// to keep the hook order stable across renders (rules of hooks).
+	const blockProps = useBlockProps( { className: classes } );
+
 	if ( ! layout && layoutSelection && ! supportsBlockVariationPicker() ) {
 		return (
 			<>
@@ -223,16 +237,6 @@ const Edit = ( props ) => {
 		);
 	}
 
-	let classes = classnames(
-		className, {
-			[ `coblocks-row--${ id }` ]: id,
-		}
-	);
-
-	if ( coblocks && ( typeof coblocks.id !== 'undefined' ) ) {
-		classes = classnames( classes, `coblocks-row-${ coblocks.id }` );
-	}
-
 	const innerClasses = classnames(
 		'wp-block-coblocks-row__inner',
 		...BackgroundClasses( attributes ), {
@@ -293,7 +297,7 @@ const Edit = ( props ) => {
 						</InspectorLoader>
 					</>
 				) }
-				<div className={ classes }>
+				<div { ...blockProps }>
 					{ isBlobURL( backgroundImg ) && <Spinner /> }
 					<GutterWrapper { ...attributes }>
 						<div className={ innerClasses } style={ innerStyles }>
